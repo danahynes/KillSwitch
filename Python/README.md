@@ -1,1 +1,1 @@
-Monitor script for KillSwitch
+# Monitor script for KillSwitch
