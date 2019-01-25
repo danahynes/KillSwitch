@@ -30,7 +30,7 @@ pin_trigger = 3
 time_hold = 5
 time_debounce = 0.05
 
-# TODO: change this
+# TODO: change serial port
 serial_port = '/dev/pts/4'
 serial_speed = 9600
 
@@ -50,7 +50,7 @@ def held():
 
     # reboot on long press
     subprocess.call(['shutdown', '-r', 'now'], shell = False)
-    
+
     # debug
     print("long press")
 
@@ -68,7 +68,7 @@ def released():
 
         # debug
         print("short press")
-         
+
     # clear flag
     trg_held = False
 
@@ -77,7 +77,7 @@ def released():
 #-------------------------------------------------------------------------------
 
 if (hasg0):
-    
+
     # set up trigger pin
     trigger = g0.Button(pin_trigger, hold_time = time_hold, \
         bounce_time = time_debounce)
@@ -93,7 +93,7 @@ if (hasg0):
 #-------------------------------------------------------------------------------
 
 if (hasg0):
-    
+
     # make sure the pin starts off low (in case it was held over)
     trigger.wait_for_release()
 
@@ -112,14 +112,15 @@ ser = serial.Serial(serial_port, serial_speed, timeout = 1);
 while (1):
     line = ser.readline()
     if (len(line) > 0):
-        
+
         # split by separator
         cmds = line.split("|")
         cmd = cmds[0]
         val = cmds[1]
-        
+
         # strip leading '?' and trailing '!'
         cmd = cmd[1:]
+        
         # add two for CR/LF
         val = val[:-3]
 
@@ -127,7 +128,7 @@ while (1):
             subprocess.call(['shutdown', '-h', 'now'], shell = False)
         elif (cmd == "RBT"):
             subprocess.call(['shutdown', '-r', 'now'], shell = False)
-        
+
 #signal.pause()
 
 # -)
