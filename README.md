@@ -1,2 +1,2 @@
 # KillSwitch
-Source code for my KillSwitch project
+Source code for KillSwitch project
