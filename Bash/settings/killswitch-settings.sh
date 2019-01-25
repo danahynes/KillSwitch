@@ -284,7 +284,7 @@ function doMain() {
 
 function doLEDBrightness() {
     LEDB_VALUE=$(readFromFile $LEDB_SETTING)
-    
+
     RESULT=$(dialog \
     --backtitle "$WINDOW_TITLE" \
     --title "$LEDB_TITLE" \
@@ -312,13 +312,13 @@ function doLEDBrightness() {
 
 function doLEDType() {
     LEDT_VALUE=$(readFromFile $LEDT_SETTING)
-    
+
     # set highlighted item
     LEDT_HIGHLIGHT="${LEDT_ITEMS[$LEDT_VALUE]}"
 
     # size of array
     SIZE=${#LEDT_STATES[@]}
-        
+
     # all off
     for (( i=0; i<$SIZE; i++ )); do
         LEDT_STATES[i]=$STATE_OFF
@@ -326,7 +326,7 @@ function doLEDType() {
 
     # set checked item
     LEDT_STATES[$LEDT_VALUE]=$STATE_ON
-    
+
     RESULT=$(dialog \
     --backtitle "$WINDOW_TITLE" \
     --title "$LEDT_TITLE" \
@@ -340,7 +340,7 @@ function doLEDType() {
     "${LEDT_TAGS[0]}" "${LEDT_ITEMS[0]}" "${LEDT_STATES[0]}" \
     "${LEDT_TAGS[1]}" "${LEDT_ITEMS[1]}" "${LEDT_STATES[1]}" \
     3>&1 1>&2 2>&3 3>&-)
-    
+
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
 
@@ -359,13 +359,13 @@ function doLEDType() {
 
 function doLEDState() {
     LEDS_VALUE=$(readFromFile $LEDS_SETTING)
-    
+
     # set highlighted item
     LEDS_HIGHLIGHT="${LEDS_ITEMS[$LEDS_VALUE]}"
 
     # size of array
     SIZE=${#LEDS_STATES[@]}
-        
+
     # all off
     for (( i=0; i<$SIZE; i++ )); do
         LEDS_STATES[i]=$STATE_OFF
@@ -373,7 +373,7 @@ function doLEDState() {
 
     # set checked item
     LEDS_STATES[$LEDS_VALUE]=$STATE_ON
-    
+
     RESULT=$(dialog \
     --backtitle "$WINDOW_TITLE" \
     --title "$LEDS_TITLE" \
@@ -387,7 +387,7 @@ function doLEDState() {
     "${LEDS_TAGS[0]}" "${LEDS_ITEMS[0]}" "${LEDS_STATES[0]}" \
     "${LEDS_TAGS[1]}" "${LEDS_ITEMS[1]}" "${LEDS_STATES[1]}" \
     3>&1 1>&2 2>&3 3>&-)
-    
+
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
 
@@ -410,16 +410,16 @@ function doLEDState() {
 # the serial port on another thread, and would also need to stop/restart the
 # python monitor that was already using the serial port.
 # The python monitor script could be used without the serial port (just using
-# the physical connections of trigger/feedback), but every call to dialog 
+# the physical connections of trigger/feedback), but every call to dialog
 # blocks while waiting for the subshell to return, so there's really no way
-# to do it without using a multi-threaded language. That rules out bash and 
+# to do it without using a multi-threaded language. That rules out bash and
 # python. Looked pretty though...
 
 #function doRecordOn() {
 #
 #    # put arduino into rec on mode
 #    sendSerial $REC_ACTION $REC_ON_VALUE
-#    
+#
 #    RESULT=$(dialog \
 #    --backtitle "$WINDOW_TITLE" \
 #    --title "$REC_ON_TITLE" \
@@ -431,16 +431,16 @@ function doLEDState() {
 #    $REC_WIDTH \
 #    $REC_TIME \
 #    3>&1 1>&2 2>&3 3>&-)
-#    
+#
 #    BTN=$?
 #    if [ $BTN -eq $DIALOG_OK ]; then
 #        doRecordOff
 #    elif [ $BTN -eq $DIALOG_CANCEL ]; then
-#    
+#
 #        # put arduino in rec cancel mode
 #        sendSerial $REC_ACTION $REC_CANCEL_VALUE
 #    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
-#    
+#
 #        # put arduino in rec cancel mode
 #        sendSerial $REC_ACTION $REC_CANCEL_VALUE
 #        DONE=1
@@ -451,7 +451,7 @@ function doLEDState() {
 #
 #    # put arduino into rec off mode
 #    sendSerial $REC_ACTION $REC_OFF_VALUE
-#    
+#
 #    RESULT=$(dialog \
 #    --backtitle "$WINDOW_TITLE" \
 #    --title "$REC_OFF_TITLE" \
@@ -466,15 +466,15 @@ function doLEDState() {
 #
 #    BTN=$?
 #    if [ $BTN -eq $DIALOG_OK ]; then
-#    
+#
 #        # put arduino in rec done mode
 #        sendSerial $REC_ACTION $REC_DONE_VALUE
 #    elif [ $BTN -eq $DIALOG_CANCEL ]; then
-#    
+#
 #        # put arduino in rec cancel mode
 #        sendSerial $REC_ACTION $REC_CANCEL_VALUE
 #    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
-#    
+#
 #        # put arduino in rec cancel mode
 #        sendSerial $REC_ACTION $REC_CANCEL_VALUE
 #        DONE=1
@@ -492,7 +492,7 @@ function doStartRecording() {
     $REC_HEIGHT \
     $REC_WIDTH \
     3>&1 1>&2 2>&3 3>&-)
-    
+
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
         sendSerial $REC_ACTION ""
@@ -503,7 +503,7 @@ function doStartRecording() {
 
 function doLongPressTime() {
     LPT_VALUE=$(readFromFile $LPT_SETTING)
-    
+
     RESULT=$(dialog \
     --backtitle "$WINDOW_TITLE" \
     --title "$LPT_TITLE" \
@@ -519,7 +519,7 @@ function doLongPressTime() {
 
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
-    
+
         # trim whitespace
         RESULT=$(echo $RESULT | xargs)
         writeToFile $LPT_SETTING $RESULT
@@ -531,13 +531,13 @@ function doLongPressTime() {
 
 function doLongPressAction() {
     LPA_VALUE=$(readFromFile $LPA_SETTING)
-    
+
     # set highlighted item
     LPA_HIGHLIGHT="${LPA_ITEMS[$LPA_VALUE]}"
 
     # size of array
     SIZE=${#LPA_STATES[@]}
-        
+
     # all off
     for (( i=0; i<$SIZE; i++ )); do
         LPA_STATES[i]=$STATE_OFF
@@ -545,7 +545,7 @@ function doLongPressAction() {
 
     # set checked item
     LPA_STATES[$LPA_VALUE]=$STATE_ON
-    
+
     RESULT=$(dialog \
     --backtitle "$WINDOW_TITLE" \
     --title "$LPA_TITLE" \
@@ -559,7 +559,7 @@ function doLongPressAction() {
     "${LPA_TAGS[0]}" "${LPA_ITEMS[0]}" "${LPA_STATES[0]}" \
     "${LPA_TAGS[1]}" "${LPA_ITEMS[1]}" "${LPA_STATES[1]}" \
     3>&1 1>&2 2>&3 3>&-)
-    
+
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
 
@@ -576,6 +576,17 @@ function doLongPressAction() {
     fi
 }
 
+# TODO: this is ugly and bad. the dialog only works with a keyboard, because you 
+# need the spacebar to accept a selected dir/file and backslash to get it to
+# move to the selected dir.
+#
+# what needs to happen:
+# 1. check for internet or wget firmware version file
+# 2. get version from arduino over serial
+# 3. if wget version is newer, download full firmware file
+# 4. scan for full version in ${HOME}/.killswitch
+# 5. show message 'do you want to update'
+# 6. run avrdude with path to full firmware hex file
 function doFirmware() {
     # TODO firmware result
     # stdout is bad, but only way this works
@@ -600,7 +611,7 @@ function doShutdown() {
     $SHUTDOWN_HEIGHT \
     $SHUTDOWN_WIDTH \
     3>&1 1>&2 2>&3 3>&-)
-    
+
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
         echo "$SHUTDOWN_COMMAND"
@@ -619,7 +630,7 @@ function doReboot() {
     $REBOOT_HEIGHT \
     $REBOOT_WIDTH \
     3>&1 1>&2 2>&3 3>&-)
-    
+
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
         echo "$REBOOT_COMMAND"
@@ -638,7 +649,7 @@ function doUninstall() {
     $UNINSTALL_HEIGHT \
     $UNINSTALL_WIDTH \
     3>&1 1>&2 2>&3 3>&-)
-    
+
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
         echo "$UNINSTALL_COMMAND"
@@ -698,4 +709,3 @@ done
 clear
 
 # -)
-
