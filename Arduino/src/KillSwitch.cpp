@@ -8,7 +8,7 @@
 
 // TODO: LED completely off - currently has to be done by setting brightness to
 // 0 in settings
-// TODO: implemet prog sequence (see prog sequence.ods)
+// TODO: implement prog sequence (see prog sequence.ods)
 
 //-----------------------------------------------------------------------------
 // Includes
