@@ -1,0 +1,21 @@
+#-------------------------------------------------------------------------------
+# killswitch-boot.service
+# KillSwitch
+#
+# Copyright (c) 2019 Dana Hynes.
+# All rights reserved.
+#-------------------------------------------------------------------------------
+
+ [Unit]
+ Description=KillSwitch boot service
+ After=multi-user.target
+
+ [Service]
+ Type=idle
+ ExecStart=/usr/bin/python /usr/local/bin/killswitch_monitor.py &
+
+ [Install]
+ WantedBy=multi-user.target
+ 
+ # -)
+ 
