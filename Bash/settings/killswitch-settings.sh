@@ -576,7 +576,7 @@ function doLongPressAction() {
     fi
 }
 
-# TODO: this is ugly and bad. the dialog only works with a keyboard, because you 
+# TODO: this is ugly and bad. the dialog only works with a keyboard, because you
 # need the spacebar to accept a selected dir/file and backslash to get it to
 # move to the selected dir.
 #
@@ -584,7 +584,7 @@ function doLongPressAction() {
 # 1. check for internet or wget firmware version file
 # 2. get version from arduino over serial
 # 3. if wget version is newer, download full firmware file
-# 4. scan for full version in ${HOME}/.killswitch
+# 4. scan for downloaded version in ${HOME}/.killswitch
 # 5. show message 'do you want to update'
 # 6. run avrdude with path to full firmware hex file
 function doFirmware() {
