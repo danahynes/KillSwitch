@@ -8,7 +8,6 @@
 
 // TODO: LED completely off - currently has to be done by setting brightness to
 // 0 in settings
-// TODO: implement prog sequence (see prog sequence.ods)
 
 //-----------------------------------------------------------------------------
 // Includes
@@ -228,7 +227,7 @@ void stopProgramming() {
 	progTimer.stop();
 
 	// send serial for stop programming in settings
-	sendSerial("PGM", "STOP");
+	//sendSerial("PGM", "STOP");
 }
 
 /*-----------------------------------------------------------------------------
@@ -247,7 +246,7 @@ void doShortPress(DHButton* button) {
 			progTimer.start();
 
 			// send serial for next mode in settings
-			sendSerial("PGM", "NEXT");
+			//sendSerial("PGM", "NEXT");
 		} else if (progState == PROG_STATE_CODE_OFF) {
 
 			// make off code same as on code
@@ -259,7 +258,7 @@ void doShortPress(DHButton* button) {
 			progChanging = true;
 
 			// send serial for next mode in settings
-			sendSerial("PGM", "NEXT");
+			//sendSerial("PGM", "NEXT");
 		}
 	}
 }
@@ -322,7 +321,7 @@ void doLEDDoneFlashing(DHLED* led) {
 		Serial.println("progState changed to PROG_STATE_CODE_OFF");
 
 		// send serial to settings app
-		sendSerial("PGM", "NEXT");
+		//sendSerial("PGM", "NEXT");
 	} else if (progState == PROG_STATE_CODE_OFF) {
 
 		// done with off code
