@@ -1,6 +1,6 @@
 /*-----------------------------------------------------------------------------
- * KillSwitch_Test_1.cpp
- * KillSwitch_Test_1
+ * KillSwitch.cpp
+ * KillSwitch
  *
  * Copyright 2018 Dana Hynes.
  * All rights reserved.
@@ -498,8 +498,8 @@ void loop() {
 
 			// normal on/off
 			if (state != STATE_PROGRAMMING) {
-				long onCode = EEPROMReadLong(EEPROM_ADDR_CODE_ON);
-				long offCode = EEPROMReadLong(EEPROM_ADDR_CODE_OFF);
+				unsigned long onCode = EEPROMReadLong(EEPROM_ADDR_CODE_ON);
+				unsigned long offCode = EEPROMReadLong(EEPROM_ADDR_CODE_OFF);
 				if ((results.value == onCode) && (state == STATE_OFF)) {
 					doOn();
 				} else if ((results.value == offCode) && (state == STATE_ON)) {
