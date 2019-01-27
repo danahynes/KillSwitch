@@ -6,9 +6,6 @@
  * All rights reserved.
  ----------------------------------------------------------------------------*/
 
-// TODO: LED completely off - currently has to be done by setting brightness to
-// 0 in settings
-
 //-----------------------------------------------------------------------------
 // Includes
 
@@ -48,6 +45,7 @@ const int HOLD_ACTION_REBOOT = 0;
 const int HOLD_ACTION_SHUTDOWN = 1;
 const int HOLD_ACTION_DEFAULT = HOLD_ACTION_REBOOT;
 
+//const int STATUS_OFF_DEFAULT = 0;
 const int STATUS_BRIGHTNESS_DEFAULT = 255;
 const int STATUS_PULSE_DEFAULT = 0;
 const int STATUS_INVERT_DEFAULT = 0;
@@ -62,6 +60,7 @@ const int EEPROM_ADDR_INVERT = 10;
 const int EEPROM_ADDR_HOLD_TIME = 11;
 const int EEPROM_ADDR_HOLD_ACTION = 15;
 const int EEPROM_ADDR_BRIGHT_SET = 16;
+const int EEPROM_ADDR_STATUS_OFF = 17;
 
 const int PULSE_CYCLE_SLOW = 500;
 const int PULSE_CYCLE_FAST = 125;
@@ -434,12 +433,12 @@ void setup() {
 
 	// pin directions
 	pinMode(PIN_IR, INPUT_PULLUP);
-	pinMode(PIN_STATUS, OUTPUT);
+	pinMode(PIN_FEEDBACK, INPUT_PULLUP);
 	pinMode(PIN_TRIGGER, OUTPUT);
 	pinMode(PIN_POWER, OUTPUT);
 
 	// pin values
-	digitalWrite(PIN_STATUS, LOW);
+//	digitalWrite(PIN_STATUS, LOW);
 	digitalWrite(PIN_TRIGGER, LOW);
 	digitalWrite(PIN_POWER, LOW);
 
@@ -539,6 +538,7 @@ void loop() {
 	ledStatus.update();
 
 	// get current values of pulse and invert from properties
+	bool statusOff = EEPROM.read(EEPROM_ADDR_LED_ON);
 	bool statusPulse = EEPROM.read(EEPROM_ADDR_PULSE);
 	bool statusInvert = EEPROM.read(EEPROM_ADDR_INVERT);
 
@@ -547,32 +547,44 @@ void loop() {
 			(state == STATE_REBOOT)) {
 
 		// flash/pulse slow
-		if (ledStatus.getState() != ledStatus.FLASHING) {
-			if (statusPulse) {
-				ledStatus.setOnTime(PULSE_CYCLE_SLOW / 2);
-				ledStatus.setOffTime(PULSE_CYCLE_SLOW / 2);
-				ledStatus.setFadeOnTime(PULSE_CYCLE_SLOW / 2);
-				ledStatus.setFadeOffTime(PULSE_CYCLE_SLOW / 2);
-			} else {
-				ledStatus.setOnTime(FLASH_CYCLE_SLOW / 2);
-				ledStatus.setOffTime(FLASH_CYCLE_SLOW / 2);
+		if (!statusOff) {
+			if (ledStatus.getState() != ledStatus.FLASHING) {
+				if (statusPulse) {
+					ledStatus.setOnTime(PULSE_CYCLE_SLOW / 2);
+					ledStatus.setOffTime(PULSE_CYCLE_SLOW / 2);
+					ledStatus.setFadeOnTime(PULSE_CYCLE_SLOW / 2);
+					ledStatus.setFadeOffTime(PULSE_CYCLE_SLOW / 2);
+				} else {
+					ledStatus.setOnTime(FLASH_CYCLE_SLOW / 2);
+					ledStatus.setOffTime(FLASH_CYCLE_SLOW / 2);
+				}
+				ledStatus.flash(statusPulse);
 			}
-			ledStatus.flash(statusPulse);
+		} else {
+			ledStatus.off();
 		}
 
 	} else if (state == STATE_ON) {
 
 		// no flashing
-		if (statusInvert) {
-			 ledStatus.off();
+		if (!statusOff) {
+			if (statusInvert) {
+				 ledStatus.off();
+			} else {
+				ledStatus.on();
+			}
 		} else {
-			ledStatus.on();
+			ledStatus.off();
 		}
 	} else if (state == STATE_OFF) {
 
 		// no flashing
-		if (statusInvert) {
-			 ledStatus.on();
+		if (!statusOff) {
+			if (statusInvert) {
+				 ledStatus.on();
+			} else {
+				ledStatus.off();
+			}
 		} else {
 			ledStatus.off();
 		}
@@ -689,12 +701,10 @@ void loop() {
 //				}
 //			}
 
-			if (serialCmd == "REC") {
-				beforeProgState = STATE_ON;
-				startProgramming();
-			}
-
-			if (serialCmd == "LEDB") {
+			if (serialCmd == "LEDO") {
+				int ledOn = serialValue.toInt();
+				EEPROM.update(EEPROM_ADDR_LED_ON, ledOn);
+			} else if (serialCmd == "LEDB") {
 				int statusBrightness = serialValue.toInt();
 
 				// since we convert to int, clamp it at byte value
@@ -708,42 +718,33 @@ void loop() {
 				EEPROM.update(EEPROM_ADDR_BRIGHTNESS, statusBrightness);
 				EEPROM.update(EEPROM_ADDR_BRIGHT_SET, 1);
 				ledStatus.setLevel(statusBrightness);
-			}
-
-			if (serialCmd == "LEDT") {
+			} else if (serialCmd == "LEDT") {
 
 				// will take effect in next update()
 				int pulse = serialValue.toInt();
 				EEPROM.update(EEPROM_ADDR_PULSE, pulse);
-			}
-
-			if (serialCmd == "LEDS") {
+			} else if (serialCmd == "LEDS") {
 
 				// will take effect in next update()
 				int inv = serialValue.toInt();
 				EEPROM.update(EEPROM_ADDR_INVERT, inv);
-			}
-
-			if (serialCmd == "LPT") {
+			} else if (serialCmd == "REC") {
+				beforeProgState = STATE_ON;
+				startProgramming();
+			} else if (serialCmd == "LPT") {
 
 				// will take effect in next uopdate()
 				unsigned long lpt = serialValue.toInt();
 				EEPROMWriteLong(EEPROM_ADDR_HOLD_TIME, lpt);
-			}
-
-			if (serialCmd == "LPA") {
+			} else if (serialCmd == "LPA") {
 
 				// will take effect in next uopdate()
 				int lpa = serialValue.toInt();
 				EEPROM.update(EEPROM_ADDR_HOLD_ACTION, lpa);
-			}
-
-			if (serialCmd == "RBT") {
-				doReboot();
-			}
-
-			if (serialCmd == "SHT") {
-				doOff();
+			// } else if (serialCmd == "RBT") {
+			// 	doReboot();
+			// } else if (serialCmd == "SHT") {
+			// 	doOff();
 			}
 
 
