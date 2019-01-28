@@ -21,6 +21,11 @@ DIALOG_ESCAPE=255
 SETTINGS_DIR="${HOME}/.killswitch"
 SETTINGS_FILE="${SETTINGS_DIR}/killswitch-settings.conf"
 
+FIRMWARE_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
+FIRMWARE_REMOTE_VERSION_FILE=\
+"https://api.github.com/repos/danahynes/KillSwitch/contents/Arduino/version.txt"
+FIRMWARE_LOCAL_VERSION_FILE="${SETTINGS_DIR}/version.txt"
+
 # TODO: change serial port
 SERIAL_PORT=/dev/pts/4
 SERIAL_SPEED=9600
@@ -198,6 +203,10 @@ LPA_ITEMS=("Reboot" "Force quit")
 LPA_SETTING="LPA"
 LPA_ACTION="LPA"
 
+FIRMWARE_TITLE="Firmware update"
+FIRMWARE_HEIGHT=10
+FIRMWARE_WIDTH=40
+FIRMWARE_CONFIRM="Are you sure you want to update?"
 # FIRMWARE_TITLE="Firmware update"
 # FIRMWARE_INITIAL="${HOME}/Downloads"
 # FIRMWARE_HEIGHT=5
@@ -723,14 +732,52 @@ function doLongPressAction() {
 # }
 
 function doFirmware() {
-    curl \
-    -H 'Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4' \
-    -H 'Accept: application/vnd.github.v3.raw' \
-    -o "${SETTINGS_DIR}" \
-    -L https://api.github.com/repos/danahynes/KillSwitch/contents/Arduino/version.txt
 
+    # get lastest firmware from github
+    curl \
+    -H "Authorization: token ${FIRMWARE_TOKEN}" \
+    -H "Accept: application/vnd.github.v3.raw" \
+    -L "${FIRMWARE_REMOTE_VERSION_FILE}" \
+    -o "${FIRMWARE_LOCAL_VERSION_FILE}"
+
+    REMOTE_VERSION_NUMBER=$(grep "VERSION_NUMBER=" \
+    "${FIRMWARE_LOCAL_VERSION_FILE}" | cut -d "=" -f2)
+    REMOTE_VERSION_BUILD=$(grep "VERSION_BUILD=" \
+    "${FIRMWARE_LOCAL_VERSION_FILE}" | cut -d "=" -f2)
+
+    # get lastest version from arduino
     sendSerial "VER" ""
-    CURRENT_VERSION=readSerial
+    #ARDUINO_VERSION_NUMBER=doReadSerial
+    #ARDUINO_VERSION_BUILD=doReadSerial
+    ARDUINO_VERSION_NUMBER="0.1"
+    ARDUINO_VERSION_BUILD="19.01.10"
+
+
+    # TODO: do comparison
+
+
+    FIRMWARE_TEXT="${REMOTE_VERSION_NUMBER} \n"
+    FIRMWARE_TEXT+="${REMOTE_VERSION_BUILD} \n"
+    FIRMWARE_TEXT+="${ARDUINO_VERSION_NUMBER} \n"
+    FIRMWARE_TEXT+="${ARDUINO_VERSION_BUILD} \n"
+    FIRMWARE_TEXT+="\n"
+    FIRMWARE_TEXT+="$FIRMWARE_CONFIRM"
+
+    RESULT=$(dialog \
+    --backtitle "$WINDOW_TITLE" \
+    --title "$FIRMWARE_TITLE" \
+    --yesno \
+    "$FIRMWARE_TEXT" \
+    $FIRMWARE_HEIGHT \
+    $FIRMWARE_WIDTH \
+    3>&1 1>&2 2>&3 3>&-)
+
+    BTN=$?
+    if [ $BTN -eq $DIALOG_OK ]; then
+        # TODO: do avrdude update with hex file
+    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
+        MENU_DONE=1
+    fi
 }
 
 function doShutdown() {
@@ -797,11 +844,11 @@ function doExit() {
     MENU_DONE=1
 }
 
-#function doReadSerial() {
-#    if [ read -r LINE < $SERIAL_PORT ]; then
-#        echo $LINE
-#    fi
-#}
+function doReadSerial() {
+    if [ read -r LINE < $SERIAL_PORT ]; then
+        echo $LINE
+    fi
+}
 
 #-------------------------------------------------------------------------------
 # Init
@@ -833,7 +880,6 @@ stty -F $SERIAL_PORT speed $SERIAL_SPEED -cstopb -parenb cs8
 # Main loop
 
 while [ $MENU_DONE -eq 0 ]; do
-#    doReadSerial
     doMain
 done
 
