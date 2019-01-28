@@ -19,6 +19,9 @@
 
 //-----------------------------------------------------------------------------
 // Constants
+//
+const char VERSION_NUMBER[] = "0.1";
+const char VERSION_BUILD[] = "19.0.27";
 
 const int STATE_OFF = 0;
 const int STATE_BOOTING = 1;
@@ -41,14 +44,14 @@ const int PIN_POWER = 4;
 
 const int DEBOUNCE_DELAY = 50;
 const int HOLD_TIME_DEFAULT = 5000;
-const int HOLD_ACTION_REBOOT = 0;
-const int HOLD_ACTION_SHUTDOWN = 1;
-const int HOLD_ACTION_DEFAULT = HOLD_ACTION_REBOOT;
+//const int HOLD_ACTION_REBOOT = 0;
+//const int HOLD_ACTION_SHUTDOWN = 1;
+//const int HOLD_ACTION_DEFAULT = HOLD_ACTION_REBOOT;
 
 //const int STATUS_OFF_DEFAULT = 0;
 const int STATUS_BRIGHTNESS_DEFAULT = 255;
-const int STATUS_PULSE_DEFAULT = 0;
-const int STATUS_INVERT_DEFAULT = 0;
+//const int STATUS_PULSE_DEFAULT = 0;
+//const int STATUS_INVERT_DEFAULT = 0;
 
 const int PROG_TIMEOUT = 15000;
 
@@ -438,7 +441,7 @@ void setup() {
 	pinMode(PIN_POWER, OUTPUT);
 
 	// pin values
-//	digitalWrite(PIN_STATUS, LOW);
+	digitalWrite(PIN_STATUS, LOW);
 	digitalWrite(PIN_TRIGGER, LOW);
 	digitalWrite(PIN_POWER, LOW);
 
@@ -538,7 +541,7 @@ void loop() {
 	ledStatus.update();
 
 	// get current values of pulse and invert from properties
-	bool statusOff = EEPROM.read(EEPROM_ADDR_LED_ON);
+	bool statusOff = EEPROM.read(EEPROM_ADDR_STATUS_OFF);
 	bool statusPulse = EEPROM.read(EEPROM_ADDR_PULSE);
 	bool statusInvert = EEPROM.read(EEPROM_ADDR_INVERT);
 
@@ -702,8 +705,8 @@ void loop() {
 //			}
 
 			if (serialCmd == "LEDO") {
-				int ledOn = serialValue.toInt();
-				EEPROM.update(EEPROM_ADDR_LED_ON, ledOn);
+				int ledOff = serialValue.toInt();
+				EEPROM.update(EEPROM_ADDR_STATUS_OFF, ledOff);
 			} else if (serialCmd == "LEDB") {
 				int statusBrightness = serialValue.toInt();
 
@@ -741,12 +744,16 @@ void loop() {
 				// will take effect in next uopdate()
 				int lpa = serialValue.toInt();
 				EEPROM.update(EEPROM_ADDR_HOLD_ACTION, lpa);
-			// } else if (serialCmd == "RBT") {
-			// 	doReboot();
+			} else if (serialCmd == "VER") {
+				Serial.print("N=");
+				Serial.println(VERSION_NUMBER);
+				Serial.print("B=");
+				Serial.println(VERSION_BUILD);
 			// } else if (serialCmd == "SHT") {
 			// 	doOff();
+			// } else if (serialCmd == "RBT") {
+			// 	doReboot();
 			}
-
 
 		// build up command or value
 		} else {
