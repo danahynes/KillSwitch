@@ -21,30 +21,25 @@ DIALOG_ESCAPE=255
 SETTINGS_DIR="${HOME}/.killswitch"
 SETTINGS_FILE="${SETTINGS_DIR}/killswitch-settings.conf"
 
-FIRMWARE_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
-FIRMWARE_REMOTE_VERSION_FILE=\
-"https://api.github.com/repos/danahynes/KillSwitch/contents/Arduino/version.txt"
-FIRMWARE_LOCAL_VERSION_FILE="${SETTINGS_DIR}/version.txt"
-
 # TODO: change serial port
 SERIAL_PORT=/dev/pts/4
 SERIAL_SPEED=9600
 
-LEDO_ON=0
-LEDO_OFF=1
-LEDT_FLASH=0
-LEDT_PULSE=1
-LEDS_NORMAL=0
-LEDS_INVERT=1
-LPA_REBOOT=0
-LPA_SHUTDOWN=1
+#LEDO_ON=0
+#LEDO_OFF=1
+#LEDT_FLASH=0
+#LEDT_PULSE=1
+#LEDS_NORMAL=0
+#LEDS_INVERT=1
+#LPA_REBOOT=0
+#LPA_SHUTDOWN=1
 
-LEDO_DEFAULT=$LEDO_ON
+#LEDO_DEFAULT=$LEDO_ON
 LEDB_DEFAULT=255            # 0-255
-LEDT_DEFAULT=$LEDT_FLASH
-LEDS_DEFAULT=$LEDS_NORMAL
+#LEDT_DEFAULT=$LEDT_FLASH
+#LEDS_DEFAULT=$LEDS_NORMAL
 LPT_DEFAULT=5               # in seconds
-LPA_DEFAULT=$LPA_REBOOT
+#LPA_DEFAULT=$LPA_REBOOT
 
 ACTION_START="?"
 ACTION_SEPARATOR="|"
@@ -162,18 +157,20 @@ LEDS_ITEMS=("Normal" "Invert")
 LEDS_SETTING="LEDS"
 LEDS_ACTION="LEDS"
 
-#REC_SKIP="Skip"
-REC_HEIGHT=14
-REC_WIDTH=40
-#REC_TIME=15
-REC_ACTION="REC"
-#REC_ON_VALUE="ON"
 REC_TITLE="Record new remote codes"
 REC_TEXT="Press OK to start recording new codes on the device. The status LED \
 will begin flashing rapidly. Point the remote at the device and press the \
 button for 'on'. When you see the status LED flash once slowly, point the \
 remote at the device and press the button for 'off'. When the LED flashes \
 slowly twice, recording is complete."
+REC_HEIGHT=14
+REC_WIDTH=40
+REC_ACTION="REC"
+
+# old rec stuff
+#REC_SKIP="Skip"
+#REC_TIME=15
+#REC_ON_VALUE="ON"
 #REC_OFF_VALUE="OFF"
 #REC_DONE_VALUE="DONE"
 #REC_CANCEL_VALUE="CANCEL"
@@ -204,13 +201,32 @@ LPA_SETTING="LPA"
 LPA_ACTION="LPA"
 
 FIRMWARE_TITLE="Firmware update"
-FIRMWARE_HEIGHT=10
+FIRMWARE_HEIGHT=12
 FIRMWARE_WIDTH=40
-FIRMWARE_CONFIRM="Are you sure you want to update?"
-# FIRMWARE_TITLE="Firmware update"
-# FIRMWARE_INITIAL="${HOME}/Downloads"
-# FIRMWARE_HEIGHT=5
-# FIRMWARE_WIDTH=40
+FIRMWARE_TEXT_CURRENT="Current version: "
+FIRMWARE_TEXT_NEW="Latest version:  "
+FIRMWARE_UPDATE_TEXT="Are you sure you want to update?"
+FIRMWARE_OK_TEXT="Your firmware is up to date."
+
+# TODO: hide this
+FIRMWARE_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
+
+FIRMWARE_REMOTE_REPO=\
+"https://api.github.com/repos/danahynes/KillSwitch/contents/Arduino"
+FIRMWARE_REMOTE_FILE_NAME="version.txt"
+FIRMWARE_REMOTE_VERSION_FILE=\
+"${FIRMWARE_REMOTE_REPO}/${FIRMWARE_REMOTE_FILE_NAME}"
+FIRMWARE_REMOTE_COPY_VERSION_FILE=\
+"${SETTINGS_DIR}/${FIRMWARE_REMOTE_FILE_NAME}"
+
+FIRMWARE_REMOTE_HEX_BASE_FILE="${FIRMWARE_REMOTE_REPO}/killswitch-firmware-"
+FIRMWARE_REMOTE_HEX_FILE=\
+"${FIRMWARE_REMOTE_HEX_BASE_FILE}\
+${FIRMWARE_REMOTE_VERSION_NUMBER}-${FIRMWARE_REMOTE_VERSION_BUILD}.hex"
+FIRMWARE_REMOTE_COPY_HEX_BASE_FILE="${SETTINGS_DIR}/killswitch-firmware-"
+FIRMWARE_REMOTE_COPY_HEX_FILE=\
+"${FIRMWARE_REMOTE_COPY_HEX_BASE_FILE}\
+${FIRMWARE_REMOTE_VERSION_NUMBER}-${FIRMWARE_REMOTE_VERSION_BUILD}.hex"
 
 SHUTDOWN_TITLE="Shutdown"
 SHUTDOWN_TEXT="Are you sure you want to shut down?"
@@ -259,6 +275,12 @@ function writeToFile() {
 function sendSerial() {
     CMD="${ACTION_START}${1}${ACTION_SEPARATOR}${2}${ACTION_END}"
     echo "$CMD" > $SERIAL_PORT
+}
+
+function readSerial() {
+    if [ read -r LINE < $SERIAL_PORT ]; then
+        echo $LINE
+    fi
 }
 
 #-------------------------------------------------------------------------------
@@ -703,7 +725,7 @@ function doLongPressAction() {
     fi
 }
 
-# TODO: this is ugly and bad. the dialog only works with a keyboard, because you
+# XXX: this is ugly and bad. the dialog only works with a keyboard, because you
 # need the spacebar to accept a selected dir/file and backslash to get it to
 # move to the selected dir.
 #
@@ -717,8 +739,7 @@ function doLongPressAction() {
 # 5. show message 'do you want to update'
 # 6. run avrdude with path to full firmware hex file
 # function doFirmware() {
-#     # TODO firmware result
-#     # stdout is bad, but only way this works
+#     # XXX: stdout is bad, but only way this works
 #     RESULT=$(dialog \
 #     --stdout \
 #     --backtitle "$WINDOW_TITLE" \
@@ -733,50 +754,138 @@ function doLongPressAction() {
 
 function doFirmware() {
 
-    # get lastest firmware from github
-    curl \
+    # get current version from arduino
+    sendSerial "VER" ""
+    #FIRMWARE_LOCAL_VERSION_NUMBER=readSerial
+    #FIRMWARE_LOCAL_VERSION_BUILD=readSerial
+    FIRMWARE_LOCAL_VERSION_NUMBER="0.1"
+    FIRMWARE_LOCAL_VERSION_BUILD="19.02.10"
+
+    FIRMWARE_LOCAL_VERSION_NUMBER_A=$(echo $FIRMWARE_LOCAL_VERSION_NUMBER | \
+    cut -d "." -f1)
+    FIRMWARE_LOCAL_VERSION_NUMBER_B=$(echo $FIRMWARE_LOCAL_VERSION_NUMBER | \
+    cut -d "." -f2)
+    FIRMWARE_LOCAL_VERSION_BUILD_A=$(echo $FIRMWARE_LOCAL_VERSION_BUILD | \
+    cut -d "." -f1)
+    FIRMWARE_LOCAL_VERSION_BUILD_B=$(echo $FIRMWARE_LOCAL_VERSION_BUILD | \
+    cut -d "." -f2)
+    FIRMWARE_LOCAL_VERSION_BUILD_C=$(echo $FIRMWARE_LOCAL_VERSION_BUILD | \
+    cut -d "." -f3)
+
+    # get lastest firmware version from github
+    RESULT=$(curl \
     -H "Authorization: token ${FIRMWARE_TOKEN}" \
     -H "Accept: application/vnd.github.v3.raw" \
     -L "${FIRMWARE_REMOTE_VERSION_FILE}" \
-    -o "${FIRMWARE_LOCAL_VERSION_FILE}"
+    -o "${FIRMWARE_REMOTE_COPY_VERSION_FILE}" \
+    -s \
+    > /dev/null)
 
-    REMOTE_VERSION_NUMBER=$(grep "VERSION_NUMBER=" \
-    "${FIRMWARE_LOCAL_VERSION_FILE}" | cut -d "=" -f2)
-    REMOTE_VERSION_BUILD=$(grep "VERSION_BUILD=" \
-    "${FIRMWARE_LOCAL_VERSION_FILE}" | cut -d "=" -f2)
+    RES=$?
+    if [ $RES -ne 0 ]; then
+        # TODO: show curl error
+        :
+    else
+        FIRMWARE_REMOTE_VERSION_NUMBER=$(grep "VERSION_NUMBER=" \
+        "${FIRMWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
+        FIRMWARE_REMOTE_VERSION_BUILD=$(grep "VERSION_BUILD=" \
+        "${FIRMWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
 
-    # get lastest version from arduino
-    sendSerial "VER" ""
-    #ARDUINO_VERSION_NUMBER=doReadSerial
-    #ARDUINO_VERSION_BUILD=doReadSerial
-    ARDUINO_VERSION_NUMBER="0.1"
-    ARDUINO_VERSION_BUILD="19.01.10"
+        FIRMWARE_REMOTE_VERSION_NUMBER_A=$(echo \
+        $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f1)
+        FIRMWARE_REMOTE_VERSION_NUMBER_B=$(echo \
+        $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f2)
+        FIRMWARE_REMOTE_VERSION_BUILD_A=$(echo \
+        $FIRMWRARE_REMOTE_VERSION_BUILD | cut -d "." -f1)
+        FIRMWARE_REMOTE_VERSION_BUILD_B=$(echo \
+        $FIRMWARE_REMOTE_VERSION_BUILD | cut -d "." -f2)
+        FIRMWARE_REMOTE_VERSION_BUILD_C=$(echo \
+        $FIRMWARE_REMOTE_VERSION_BUILD | cut -d "." -f3)
+    fi
 
 
     # TODO: do comparison
+    IS_NEWER=0
 
 
-    FIRMWARE_TEXT="${REMOTE_VERSION_NUMBER} \n"
-    FIRMWARE_TEXT+="${REMOTE_VERSION_BUILD} \n"
-    FIRMWARE_TEXT+="${ARDUINO_VERSION_NUMBER} \n"
-    FIRMWARE_TEXT+="${ARDUINO_VERSION_BUILD} \n"
+
+        # if [ $LOCAL_VERSION_NUMBER_A -lt $REMOTE_VERSION_NUMBER_A ] || \
+        #     [ $LOCAL_VERSION_NUMBER_B -lt $REMOTE_VERSION_NUMBER_B ] || \
+        #     [ $LOCAL_VERSION_BUILD_A -lt $REMOTE_VERSION_BUILD_A ] || \
+        #     [ $LOCAL_VERSION_BUILD_B -lt $REMOTE_VERSION_BUILD_B ] || \
+        #     [ $LOCAL_VERSION_BUILD_C -lt $REMOTE_VERSION_BUILD_C ]; then
+        #         IS_NEWER=1
+        # fi
+
+    # remove local version file
+    rm "${FIRMWARE_REMOTE_COPY_VERSION_FILE}"
+
+
+
+
+    # update text with version/build numbers
+    FIRMWARE_TEXT="$FIRMWARE_TEXT_CURRENT"
+    FIRMWARE_TEXT+="${FIRMWARE_LOCAL_VERSION_NUMBER}-"
+    FIRMWARE_TEXT+="${FIRMWARE_LOCAL_VERSION_BUILD} \n"
+    FIRMWARE_TEXT+="$FIRMWARE_TEXT_NEW"
+    FIRMWARE_TEXT+="${FIRMWARE_REMOTE_VERSION_NUMBER}-"
+    FIRMWARE_TEXT+="${FIRMWARE_REMOTE_VERSION_BUILD} \n"
     FIRMWARE_TEXT+="\n"
-    FIRMWARE_TEXT+="$FIRMWARE_CONFIRM"
 
-    RESULT=$(dialog \
-    --backtitle "$WINDOW_TITLE" \
-    --title "$FIRMWARE_TITLE" \
-    --yesno \
-    "$FIRMWARE_TEXT" \
-    $FIRMWARE_HEIGHT \
-    $FIRMWARE_WIDTH \
-    3>&1 1>&2 2>&3 3>&-)
+    #if newer, do yes/no
+    if [ $IS_NEWER -eq 1 ]; then
+        FIRMWARE_TEXT+="$FIRMWARE_UPDATE_TEXT"
 
-    BTN=$?
-    if [ $BTN -eq $DIALOG_OK ]; then
-        # TODO: do avrdude update with hex file
-    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
-        MENU_DONE=1
+        RESULT=$(dialog \
+        --backtitle "$WINDOW_TITLE" \
+        --title "$FIRMWARE_TITLE" \
+        --yesno \
+        "$FIRMWARE_TEXT" \
+        $FIRMWARE_HEIGHT \
+        $FIRMWARE_WIDTH \
+        3>&1 1>&2 2>&3 3>&-)
+
+        BTN=$?
+        if [ $BTN -eq $DIALOG_OK ]; then
+
+            # get lastest firmware from github
+            RES=$(curl \
+            -H "Authorization: token ${FIRMWARE_TOKEN}" \
+            -H "Accept: application/vnd.github.v3.raw" \
+            -L "${FIRMWARE_REMOTE_HEX_FILE}" \
+            -o "${FIRMWARE_REMOTE_COPY_HEX_FILE}" \
+            -s \
+            > /dev/null)
+
+            RES=$?
+            if [ $RES -ne 0 ]; then
+                # TODO: show curl error
+                :
+            else
+                # TODO: do avrdude update with hex file
+                rm "$FIRMWARE_REMOTE_COPY_HEX_FILE"
+            fi
+        elif [ $BTN -eq $DIALOG_ESCAPE ]; then
+            MENU_DONE=1
+        fi
+
+    # show message "up to date"
+    else
+        FIRMWARE_TEXT+="$FIRMWARE_OK_TEXT"
+
+        RESULT=$(dialog \
+        --backtitle "$WINDOW_TITLE" \
+        --title "$FIRMWARE_TITLE" \
+        --msgbox \
+        "$FIRMWARE_TEXT" \
+        $FIRMWARE_HEIGHT \
+        $FIRMWARE_WIDTH \
+        3>&1 1>&2 2>&3 3>&-)
+
+        BTN=$?
+        if [ $BTN -eq $DIALOG_ESCAPE ]; then
+            MENU_DONE=1
+        fi
     fi
 }
 
@@ -842,12 +951,6 @@ function doUninstall() {
 
 function doExit() {
     MENU_DONE=1
-}
-
-function doReadSerial() {
-    if [ read -r LINE < $SERIAL_PORT ]; then
-        echo $LINE
-    fi
 }
 
 #-------------------------------------------------------------------------------
