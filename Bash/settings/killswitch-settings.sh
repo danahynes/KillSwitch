@@ -264,23 +264,23 @@ LPA_STATES=($STATE_ON $STATE_OFF)
 #-------------------------------------------------------------------------------
 # Helpers
 
-function readFromFile() {
+function readPropsFile() {
     echo $(grep "${1}=" "$SETTINGS_FILE" | cut -d "=" -f2)
 }
 
-function writeToFile() {
+function writePropsFile() {
     sed -i "s/^${1}=.*/${1}=${2}/g" "$SETTINGS_FILE"
-}
-
-function sendSerial() {
-    CMD="${ACTION_START}${1}${ACTION_SEPARATOR}${2}${ACTION_END}"
-    echo "$CMD" > $SERIAL_PORT
 }
 
 function readSerial() {
     if [ read -r LINE < $SERIAL_PORT ]; then
         echo $LINE
     fi
+}
+
+function writeSerial() {
+    CMD="${ACTION_START}${1}${ACTION_SEPARATOR}${2}${ACTION_END}"
+    echo "$CMD" > $SERIAL_PORT
 }
 
 #-------------------------------------------------------------------------------
@@ -381,7 +381,7 @@ function doLEDMenu () {
 }
 
 function doLEDOn() {
-    LEDO_VALUE=$(readFromFile $LEDO_SETTING)
+    LEDO_VALUE=$(readPropsFile $LEDO_SETTING)
 
     # set highlighted item
     LEDO_HIGHLIGHT="${LEDO_ITEMS[$LEDO_VALUE]}"
@@ -417,8 +417,8 @@ function doLEDOn() {
         # save highlighted/selected item
         for (( i=0; i<$SIZE; i++ )); do
             if [ "${LEDO_TAGS[i]}" = "$RESULT" ]; then
-                writeToFile $LEDO_SETTING $i
-                sendSerial $LEDO_ACTION $i
+                writePropsFile $LEDO_SETTING $i
+                writeSerial $LEDO_ACTION $i
                 break
             fi
         done
@@ -429,7 +429,7 @@ function doLEDOn() {
 }
 
 function doLEDBrightness() {
-    LEDB_VALUE=$(readFromFile $LEDB_SETTING)
+    LEDB_VALUE=$(readPropsFile $LEDB_SETTING)
 
     RESULT=$(dialog \
     --backtitle "$WINDOW_TITLE" \
@@ -449,8 +449,8 @@ function doLEDBrightness() {
 
         # trim whitespace
         RESULT=$(echo $RESULT | xargs)
-        writeToFile $LEDB_SETTING $RESULT
-        sendSerial $LEDB_ACTION $RESULT
+        writePropsFile $LEDB_SETTING $RESULT
+        writeSerial $LEDB_ACTION $RESULT
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         LED_MENU_DONE=1
         MENU_DONE=1
@@ -458,7 +458,7 @@ function doLEDBrightness() {
 }
 
 function doLEDType() {
-    LEDT_VALUE=$(readFromFile $LEDT_SETTING)
+    LEDT_VALUE=$(readPropsFile $LEDT_SETTING)
 
     # set highlighted item
     LEDT_HIGHLIGHT="${LEDT_ITEMS[$LEDT_VALUE]}"
@@ -494,8 +494,8 @@ function doLEDType() {
         # save highlighted/selected item
         for (( i=0; i<$SIZE; i++ )); do
             if [ "${LEDT_TAGS[i]}" = "$RESULT" ]; then
-                writeToFile $LEDT_SETTING $i
-                sendSerial $LEDT_ACTION $i
+                writePropsFile $LEDT_SETTING $i
+                 $LEDT_ACTION $i
                 break
             fi
         done
@@ -506,7 +506,7 @@ function doLEDType() {
 }
 
 function doLEDState() {
-    LEDS_VALUE=$(readFromFile $LEDS_SETTING)
+    LEDS_VALUE=$(readPropsFile $LEDS_SETTING)
 
     # set highlighted item
     LEDS_HIGHLIGHT="${LEDS_ITEMS[$LEDS_VALUE]}"
@@ -542,8 +542,8 @@ function doLEDState() {
         # save highlighted/selected item
         for (( i=0; i<$SIZE; i++ )); do
             if [ "${LEDS_TAGS[i]}" = "$RESULT" ]; then
-                writeToFile $LEDS_SETTING $i
-                sendSerial $LEDS_ACTION $i
+                writePropsFile $LEDS_SETTING $i
+                 $LEDS_ACTION $i
                 break
             fi
         done
@@ -567,7 +567,7 @@ function doLEDState() {
 #function doRecordOn() {
 #
 #    # put arduino into rec on mode
-#    sendSerial $REC_ACTION $REC_ON_VALUE
+#     $REC_ACTION $REC_ON_VALUE
 #
 #    RESULT=$(dialog \
 #    --backtitle "$WINDOW_TITLE" \
@@ -587,11 +587,11 @@ function doLEDState() {
 #    elif [ $BTN -eq $DIALOG_CANCEL ]; then
 #
 #        # put arduino in rec cancel mode
-#        sendSerial $REC_ACTION $REC_CANCEL_VALUE
+#         $REC_ACTION $REC_CANCEL_VALUE
 #    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
 #
 #        # put arduino in rec cancel mode
-#        sendSerial $REC_ACTION $REC_CANCEL_VALUE
+#         $REC_ACTION $REC_CANCEL_VALUE
 #        MENU_DONE=1
 #    fi
 #}
@@ -599,7 +599,7 @@ function doLEDState() {
 #function doRecordOff() {
 #
 #    # put arduino into rec off mode
-#    sendSerial $REC_ACTION $REC_OFF_VALUE
+#     $REC_ACTION $REC_OFF_VALUE
 #
 #    RESULT=$(dialog \
 #    --backtitle "$WINDOW_TITLE" \
@@ -617,15 +617,15 @@ function doLEDState() {
 #    if [ $BTN -eq $DIALOG_OK ]; then
 #
 #        # put arduino in rec done mode
-#        sendSerial $REC_ACTION $REC_DONE_VALUE
+#         $REC_ACTION $REC_DONE_VALUE
 #    elif [ $BTN -eq $DIALOG_CANCEL ]; then
 #
 #        # put arduino in rec cancel mode
-#        sendSerial $REC_ACTION $REC_CANCEL_VALUE
+#         $REC_ACTION $REC_CANCEL_VALUE
 #    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
 #
 #        # put arduino in rec cancel mode
-#        sendSerial $REC_ACTION $REC_CANCEL_VALUE
+#         $REC_ACTION $REC_CANCEL_VALUE
 #        MENU_DONE=1
 #    fi
 #}
@@ -644,14 +644,14 @@ function doStartRecording() {
 
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
-        sendSerial $REC_ACTION ""
+         $REC_ACTION ""
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
     fi
 }
 
 function doLongPressTime() {
-    LPT_VALUE=$(readFromFile $LPT_SETTING)
+    LPT_VALUE=$(readPropsFile $LPT_SETTING)
 
     RESULT=$(dialog \
     --backtitle "$WINDOW_TITLE" \
@@ -671,15 +671,15 @@ function doLongPressTime() {
 
         # trim whitespace
         RESULT=$(echo $RESULT | xargs)
-        writeToFile $LPT_SETTING $RESULT
-        sendSerial $LPT_ACTION $RESULT
+        writePropsFile $LPT_SETTING $RESULT
+         $LPT_ACTION $RESULT
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
     fi
 }
 
 function doLongPressAction() {
-    LPA_VALUE=$(readFromFile $LPA_SETTING)
+    LPA_VALUE=$(readPropsFile $LPA_SETTING)
 
     # set highlighted item
     LPA_HIGHLIGHT="${LPA_ITEMS[$LPA_VALUE]}"
@@ -715,8 +715,8 @@ function doLongPressAction() {
         # save highlighted/selected item
         for (( i=0; i<$SIZE; i++ )); do
             if [ "${LPA_TAGS[i]}" = "$RESULT" ]; then
-                writeToFile $LPA_SETTING $i
-                sendSerial $LPA_ACTION $i
+                writePropsFile $LPA_SETTING $i
+                 $LPA_ACTION $i
                 break
             fi
         done
@@ -755,7 +755,7 @@ function doLongPressAction() {
 function doFirmware() {
 
     # get current version from arduino
-    sendSerial "VER" ""
+     "VER" ""
     #FIRMWARE_LOCAL_VERSION_NUMBER=readSerial
     #FIRMWARE_LOCAL_VERSION_BUILD=readSerial
     FIRMWARE_LOCAL_VERSION_NUMBER="0.1"
@@ -809,6 +809,7 @@ function doFirmware() {
 
 
 
+
         # if [ $LOCAL_VERSION_NUMBER_A -lt $REMOTE_VERSION_NUMBER_A ] || \
         #     [ $LOCAL_VERSION_NUMBER_B -lt $REMOTE_VERSION_NUMBER_B ] || \
         #     [ $LOCAL_VERSION_BUILD_A -lt $REMOTE_VERSION_BUILD_A ] || \
@@ -819,9 +820,6 @@ function doFirmware() {
 
     # remove local version file
     rm "${FIRMWARE_REMOTE_COPY_VERSION_FILE}"
-
-
-
 
     # update text with version/build numbers
     FIRMWARE_TEXT="$FIRMWARE_TEXT_CURRENT"
