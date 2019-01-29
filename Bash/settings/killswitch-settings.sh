@@ -673,6 +673,7 @@ function doUpdateFirmware() {
             return
         else
             # TODO: do avrdude update with hex file
+            # 
             rm "$FIRMWARE_REMOTE_COPY_HEX_FILE"
         fi
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
