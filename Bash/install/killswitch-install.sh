@@ -74,8 +74,8 @@ echo "Done"
 echo -n "Setting shutdown permissions... "
 
 # filenames
-config_file_old="/home/$(logname)/.bash_aliases"
-config_file_new="/home/$(logname)/.bash_aliases_tmp"
+config_file_old="/home/pi/.bash_aliases"
+config_file_new="/home/pi/.bash_aliases_tmp"
 
 # move everything except old shutdown (if present) to new file
 grep -v "alias shutdown=" "$config_file_old" > "$config_file_new"
@@ -94,8 +94,8 @@ echo "Done"
 echo -n "Setting reboot permissions... "
 
 # filenames
-config_file_old="/home/$(logname)/.bash_aliases"
-config_file_new="/home/$(logname)/.bash_aliases_tmp"
+config_file_old="/home/pi/.bash_aliases"
+config_file_new="/home/pi/.bash_aliases_tmp"
 
 # move everything except old reboot (if present) to new file
 grep -v "alias reboot=" "$config_file_old" > "$config_file_new"
@@ -114,7 +114,7 @@ echo "Done"
 echo -n "Finishing permissions... "
 
 # pull in new bash aliases
-source "/home/$(logname)/.bash_aliases"
+source "/home/pi/.bash_aliases"
 
 echo "Done"
 
@@ -123,32 +123,32 @@ echo "Done"
 
 # copy monitor script
 echo -n "Copying killswitch_monitor.py to /usr/local/bin/... "
-cp services/killswitch_monitor.py /usr/local/bin/
+cp ../services/killswitch_monitor.py /usr/local/bin/
 chmod +x /usr/local/bin/killswitch_monitor.py
 echo "Done"
 
 # copy boot service script
 echo -n "Copying killswitch-boot.service to /lib/systemd/system/... "
-cp services/killswitch-boot.service /lib/systemd/system/
+cp ../services/killswitch-boot.service /lib/systemd/system/
 systemctl daemon-reload
 systemctl enable killswitch-boot.service
 echo "Done"
 
 # copy shutdown script
 echo -n "Copying killswitch-shutdown.sh to /lib/systemd/systemd-shutdown... "
-cp services/killswitch-shutdown.sh /lib/systemd/system-shutdown/
+cp ../services/killswitch-shutdown.sh /lib/systemd/system-shutdown/
 chmod +x /lib/systemd/system-shutdown/killswitch-shutdown.sh
 echo "Done"
 
 # copy settings gui script
 echo -n "Copying kilswitch-settings.sh to /usr/local/bin/... "
-cp settings/killswitch-settings.sh /usr/local/bin/
+cp ../settings/killswitch-settings.sh /usr/local/bin/
 chmod +x /usr/local/bin/killswitch-settings.sh
 echo "Done"
 
 # copy uninstaller script
 echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
-cp install/killswitch-uninstall.sh /usr/local/bin
+cp killswitch-uninstall.sh /usr/local/bin
 chmod +x /usr/local/bin/killswitch-uninstaller.sh
 echo "Done"
 
