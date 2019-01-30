@@ -13,7 +13,7 @@ VERSION_BUILD="19.01.07"
 
 # check for root
 if [ $EUID -ne 0 ]; then
-   echo "This script must be run as root. Use 'sudo ./killswitch-install.sh'" 
+   echo "This script must be run as root. Use 'sudo ./killswitch-install.sh'"
    exit 1
 fi
 
@@ -151,6 +151,30 @@ echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
 cp install/killswitch-uninstall.sh /usr/local/bin
 chmod +x /usr/local/bin/killswitch-uninstaller.sh
 echo "Done"
+
+#-------------------------------------------------------------------------------
+# configure avrdude
+
+# avrdude conf file
+AVRDUDE_CONF="/etc/avrdude.conf"
+
+# check if already set up
+grep "killswitch" "$AVRDUDE_CONF"
+IS_SETUP=$?
+
+if [ $IS_SETUP -ne 0 ]; then
+    echo -n "Setting up avrdude... "
+    echo "programmer" >> "$AVRDUDE_CONF"
+    echo "  id    = \"killswitch\";" >> "$AVRDUDE_CONF"
+    echo "  desc  = \"Update KillSwitch firmware using GPIO\";" >> \
+    "$AVRDUDE_CONF"
+    echo "  type  = \"linuxgpio\";" >> "$AVRDUDE_CONF"
+    echo "  reset = 4;" >> "$AVRDUDE_CONF"
+    echo "  sck   = 2;" >> "$AVRDUDE_CONF"
+    echo "  mosi  = 14;" >> "$AVRDUDE_CONF"
+    echo "  miso  = 15;" >> "$AVRDUDE_CONF"
+    echo "Done"
+fi
 
 #-------------------------------------------------------------------------------
 # finish up
