@@ -29,7 +29,6 @@ echo "Installing KillSwitch..."
 echo ""
 
 echo "Setting up serial port..."
-echo ""
 
 #-------------------------------------------------------------------------------
 # reconfigure cmdline.txt for serial port
@@ -155,6 +154,8 @@ echo "Done"
 #-------------------------------------------------------------------------------
 # configure avrdude
 
+echo -n "Setting up avrdude..."
+
 # avrdude conf file
 AVRDUDE_CONF="/etc/avrdude.conf"
 
@@ -163,7 +164,6 @@ grep "killswitch" "$AVRDUDE_CONF"
 IS_SETUP=$?
 
 if [ $IS_SETUP -ne 0 ]; then
-    echo -n "Setting up avrdude... "
     echo "programmer" >> "$AVRDUDE_CONF"
     echo "  id    = \"killswitch\";" >> "$AVRDUDE_CONF"
     echo "  desc  = \"Update KillSwitch firmware using GPIO\";" >> \
@@ -173,8 +173,9 @@ if [ $IS_SETUP -ne 0 ]; then
     echo "  sck   = 2;" >> "$AVRDUDE_CONF"
     echo "  mosi  = 14;" >> "$AVRDUDE_CONF"
     echo "  miso  = 15;" >> "$AVRDUDE_CONF"
-    echo "Done"
 fi
+
+echo "Done"
 
 #-------------------------------------------------------------------------------
 # finish up
