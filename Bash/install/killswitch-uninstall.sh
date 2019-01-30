@@ -17,7 +17,7 @@ VERSION_BUILD="19.01.30"
 #-------------------------------------------------------------------------------
 # variables
 
-SETTINGS_DIR="${HOME}/.killswitch"
+SETTINGS_DIR="/home/${SUOD_USER}/.killswitch"
 echo $SETTINGS_DIR
 SETTINGS_FILE="${SETTINGS_DIR}/killswitch-settings.conf"
 
