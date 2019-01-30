@@ -149,7 +149,7 @@ echo "Done"
 # copy uninstaller script
 echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
 cp killswitch-uninstall.sh /usr/local/bin
-chmod +x /usr/local/bin/killswitch-uninstaller.sh
+chmod +x /usr/local/bin/killswitch-uninstall.sh
 echo "Done"
 
 #-------------------------------------------------------------------------------
@@ -180,11 +180,11 @@ fi
 # finish up
 
 # create shortcut in RetroPie menu
-if [ -d "/home/$(logname)/RetroPie" ]; then
+if [ -d "/home/pi/RetroPie" ]; then
     echo -n "Creating RetroPie port... "
-	mkdir -p "/home/$(logname)/RetroPie/roms/ports"
+	mkdir -p "/home/pi/RetroPie/roms/ports"
 	ln -s  "/usr/local/bin/killswitch-settings.sh" \
-	    "/home/$(logname)/RetroPie/roms/ports/KillSwitch.sh" &> /dev/null
+	    "/home/pi/RetroPie/roms/ports/KillSwitch.sh" &> /dev/null
 	echo "Done"
 fi
 
