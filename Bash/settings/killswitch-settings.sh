@@ -672,8 +672,14 @@ function doUpdateFirmware() {
             doError
             return
         else
-            # TODO: do avrdude update with hex file
-            # 
+            # do avrdude update with hex file
+            avrdude \
+            -p atmega328p \
+            -C "/etc/avrdude.conf" \
+            -c "killswitch" \
+            -U flash:w:${FIRMWARE_REMOTE_COPY_HEX_FILE}:i
+
+            # remove hex file
             rm "$FIRMWARE_REMOTE_COPY_HEX_FILE"
         fi
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
