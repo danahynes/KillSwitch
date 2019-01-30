@@ -8,27 +8,52 @@
 # All rights reserved.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER="0.1"
-VERSION_BUILD="19.01.07"
+#-------------------------------------------------------------------------------
+# version
 
+VERSION_NUMBER="0.1"
+VERSION_BUILD="19.01.30"
+
+#-------------------------------------------------------------------------------
+# start
+
+echo ""
+
+#-------------------------------------------------------------------------------
 # check for root
+
 if [ $EUID -ne 0 ]; then
-   echo "This script must be run as root. Use 'sudo ./killswitch-install.sh'"
-   exit 1
+    echo "This script must be run as root. Use 'sudo ./killswitch-install.sh'"
+    echo ""
+    exit 1
 fi
+
+#-------------------------------------------------------------------------------
+# about
 
 echo "KillSwitch Installer v${VERSION_NUMBER} (${VERSION_BUILD}) (c) 2019 Dana \
 Hynes"
 echo ""
 
+#-------------------------------------------------------------------------------
+# dependencies
+
 echo "Installing dpendencies..."
+echo ""
 apt-get install dialog python python-gpiozero python-serial avrdude
 echo ""
+
+#-------------------------------------------------------------------------------
+# the rest
 
 echo "Installing KillSwitch..."
 echo ""
 
+#-------------------------------------------------------------------------------
+# set up serial port
+#
 echo "Setting up serial port..."
+echo ""
 
 #-------------------------------------------------------------------------------
 # reconfigure cmdline.txt for serial port
@@ -66,6 +91,12 @@ echo "enable_uart=1" >> "$config_file_new"
 mv "$config_file_new" "$config_file_old"
 
 echo "Done"
+echo ""
+
+#-------------------------------------------------------------------------------
+# set permissions
+
+echo "Setting up permissions..."
 echo ""
 
 #-------------------------------------------------------------------------------
@@ -121,6 +152,9 @@ echo ""
 
 #-------------------------------------------------------------------------------
 # copy files
+
+echo "Copying files..."
+echo ""
 
 # copy monitor script
 echo -n "Copying killswitch_monitor.py to /usr/local/bin/... "
@@ -180,6 +214,7 @@ if [ $IS_SETUP -ne 0 ]; then
 fi
 
 echo "Done"
+echo ""
 
 #-------------------------------------------------------------------------------
 # finish up
