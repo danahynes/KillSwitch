@@ -165,7 +165,7 @@ IS_SETUP=$?
 
 if [ $IS_SETUP -ne 0 ]; then
     echo "programmer" >> "$AVRDUDE_CONF"
-    echo "  id    = \"killswitch\";" >> "$AVRDUDE_CONF"
+    echo "  id    = "\""killswitch"\"";" >> "$AVRDUDE_CONF"
     echo "  desc  = \"Update KillSwitch firmware using GPIO\";" >> \
     "$AVRDUDE_CONF"
     echo "  type  = \"linuxgpio\";" >> "$AVRDUDE_CONF"
