@@ -8,24 +8,51 @@
 # All rights reserved.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER="0.1"
-VERSION_BUILD="19.01.07"
+#-------------------------------------------------------------------------------
+# version
 
+VERSION_NUMBER="0.1"
+VERSION_BUILD="19.01.30"
+
+#-------------------------------------------------------------------------------
+# variables
+
+SETTINGS_DIR="${HOME}/.killswitch"
+echo $SETTINGS_DIR
+SETTINGS_FILE="${SETTINGS_DIR}/killswitch-settings.conf"
+
+#-------------------------------------------------------------------------------
+# start
+
+echo ""
+
+#-------------------------------------------------------------------------------
 # check for root
+
 if [ $EUID -ne 0 ]; then
-   echo "This script must be run as root. Use 'sudo ./killswitch-uninstall.sh'"
-   exit 1
+    echo "This script must be run as root. Use 'sudo ./killswitch-uninstall.sh'"
+    echo ""
+    exit 1
 fi
+
+#-------------------------------------------------------------------------------
+# about
 
 echo "KillSwitch Uninstaller v${VERSION_NUMBER} (${VERSION_BUILD}) (c) 2019 \
 Dana Hynes"
 echo ""
+
+#-------------------------------------------------------------------------------
+# the rest
 
 echo "Uninstalling KillSwitch..."
 echo ""
 
 #-------------------------------------------------------------------------------
 # remove files
+
+echo "Removing files..."
+echo ""
 
 # remove monitor script
 echo -n "Removing killswitch_monitor.py from /usr/local/bin/... "
@@ -53,13 +80,16 @@ echo -n "Removing kilswitch-settings.conf from ${SETTINGS_DIR}... "
 rm "${SETTINGS_FILE}"
 echo "Done"
 
+echo ""
+
 #-------------------------------------------------------------------------------
 # finish up
 
-if [ -d "/home/$(logname)/RetroPie" ]; then
+if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
 	echo -n "Removing RetroPie port... "
-	rm "/home/$(logname)/RetroPie/roms/ports/KillSwitch.sh"
+	rm "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch.sh"
 	echo "Done"
+    echo ""
 fi
 
 # stuff we can't undo
