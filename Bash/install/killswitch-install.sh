@@ -73,8 +73,8 @@ echo "Done"
 echo -n "Setting shutdown permissions... "
 
 # filenames
-config_file_old="/home/pi/.bash_aliases"
-config_file_new="/home/pi/.bash_aliases_tmp"
+config_file_old="/home/${SUDO_USER}/.bash_aliases"
+config_file_new="/home/${SUDO_USER}/.bash_aliases_tmp"
 
 # move everything except old shutdown (if present) to new file
 grep -v "alias shutdown=" "$config_file_old" > "$config_file_new"
@@ -93,8 +93,8 @@ echo "Done"
 echo -n "Setting reboot permissions... "
 
 # filenames
-config_file_old="/home/pi/.bash_aliases"
-config_file_new="/home/pi/.bash_aliases_tmp"
+config_file_old="/home/${SUDO_USER}/.bash_aliases"
+config_file_new="/home/${SUDO_USER}/.bash_aliases_tmp"
 
 # move everything except old reboot (if present) to new file
 grep -v "alias reboot=" "$config_file_old" > "$config_file_new"
@@ -113,7 +113,7 @@ echo "Done"
 echo -n "Finishing permissions... "
 
 # pull in new bash aliases
-source "/home/pi/.bash_aliases"
+source "/home/${SUDO_USER}/.bash_aliases"
 
 echo "Done"
 
@@ -160,12 +160,12 @@ echo -n "Setting up avrdude..."
 AVRDUDE_CONF="/etc/avrdude.conf"
 
 # check if already set up
-grep "killswitch" "$AVRDUDE_CONF"
+grep -q "killswitch" "$AVRDUDE_CONF"
 IS_SETUP=$?
 
 if [ $IS_SETUP -ne 0 ]; then
     echo "programmer" >> "$AVRDUDE_CONF"
-    echo "  id    = "\""killswitch"\"";" >> "$AVRDUDE_CONF"
+    echo "  id    = \"killswitch\";" >> "$AVRDUDE_CONF"
     echo "  desc  = \"Update KillSwitch firmware using GPIO\";" >> \
     "$AVRDUDE_CONF"
     echo "  type  = \"linuxgpio\";" >> "$AVRDUDE_CONF"
@@ -181,11 +181,11 @@ echo "Done"
 # finish up
 
 # create shortcut in RetroPie menu
-if [ -d "/home/pi/RetroPie" ]; then
+if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
     echo -n "Creating RetroPie port... "
-	mkdir -p "/home/pi/RetroPie/roms/ports"
+	mkdir -p "/home/${SUDO_USER}/RetroPie/roms/ports"
 	ln -s  "/usr/local/bin/killswitch-settings.sh" \
-	    "/home/pi/RetroPie/roms/ports/KillSwitch.sh" &> /dev/null
+	    "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch.sh" &> /dev/null
 	echo "Done"
 fi
 
