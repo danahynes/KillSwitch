@@ -13,7 +13,7 @@ VERSION_BUILD="19.01.07"
 
 # check for root
 if [ $EUID -ne 0 ]; then
-   echo "This script must be run as root. Use 'sudo ./killswitch-uninstall.sh'" 
+   echo "This script must be run as root. Use 'sudo ./killswitch-uninstall.sh'"
    exit 1
 fi
 
@@ -71,7 +71,9 @@ echo "dialog, python, python-gpiozero, python-serial, avrdude"
 echo "You can remove them if you wish using apt-get"
 echo ""
 echo "If you wish to turn on the login console back on, you can use the \
-retropie-setup script."
+raspi-setup script."
+echo "To remove this uninstaller, use 'sudo rm \
+/usr/bin/killswitch-uninstaller.sh'"
 
 # ask for reboot
 echo ""
