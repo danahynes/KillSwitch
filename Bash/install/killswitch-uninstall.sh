@@ -15,13 +15,6 @@ VERSION_NUMBER="0.1"
 VERSION_BUILD="19.01.30"
 
 #-------------------------------------------------------------------------------
-# variables
-
-SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
-echo $SETTINGS_DIR
-SETTINGS_FILE="${SETTINGS_DIR}/killswitch-settings.conf"
-
-#-------------------------------------------------------------------------------
 # start
 
 echo ""
@@ -75,9 +68,10 @@ echo -n "Removing kilswitch-settings.sh from /usr/local/bin/... "
 rm /usr/local/bin/killswitch-settings.sh
 echo "Done"
 
-# remove settings storage file
-echo -n "Removing kilswitch-settings.conf from ${SETTINGS_DIR}... "
-rm "${SETTINGS_FILE}"
+# remove settings storage file"
+SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
+echo -n "Removing ${SETTINGS_DIR}... "
+rm -r "${SETTINGS_DIR}"
 echo "Done"
 
 echo ""
