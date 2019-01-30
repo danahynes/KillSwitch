@@ -66,6 +66,7 @@ echo "enable_uart=1" >> "$config_file_new"
 mv "$config_file_new" "$config_file_old"
 
 echo "Done"
+echo ""
 
 #-------------------------------------------------------------------------------
 # shutdown
@@ -116,6 +117,7 @@ echo -n "Finishing permissions... "
 source "/home/${SUDO_USER}/.bash_aliases"
 
 echo "Done"
+echo ""
 
 #-------------------------------------------------------------------------------
 # copy files
@@ -150,6 +152,8 @@ echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
 cp killswitch-uninstall.sh /usr/local/bin
 chmod +x /usr/local/bin/killswitch-uninstall.sh
 echo "Done"
+
+echo ""
 
 #-------------------------------------------------------------------------------
 # configure avrdude
@@ -187,6 +191,7 @@ if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
 	ln -s  "/usr/local/bin/killswitch-settings.sh" \
 	    "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch.sh" &> /dev/null
 	echo "Done"
+    echo ""
 fi
 
 # ask for reboot
