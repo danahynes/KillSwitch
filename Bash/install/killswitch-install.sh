@@ -217,7 +217,7 @@ echo "Done"
 echo ""
 
 #-------------------------------------------------------------------------------
-# finish up
+# add RetroPie port
 
 # create shortcut in RetroPie menu
 if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
@@ -229,6 +229,7 @@ if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
     echo ""
 fi
 
+#-------------------------------------------------------------------------------
 # ask for reboot
 echo ""
 echo "***************************************************"
