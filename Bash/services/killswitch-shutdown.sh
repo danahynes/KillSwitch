@@ -28,14 +28,14 @@ echo out > /sys/class/gpio/gpio${FEEDBACK}/direction
 
 if [ "$1" = "poweroff" ] || [ "$1" = "halt" ]; then
 
-    # pulse the pin once - low
+    # pulse the pin once - high/low
     echo 1 > /sys/class/gpio/gpio${FEEDBACK}/value
     sleep 0.2
     echo 0 > /sys/class/gpio/gpio${FEEDBACK}/value
     echo "?SHT|!" > $SERIAL_PORT
 elif [ "$1" = "reboot" ]; then
 
-    # pulse the pin twice - low
+    # pulse the pin twice - high/low/high/low
     echo 1 > /sys/class/gpio/gpio${FEEDBACK}/value
     sleep 0.2
     echo 0 > /sys/class/gpio/gpio${FEEDBACK}/value
