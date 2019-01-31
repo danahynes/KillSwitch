@@ -3,9 +3,13 @@
 #-------------------------------------------------------------------------------
 # killswitch_monitor.py
 # KillSwitch
+#
 # Copyright (c) 2019 Dana Hynes.
 # All rights reserved.
 #-------------------------------------------------------------------------------
+
+VERSION_NUMBER = "0.1"
+VERSION_BUILD = "19.01.30"
 
 # are we running on a pi?
 hasg0 = False
@@ -25,7 +29,7 @@ import subprocess
 #-------------------------------------------------------------------------------
 # constants
 #-------------------------------------------------------------------------------
-pin_feedback = 2
+#pin_feedback = 2
 pin_trigger = 3
 time_hold = 5
 time_debounce = 0.05
@@ -82,11 +86,16 @@ if (hasg0):
     trigger = g0.Button(pin_trigger, hold_time = time_hold, \
         bounce_time = time_debounce)
 
+# N.B. this script no longer controls the feedback pin. it is done by
+# killswitch-shutdown.sh
+#
     # feedback (active_high = True, initial_value = False)
     # when the script starts, this pin will turn off
     # when the pi is off, this pin will use its internal pullup to turn
     # the output on
-    feedback = g0.OutputDevice(pin_feedback)
+    # if we are cutting power to the pi, the arduino will use ITS internal
+    # pullup to turn this pin on
+    #feedback = g0.OutputDevice(pin_feedback)
 
 #-------------------------------------------------------------------------------
 # initialize
@@ -120,7 +129,7 @@ while (1):
 
         # strip leading '?' and trailing '!'
         cmd = cmd[1:]
-        
+
         # add two for CR/LF
         val = val[:-3]
 
