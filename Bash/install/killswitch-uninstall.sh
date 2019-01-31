@@ -68,7 +68,7 @@ echo -n "Removing kilswitch-settings.sh from /usr/local/bin/... "
 rm /usr/local/bin/killswitch-settings.sh
 echo "Done"
 
-# remove settings storage file"
+# remove settings storage dir
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 echo -n "Removing ${SETTINGS_DIR}... "
 rm -r "${SETTINGS_DIR}"
@@ -77,7 +77,7 @@ echo "Done"
 echo ""
 
 #-------------------------------------------------------------------------------
-# finish up
+# remove RetroPie port
 
 if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
 	echo -n "Removing RetroPie port... "
@@ -86,6 +86,7 @@ if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
     echo ""
 fi
 
+#-------------------------------------------------------------------------------
 # stuff we can't undo
 echo ""
 echo "***************************************************"
@@ -94,11 +95,12 @@ echo "The following dependencies may have been installed with KillSwitch:"
 echo "dialog, python, python-gpiozero, python-serial, avrdude"
 echo "You can remove them if you wish using apt-get"
 echo ""
-echo "If you wish to turn on the login console back on, you can use the \
-raspi-setup script."
+echo "If you wish to turn the login console back on, you can use the \
+raspi-setup script"
 echo "To remove this uninstaller, use 'sudo rm \
-/usr/bin/killswitch-uninstaller.sh'"
+/usr/local/bin/killswitch-uninstaller.sh'"
 
+#-------------------------------------------------------------------------------
 # ask for reboot
 echo ""
 echo "***************************************************"
