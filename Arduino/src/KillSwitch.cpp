@@ -335,6 +335,12 @@ void doLEDDoneFlashing(DHLED* led) {
  * Called when the pulse counter is done counting.
  ----------------------------------------------------------------------------*/
 void doCounterDone(DHPulseCounter* counter) {
+	/* N.B. the counter is basically used to differentiate between an edge
+	change (the old style) and a pulse count (the new style).
+
+	*/
+
+
 	int i = counter->getCount();
 
 	// from GUI
@@ -358,29 +364,29 @@ void doCounterDone(DHPulseCounter* counter) {
 		Serial.println("no pulses");
 
 		if (state == STATE_BOOTING) {
-			if (digitalRead(PIN_FEEDBACK) == HIGH) {
+			if (digitalRead(PIN_FEEDBACK) == LOW) {
 				state = STATE_ON;
 				Serial.println("state changed to STATE_ON");
 
 				// new feedback state to watch for
-				feedbackCounter.setValue(LOW);
+				feedbackCounter.setValue(HIGH);
 			}
 		} else if ((state == STATE_SHUTDOWN) || (state == STATE_ON)) {
-			if (digitalRead(PIN_FEEDBACK) == LOW) {
+			if (digitalRead(PIN_FEEDBACK) == HIGH) {
 				state = STATE_OFF;
 				Serial.println("state changed to STATE_OFF");
 
 				// new feedback state to watch for
-				feedbackCounter.setValue(HIGH);
+				feedbackCounter.setValue(LOW);
 			}
 		} else if (state == STATE_REBOOT) {
-			if (digitalRead(PIN_FEEDBACK) == LOW) {
+			if (digitalRead(PIN_FEEDBACK) == HIGH) {
 
 				// set flag to watch feedback
 				rebootFlag = true;
 
 				// new feedback state to watch for
-				feedbackCounter.setValue(HIGH);
+				feedbackCounter.setValue(LOW);
 			} else {
 				if (rebootFlag) {
 					state = STATE_ON;
@@ -390,32 +396,7 @@ void doCounterDone(DHPulseCounter* counter) {
 					rebootFlag = false;
 
 					// new feedback state to watch for
-					feedbackCounter.setValue(LOW);
-				}
-			}
-		} else if ((state == STATE_SHUTDOWN) || (state == STATE_ON)) {
-			if (digitalRead(PIN_FEEDBACK) == LOW) {
-				state = STATE_OFF;
-				Serial.println("state changed to STATE_OFF");
-
-				feedbackCounter.setValue(HIGH);
-			}
-		} else if (state == STATE_REBOOT) {
-			if (digitalRead(PIN_FEEDBACK) == LOW) {
-
-				// set flag to watch feedback
-				rebootFlag = true;
-
-				feedbackCounter.setValue(HIGH);
-			} else {
-				if (rebootFlag) {
-					state = STATE_ON;
-					Serial.println("state changed to STATE_ON");
-
-					// clear reboot flag
-					rebootFlag = false;
-
-					feedbackCounter.setValue(LOW);
+					feedbackCounter.setValue(HIGH);
 				}
 			}
 		}

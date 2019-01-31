@@ -86,16 +86,13 @@ if (hasg0):
     trigger = g0.Button(pin_trigger, hold_time = time_hold, \
         bounce_time = time_debounce)
 
-# N.B. this script no longer controls the feedback pin. it is done by
-# killswitch-shutdown.sh
-#
     # feedback (active_high = True, initial_value = False)
-    # when the script starts, this pin will turn off
-    # when the pi is off, this pin will use its internal pullup to turn
-    # the output on
-    # if we are cutting power to the pi, the arduino will use ITS internal
-    # pullup to turn this pin on
-    #feedback = g0.OutputDevice(pin_feedback)
+    # when the script starts, this pin will go LOW
+    # when the pi is off, this pin will use its internal pullup to set
+    # the pin high
+    # if we are shutting power to the pi, the arduino will use ITS internal
+    # pullup to set this pin HIGH
+    feedback = g0.OutputDevice(pin_feedback)
 
 #-------------------------------------------------------------------------------
 # initialize
