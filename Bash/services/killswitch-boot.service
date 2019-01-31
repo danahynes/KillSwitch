@@ -4,6 +4,9 @@
 #
 # Copyright (c) 2019 Dana Hynes.
 # All rights reserved.
+#
+# VERSION_NUMBER="0.1"
+# VERSION_BUILD="19.01.30"
 #-------------------------------------------------------------------------------
 
  [Unit]
@@ -16,6 +19,5 @@
 
  [Install]
  WantedBy=multi-user.target
- 
+
  # -)
- 
