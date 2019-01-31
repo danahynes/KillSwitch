@@ -8,6 +8,9 @@
 # All rights reserved.
 #-------------------------------------------------------------------------------
 
+VERSION_NUMBER="0.1"
+VERSION_BUILD="19.01.30"
+
 FEEDBACK=2
 
 # TODO: change serial port
@@ -34,13 +37,13 @@ elif [ "$1" = "reboot" ]; then
 
     # pulse the pin twice - low
     echo 1 > /sys/class/gpio/gpio${FEEDBACK}/value
-    sleep 0.2	
+    sleep 0.2
     echo 0 > /sys/class/gpio/gpio${FEEDBACK}/value
     sleep 0.2
     echo 1 > /sys/class/gpio/gpio${FEEDBACK}/value
     sleep 0.2
     echo 0 > /sys/class/gpio/gpio${FEEDBACK}/value
-    echo "?RBT|!" > $SERIAL_PORT	
+    echo "?RBT|!" > $SERIAL_PORT
 fi
 
 # -)
