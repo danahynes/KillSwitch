@@ -156,23 +156,32 @@ echo ""
 echo "Copying files..."
 echo ""
 
-# copy monitor script
-echo -n "Copying killswitch_monitor.py to /usr/local/bin/... "
-cp ../services/killswitch_monitor.py /usr/local/bin/
-chmod +x /usr/local/bin/killswitch_monitor.py
-echo "Done"
-
 # copy boot service script
 echo -n "Copying killswitch-boot.service to /lib/systemd/system/... "
 cp ../services/killswitch-boot.service /lib/systemd/system/
-systemctl daemon-reload
 systemctl enable killswitch-boot.service
 echo "Done"
 
+# copy monitor script
+echo -n "Copying killswitch-monitor.py to /usr/local/bin/... "
+cp ../services/killswitch-monitor.py /usr/local/bin/
+chmod +x /usr/local/bin/killswitch-monitor.py
+echo "Done"
+
+# copy shutodwn service script
+echo -n "Copying killswitch-shutdown.service to /lib/systemd/system/... "
+cp ../services/killswitch-shutdown.service /lib/systemd/system/
+systemctl enable killswitch-shutdown.service
+echo "Done"
+
 # copy shutdown script
-echo -n "Copying killswitch-shutdown.sh to /lib/systemd/systemd-shutdown... "
-cp ../services/killswitch-shutdown.sh /lib/systemd/system-shutdown/
-chmod +x /lib/systemd/system-shutdown/killswitch-shutdown.sh
+# echo -n "Copying killswitch-shutdown.sh to /usr/local/bin/... "
+# cp ../services/killswitch-shutdown.sh /usr/local/bin/
+# chmod +x /lib/systemd/system-shutdown/killswitch-shutdown.sh
+# echo "Done"
+echo -n "Copying killswitch-shutdown.py to /usr/local/bin/... "
+cp ../services/killswitch-shutdown.py /usr/local/bin/
+chmod +x /usr/local/bin/killswitch-shutdown.py
 echo "Done"
 
 # copy settings gui script
