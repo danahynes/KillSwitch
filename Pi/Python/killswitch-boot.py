@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 #-------------------------------------------------------------------------------
-# killswitch-monitor.py
+# killswitch-boot.py
 # KillSwitch
 #
 # Copyright (c) 2019 Dana Hynes.
