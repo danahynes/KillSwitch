@@ -15,7 +15,7 @@
 
  [Service]
  Type=idle
- ExecStart=/usr/local/bin/killswitch-monitor.py &
+ ExecStart=/usr/local/bin/killswitch-boot.py &
 
  [Install]
  WantedBy=multi-user.target

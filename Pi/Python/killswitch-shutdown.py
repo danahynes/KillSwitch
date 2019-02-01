@@ -49,26 +49,32 @@ if (hasg0):
     # we then pulse the pin based on whether we are shutting down or rebooting
     feedback = g0.OutputDevice(pin_feedback)
 
-    args = str(sys.argv)
-    if (sys.argv[1:] == "poweroff") or (sys.argv[1:] == "halt"):
+#-------------------------------------------------------------------------------
+# get args
+#-------------------------------------------------------------------------------
 
-        # pulse the pin once - high/low
-        feedback.on()
-        time.sleep(0.02)
-        feedback.off()
+args = str(sys.argv)
+if (sys.argv[1:] == "poweroff") or (sys.argv[1:] == "halt"):
 
-        # write to serial
-        ser.write("?SHT|!")
-    elif (sys.argv[1:] == "reboot"):
+    # pulse the pin once - high/low
+    feedback.on()
+    time.sleep(0.02)
+    feedback.off()
 
-        # pulse the pin twice - high/low/high/low
-        feedback.on()
-        time.sleep(0.02)
-        feedback.off()
-        time.sleep(0.02)
-        feedback.on()
-        time.sleep(0.02)
-        feedback.off()
+    # write to serial
+    ser.write("?SHT|!")
+elif (sys.argv[1:] == "reboot"):
 
-        # write to serial
-        ser.write("?RBT|!")
+    # pulse the pin twice - high/low/high/low
+    feedback.on()
+    time.sleep(0.02)
+    feedback.off()
+    time.sleep(0.02)
+    feedback.on()
+    time.sleep(0.02)
+    feedback.off()
+
+    # write to serial
+    ser.write("?RBT|!")
+
+# -)

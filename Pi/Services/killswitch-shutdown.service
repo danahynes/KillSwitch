@@ -15,7 +15,7 @@ RequiresMountsFor=/usr/local/bin
 
 [Service]
 Type=oneshot
-ExecStop=/usr/local/bin/killswitch-shutodwn.sh
+ExecStop=/usr/local/bin/killswitch-shutodwn.py
 RemainAfterExit=yes
 
 [Install]
