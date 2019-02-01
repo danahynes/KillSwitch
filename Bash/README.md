@@ -1,1 +1,0 @@
-# Bash files for KillSwitch
