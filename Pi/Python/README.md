@@ -1,1 +1,3 @@
-# Monitor script for KillSwitch
+# Python scripts for KillSwitch
+
+boot/shutdown/reboot/ (settings)
