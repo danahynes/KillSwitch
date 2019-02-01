@@ -47,20 +47,29 @@ echo ""
 echo "Removing files..."
 echo ""
 
-# remove monitor script
-echo -n "Removing killswitch_monitor.py from /usr/local/bin/... "
-rm /usr/local/bin/killswitch_monitor.py
-echo "Done"
-
 # remove boot service script
 echo -n "Removing killswitch-boot.service from /lib/systemd/system/... "
 systemctl disable killswitch-boot.service
 rm /lib/systemd/system/killswitch-boot.service
 echo "Done"
 
+# remove monitor script
+echo -n "Removing killswitch-monitor.py from /usr/local/bin/... "
+rm /usr/local/bin/killswitch-monitor.py
+echo "Done"
+
+# remove shutodwn service script
+echo -n "Removing killswitch-shutdown.service from /lib/systemd/system/... "
+systemctl disable killswitch-shutdown.service
+rm /lib/systemd/system/killswitch-shutdown.service
+echo "Done"
+
 # remove shutdown script
-echo -n "Remove killswitch-shutdown.sh from /lib/systemd/systemd-shutdown... "
-rm /lib/systemd/system-shutdown/killswitch-shutdown.sh
+# echo -n "Remove killswitch-shutdown.sh from /usr/local/bin... "
+# rm /usr/local/bin/killswitch-shutdown.sh
+# echo "Done"
+echo -n "Remove killswitch-shutdown.py from /usr/local/bin... "
+rm /usr/local/bin/killswitch-shutdown.py
 echo "Done"
 
 # remove settings gui script
