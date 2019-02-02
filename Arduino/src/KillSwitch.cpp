@@ -21,7 +21,7 @@
 // Constants
 
 const char VERSION_NUMBER[] = "0.1";
-const char VERSION_BUILD[] = "19.0.27";
+const char VERSION_BUILD[] = "19.0.31";
 
 const int STATE_OFF = 0;
 const int STATE_BOOTING = 1;
@@ -44,14 +44,8 @@ const int PIN_POWER = 4;
 
 const int DEBOUNCE_DELAY = 50;
 const int HOLD_TIME_DEFAULT = 5000;
-//const int HOLD_ACTION_REBOOT = 0;
-//const int HOLD_ACTION_SHUTDOWN = 1;
-//const int HOLD_ACTION_DEFAULT = HOLD_ACTION_REBOOT;
 
-//const int STATUS_OFF_DEFAULT = 0;
 const int STATUS_BRIGHTNESS_DEFAULT = 255;
-//const int STATUS_PULSE_DEFAULT = 0;
-//const int STATUS_INVERT_DEFAULT = 0;
 
 const int PROG_TIMEOUT = 15000;
 
@@ -198,6 +192,11 @@ void doReboot(bool gui = false) {
  * Puts the device into programming mode.
  ----------------------------------------------------------------------------*/
 void startProgramming() {
+
+	// store state
+	beforeProgState = state;
+
+	// change state
 	state = STATE_PROGRAMMING;
 	Serial.println("state changed to STATE_PROGRAMMING");
 
@@ -214,8 +213,11 @@ void startProgramming() {
  ----------------------------------------------------------------------------*/
 void stopProgramming() {
 
+	// restore state
 	state = beforeProgState;
-	if (beforeProgState == STATE_OFF) {
+
+	// print restored state
+	if (state == STATE_OFF) {
 		Serial.println("state changed to STATE_OFF");
 	} else {
 		Serial.println("state changed to STATE_ON");
@@ -227,9 +229,6 @@ void stopProgramming() {
 	// don't count flashes, stop watchdog
 	progChanging = false;
 	progTimer.stop();
-
-	// send serial for stop programming in settings
-	//sendSerial("PGM", "STOP");
 }
 
 /*-----------------------------------------------------------------------------
@@ -246,9 +245,6 @@ void doShortPress(DHButton* button) {
 			// count flashes, start watchdog
 			progChanging = true;
 			progTimer.start();
-
-			// send serial for next mode in settings
-			//sendSerial("PGM", "NEXT");
 		} else if (progState == PROG_STATE_CODE_OFF) {
 
 			// make off code same as on code
@@ -258,9 +254,6 @@ void doShortPress(DHButton* button) {
 
 			// count flashes before exiting programming mode
 			progChanging = true;
-
-			// send serial for next mode in settings
-			//sendSerial("PGM", "NEXT");
 		}
 	}
 }
@@ -670,20 +663,6 @@ void loop() {
 			Serial.println("Serial val: " + serialValue);
 
 			// check which command we got
-
-//			if (serialCmd == "PGM") {
-//				if (serialValue == "START") {
-//					beforeProgState = STATE_ON;
-//					startProgramming();
-//				} else if (serialValue == "STOP") {
-//					stopProgramming();
-//				} else if (serialValue == "NEXT") {
-//
-//					// simulate button press
-//					doShortPress(&button);
-//				}
-//			}
-
 			if (serialCmd == "LEDO") {
 				int ledOff = serialValue.toInt();
 				EEPROM.update(EEPROM_ADDR_STATUS_OFF, ledOff);
