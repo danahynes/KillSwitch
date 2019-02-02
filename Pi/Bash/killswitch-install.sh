@@ -38,7 +38,7 @@ echo ""
 #-------------------------------------------------------------------------------
 # dependencies
 
-echo "Installing dpendencies..."
+echo "Installing dependencies..."
 echo ""
 apt-get install dialog python python-gpiozero python-serial avrdude
 echo ""
@@ -102,7 +102,7 @@ echo ""
 #-------------------------------------------------------------------------------
 # shutdown
 
-echo -n "Setting shutdown permissions... "
+echo -n "Setting shutdown permission... "
 
 # filenames
 config_file_old="/home/${SUDO_USER}/.bash_aliases"
@@ -122,7 +122,7 @@ echo "Done"
 #-------------------------------------------------------------------------------
 # reboot
 
-echo -n "Setting reboot permissions... "
+echo -n "Setting reboot permission... "
 
 # filenames
 config_file_old="/home/${SUDO_USER}/.bash_aliases"
@@ -158,35 +158,35 @@ echo ""
 
 # copy boot service script
 echo -n "Copying killswitch-boot.service to /lib/systemd/system/... "
-cp ../services/killswitch-boot.service /lib/systemd/system/
+cp killswitch-boot.service /lib/systemd/system/
 systemctl enable killswitch-boot.service
 echo "Done"
 
 # copy boot script
 echo -n "Copying killswitch-boot.py to /usr/local/bin/... "
-cp ../services/killswitch-boot.py /usr/local/bin/
+cp killswitch-boot.py /usr/local/bin/
 chmod +x /usr/local/bin/killswitch-boot.py
 echo "Done"
 
 # copy shutodwn service script
 echo -n "Copying killswitch-shutdown.service to /lib/systemd/system/... "
-cp ../services/killswitch-shutdown.service /lib/systemd/system/
+cp killswitch-shutdown.service /lib/systemd/system/
 systemctl enable killswitch-shutdown.service
 echo "Done"
 
 # copy shutdown script
 # echo -n "Copying killswitch-shutdown.sh to /usr/local/bin/... "
-# cp ../services/killswitch-shutdown.sh /usr/local/bin/
+# cp killswitch-shutdown.sh /usr/local/bin/
 # chmod +x /lib/systemd/system-shutdown/killswitch-shutdown.sh
 # echo "Done"
 echo -n "Copying killswitch-shutdown.py to /usr/local/bin/... "
-cp ../services/killswitch-shutdown.py /usr/local/bin/
+cp killswitch-shutdown.py /usr/local/bin/
 chmod +x /usr/local/bin/killswitch-shutdown.py
 echo "Done"
 
 # copy settings gui script
 echo -n "Copying kilswitch-settings.sh to /usr/local/bin/... "
-cp ../settings/killswitch-settings.sh /usr/local/bin/
+cp killswitch-settings.sh /usr/local/bin/
 chmod +x /usr/local/bin/killswitch-settings.sh
 echo "Done"
 
