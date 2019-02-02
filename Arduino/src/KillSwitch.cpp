@@ -19,7 +19,7 @@
 
 //-----------------------------------------------------------------------------
 // Constants
-//
+
 const char VERSION_NUMBER[] = "0.1";
 const char VERSION_BUILD[] = "19.0.27";
 
@@ -93,7 +93,7 @@ DHButton button(PIN_BUTTON, true, DEBOUNCE_DELAY, HOLD_TIME_DEFAULT);
 IRrecv irrecv(PIN_IR);
 decode_results results;
 
-DHPulseCounter feedbackCounter(PIN_FEEDBACK, HIGH);
+DHPulseCounter feedbackCounter(PIN_FEEDBACK, LOW);
 
 DHLED ledStatus(PIN_STATUS);
 
@@ -338,8 +338,6 @@ void doCounterDone(DHPulseCounter* counter) {
 	/* N.B. the counter is basically used to differentiate between an edge
 	change (the old style) and a pulse count (the new style).
 	*/
-
-
 	int i = counter->getCount();
 
 	// from GUI
