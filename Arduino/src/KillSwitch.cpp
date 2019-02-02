@@ -335,9 +335,11 @@ void doLEDDoneFlashing(DHLED* led) {
  * Called when the pulse counter is done counting.
  ----------------------------------------------------------------------------*/
 void doCounterDone(DHPulseCounter* counter) {
+
 	/* N.B. the counter is basically used to differentiate between an edge
 	change (the old style) and a pulse count (the new style).
 	*/
+
 	int i = counter->getCount();
 
 	// from GUI
