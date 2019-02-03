@@ -97,7 +97,7 @@ DHTimer progTimer(PROG_TIMEOUT);
 
 DHTimer triggerTimer(TRIGGER_SHUTDOWN_TIME);
 
-bool rebootFlag = false;
+//bool rebootFlag = false;
 
 String serialCmd = "";
 String serialValue = "";
@@ -181,8 +181,12 @@ void doReboot(bool changeTrigger = true) {
 		state = STATE_REBOOT;
 		Serial.println("state changed to STATE_REBOOT");
 
+		// watch state is looking for LOW
+		feedbackCounter.setValue(LOW);
+		//feedbackCounter.start();
+
 		// clear flag to ignore feedback
-		rebootFlag = false;
+		//rebootFlag = false;
 
 		if (changeTrigger) {
 
@@ -299,7 +303,7 @@ void doTriggerTimerUp(DHTimer* timer) {
 }
 
 /*-----------------------------------------------------------------------------
- * Called when the watchdog timer expires.
+ * Called when the programming watchdog timer expires.
  ----------------------------------------------------------------------------*/
 void doProgTimerUp(DHTimer* timer) {
 
@@ -343,10 +347,11 @@ void doCounterDone(DHPulseCounter* counter) {
 	This method is only called when the pin changes from the NOT WANTED state to
 	the WANTED state. So if the line is LOW, and you're looking for a LOW, this
 	method will wait until the pin goes HIGH, and then goes LOW. (This  actually
-	makes it an edge detector, but that's really just semantics...)
+	makes it an edge detector, but that's really just semantics... and also this
+	class includes the counter part, which an edge detector would not)
 
-	The parameter to doShutdown/doReboot determines whether we toggle the
-	trigger pin, by testing for state.
+	For pulses, the parameter to doShutdown/doReboot determines whether we
+	toggle the trigger pin, by testing for state.
 	If the state is ON, then we weren't expecting this event and thus got here
 	by GUI. In that case, the pi already knows about the event, so don't confuse
 	it by toggling the trigger.
@@ -356,25 +361,28 @@ void doCounterDone(DHPulseCounter* counter) {
 	Ir is shutdown only. Button is shutdown, and reboot if set to reboot and not
 	force shutdown, otherwise it kills the power using the arduino's output and
 	there is no need for scripting (see killswitch-settings script).
-	If it's a solid change (i.e. longer than the default of 1 second), the pi
-	has changed state. Call functions/change watch state based on thew new
-	state.
+
+	If it's a solid change (i.e. no pulses for longer than the default of 1
+	second), the pi has changed state. So we set the new state based on the old
+	state and the new feedback reading. We also invert the line level we are
+	looking for, to watch for the next event.
 	*/
 
-	int i = counter->getCount();
+	int pulses = counter->getCount();
 
 	// if there are pulses, we are early in the shutdown
-	if (i > 0) {
+	if (pulses > 0) {
 
 		Serial.print("pulses: ");
 		Serial.println(i);
 
+		// if state is on, change came from GUI
 		if (state == STATE_ON) {
-			if (i == 1) {
+			if (pulses == 1) {
 
 				// start of shutdown (don't touch trigger)
 				doShutdown(false);
-			} else if (i == 2) {
+			} else if (pulses == 2) {
 
 				// start of reboot (don't touch trigger)
 				doReboot(false);
@@ -385,23 +393,42 @@ void doCounterDone(DHPulseCounter* counter) {
 	} else {
 		Serial.println("no pulses");
 
-		if ((state == STATE_BOOTING) || (state == STATE_OFF) || \
-				(state == STATE_REBOOT)) {
-			if (digitalRead(PIN_FEEDBACK) == LOW) {
-				state = STATE_ON;
-				Serial.println("state changed to STATE_ON");
+		// if feedback went LOW, we are booted
+		if (digitalRead(PIN_FEEDBACK) == LOW) {
+			state = STATE_ON;
+			Serial.println("state changed to STATE_ON");
 
-				// new feedback state to watch for
-				feedbackCounter.setValue(HIGH);
-			}
-		} else if ((state == STATE_SHUTDOWN) || (state == STATE_ON)) {
-			if (digitalRead(PIN_FEEDBACK) == HIGH) {
-				state = STATE_OFF;
-				Serial.println("state changed to STATE_OFF");
+			// new feedback state to watch for
+			feedbackCounter.setValue(HIGH);
 
-				// new feedback state to watch for
-				feedbackCounter.setValue(LOW);
-			}
+		// if feedback went HIGH, we are shut down
+		} else if (digitalRead(PIN_FEEDBACK) == HIGH) {
+			state = STATE_OFF;
+			Serial.println("state changed to STATE_OFF");
+
+			// new feedback state to watch for
+			feedbackCounter.setValue(LOW);
+		}
+
+
+
+		// if ((state == STATE_BOOTING) || (state == STATE_OFF) ||
+		// 		(state == STATE_REBOOT)) {
+		// 	if (digitalRead(PIN_FEEDBACK) == LOW) {
+		// 		state = STATE_ON;
+		// 		Serial.println("state changed to STATE_ON");
+		//
+		// 		// new feedback state to watch for
+		// 		feedbackCounter.setValue(HIGH);
+		// 	}
+		// } else if ((state == STATE_SHUTDOWN) || (state == STATE_ON)) {
+		// 	if (digitalRead(PIN_FEEDBACK) == HIGH) {
+		// 		state = STATE_OFF;
+		// 		Serial.println("state changed to STATE_OFF");
+		//
+		// 		// new feedback state to watch for
+		// 		feedbackCounter.setValue(LOW);
+		// 	}
 		// } else if (state == STATE_REBOOT) {
 		// 	if (digitalRead(PIN_FEEDBACK) == LOW) {
 				// if (rebootFlag) {
@@ -421,12 +448,12 @@ void doCounterDone(DHPulseCounter* counter) {
 				//
 				// // new feedback state to watch for
 				// feedbackCounter.setValue(LOW);
-			}
-		} else if (state == STATE_PROGRAMMING) {
-			// TODO: figure this out
-		}
+		// 	}
+		// } else if (state == STATE_PROGRAMMING) {
+		// 	// TODO: figure this out
+		// }
 	}
-	feedbackCounter.start();
+	//feedbackCounter.start();
 }
 
 //-----------------------------------------------------------------------------
@@ -475,6 +502,7 @@ void setup() {
 
 			// if brightness is 0 and set is 0, must be fresh so set default
 			statusBrightness = STATUS_BRIGHTNESS_DEFAULT;
+			EEPROM.update(EEPROM_ADDR_BRIGHT_SET, 1);
 		}
 	}
 	ledStatus.setLevel(statusBrightness);
@@ -711,7 +739,6 @@ void loop() {
 
 				// will take effect in next update()
 				EEPROM.update(EEPROM_ADDR_BRIGHTNESS, statusBrightness);
-				EEPROM.update(EEPROM_ADDR_BRIGHT_SET, 1);
 				ledStatus.setLevel(statusBrightness);
 			} else if (serialCmd == "LEDT") {
 
@@ -756,5 +783,6 @@ void loop() {
 			}
 		}
 	}
-
 }
+
+\\ -)
