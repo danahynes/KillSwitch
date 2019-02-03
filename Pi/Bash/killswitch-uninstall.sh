@@ -121,4 +121,8 @@ case $answer in
         * ) shutdown -r now;;
 esac
 
+# TODO: test this - should delete itself
+# https://stackoverflow.com/questions/8981164/self-deleting-shell-script
+rm -- "%0"
+
 # -)
