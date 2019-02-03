@@ -148,43 +148,49 @@ void sendSerial(String CMD, String VAL) {
 /*-----------------------------------------------------------------------------
  * Starts booting the pi.
  ----------------------------------------------------------------------------*/
-void doOn() {
-	state = STATE_BOOTING;
-	Serial.println("state changed to STATE_BOOTING");
+void doBootup() {
+	if (state != STATE_BOOTING) {
+		state = STATE_BOOTING;
+		Serial.println("state changed to STATE_BOOTING");
+	}
 }
 
 /*-----------------------------------------------------------------------------
  * Starts shutting down the pi.
  ----------------------------------------------------------------------------*/
-void doOff(bool gui = false) {
-	state = STATE_SHUTDOWN;
-	Serial.println("state changed to STATE_SHUTDOWN");
+void doShutdown(bool changeTrigger = true) {
+	if (state != STATE_SHUTDOWN) {
+		state = STATE_SHUTDOWN;
+		Serial.println("state changed to STATE_SHUTDOWN");
 
-	if (!gui) {
+		if (changeTrigger) {
 
-		// set the trigger state and starts its timer
-		digitalWrite(PIN_TRIGGER, HIGH);
-		triggerTimer.setTime(TRIGGER_SHUTDOWN_TIME);
-		triggerTimer.start();
+			// set the trigger state and starts its timer
+			digitalWrite(PIN_TRIGGER, HIGH);
+			triggerTimer.setTime(TRIGGER_SHUTDOWN_TIME);
+			triggerTimer.start();
+		}
 	}
 }
 
 /*-----------------------------------------------------------------------------
  * Reboots the pi.
  ----------------------------------------------------------------------------*/
-void doReboot(bool gui = false) {
-	state = STATE_REBOOT;
-	Serial.println("state changed to STATE_REBOOT");
+void doReboot(bool changeTrigger = true) {
+	if (state != STATE_REBOOT) {
+		state = STATE_REBOOT;
+		Serial.println("state changed to STATE_REBOOT");
 
-	// clear flag to ignore feedback
-	rebootFlag = false;
+		// clear flag to ignore feedback
+		rebootFlag = false;
 
-	if (!gui) {
+		if (changeTrigger) {
 
-		// set the trigger state and starts its timer
-		digitalWrite(PIN_TRIGGER, HIGH);
-		triggerTimer.setTime(TRIGGER_REBOOT_TIME);
-		triggerTimer.start();
+			// set the trigger state and starts its timer
+			digitalWrite(PIN_TRIGGER, HIGH);
+			triggerTimer.setTime(TRIGGER_REBOOT_TIME);
+			triggerTimer.start();
+		}
 	}
 }
 
@@ -236,9 +242,9 @@ void stopProgramming() {
  ----------------------------------------------------------------------------*/
 void doShortPress(DHButton* button) {
 	if (state == STATE_OFF) {
-		doOn();
+		doBootup();
 	} else if (state == STATE_ON) {
-		doOff();
+		doShutdown();
 	} else if (state == STATE_PROGRAMMING) {
 		if (progState == PROG_STATE_CODE_ON) {
 
@@ -329,13 +335,35 @@ void doLEDDoneFlashing(DHLED* led) {
  ----------------------------------------------------------------------------*/
 void doCounterDone(DHPulseCounter* counter) {
 
-	/* N.B. the counter is basically used to differentiate between an edge
-	change (the old style) and a pulse count (the new style).
+	/* N.B.
+	The counter is basically used to differentiate between a pulse count (early
+	in shutdown/reboot) and a permanent change (after the boot/shutdown/reboot
+	process is complete), on the feedback line.
+	Only a permanent change is seen at bootup.
+	This method is only called when the pin changes from the NOT WANTED state to
+	the WANTED state. So if the line is LOW, and you're looking for a LOW, this
+	method will wait until the pin goes HIGH, and then goes LOW. (This  actually
+	makes it an edge detector, but that's really just semantics...)
+
+	The parameter to doShutdown/doReboot determines whether we toggle the
+	trigger pin, by testing for state.
+	If the state is ON, then we weren't expecting this event and thus got here
+	by GUI. In that case, the pi already knows about the event, so don't confuse
+	it by toggling the trigger.
+	If the state is anything else, we got here by the button/ir since their code
+	does the change at the event. We need to toggle the trigger pin to tell the
+	pi what to do in their code, not here.
+	Ir is shutdown only. Button is shutdown, and reboot if set to reboot and not
+	force shutdown, otherwise it kills the power using the arduino's output and
+	there is no need for scripting (see killswitch-settings script).
+	If it's a solid change (i.e. longer than the default of 1 second), the pi
+	has changed state. Call functions/change watch state based on thew new
+	state.
 	*/
 
 	int i = counter->getCount();
 
-	// from GUI
+	// if there are pulses, we are early in the shutdown
 	if (i > 0) {
 
 		Serial.print("pulses: ");
@@ -344,18 +372,21 @@ void doCounterDone(DHPulseCounter* counter) {
 		if (state == STATE_ON) {
 			if (i == 1) {
 
-				// shutdown from gui
-				doOff(true);
+				// start of shutdown (don't touch trigger)
+				doShutdown(false);
 			} else if (i == 2) {
 
-				// reboot from gui
-				doReboot(true);
+				// start of reboot (don't touch trigger)
+				doReboot(false);
 			}
 		}
+
+	// no pulses, finish boot/shutdown/reboot
 	} else {
 		Serial.println("no pulses");
 
-		if (state == STATE_BOOTING) {
+		if ((state == STATE_BOOTING) || (state == STATE_OFF) || \
+				(state == STATE_REBOOT)) {
 			if (digitalRead(PIN_FEEDBACK) == LOW) {
 				state = STATE_ON;
 				Serial.println("state changed to STATE_ON");
@@ -371,26 +402,28 @@ void doCounterDone(DHPulseCounter* counter) {
 				// new feedback state to watch for
 				feedbackCounter.setValue(LOW);
 			}
-		} else if (state == STATE_REBOOT) {
-			if (digitalRead(PIN_FEEDBACK) == HIGH) {
+		// } else if (state == STATE_REBOOT) {
+		// 	if (digitalRead(PIN_FEEDBACK) == LOW) {
+				// if (rebootFlag) {
+					// state = STATE_ON;
+					// Serial.println("state changed to STATE_ON");
 
-				// set flag to watch feedback
-				rebootFlag = true;
-
-				// new feedback state to watch for
-				feedbackCounter.setValue(LOW);
-			} else {
-				if (rebootFlag) {
-					state = STATE_ON;
-					Serial.println("state changed to STATE_ON");
-
-					// clear reboot flag
-					rebootFlag = false;
+					// // clear reboot flag
+					// rebootFlag = false;
 
 					// new feedback state to watch for
-					feedbackCounter.setValue(HIGH);
-				}
+					// feedbackCounter.setValue(HIGH);
+//				}
+
+			// } else {
+				// // set flag to watch feedback
+				// rebootFlag = true;
+				//
+				// // new feedback state to watch for
+				// feedbackCounter.setValue(LOW);
 			}
+		} else if (state == STATE_PROGRAMMING) {
+			// TODO: figure this out
 		}
 	}
 	feedbackCounter.start();
@@ -475,9 +508,9 @@ void loop() {
 				unsigned long onCode = EEPROMReadLong(EEPROM_ADDR_CODE_ON);
 				unsigned long offCode = EEPROMReadLong(EEPROM_ADDR_CODE_OFF);
 				if ((results.value == onCode) && (state == STATE_OFF)) {
-					doOn();
+					doBootup();
 				} else if ((results.value == offCode) && (state == STATE_ON)) {
-					doOff();
+					doShutdown();
 				}
 
 			// programming
@@ -709,7 +742,7 @@ void loop() {
 				Serial.print("B=");
 				Serial.println(VERSION_BUILD);
 			// } else if (serialCmd == "SHT") {
-			// 	doOff();
+			// 	doShutdown();
 			// } else if (serialCmd == "RBT") {
 			// 	doReboot();
 			}
