@@ -32,7 +32,7 @@ import time
 pin_feedback = 2
 
 # TODO: change serial port
-serial_port = '/dev/pts/4'
+serial_port = '/dev/pts/5'
 serial_speed = 9600
 
 # set up serial
@@ -53,26 +53,29 @@ if (hasg0):
 # get args
 #-------------------------------------------------------------------------------
 
-args = str(sys.argv)
-if (sys.argv[1:] == "poweroff") or (sys.argv[1:] == "halt"):
+if (sys.argv[1] == "poweroff") or (sys.argv[1] == "halt"):
 
-    # pulse the pin once - high/low
-    feedback.on()
-    time.sleep(0.02)
-    feedback.off()
+    if (hasg0):
+
+        # pulse the pin once - high/low
+        feedback.on()
+        time.sleep(0.02)
+        feedback.off()
 
     # write to serial
     ser.write("?SHT|!")
-elif (sys.argv[1:] == "reboot"):
+elif (sys.argv[1] == "reboot"):
 
-    # pulse the pin twice - high/low/high/low
-    feedback.on()
-    time.sleep(0.02)
-    feedback.off()
-    time.sleep(0.02)
-    feedback.on()
-    time.sleep(0.02)
-    feedback.off()
+    if (hasg0):
+
+        # pulse the pin twice - high/low/high/low
+        feedback.on()
+        time.sleep(0.02)
+        feedback.off()
+        time.sleep(0.02)
+        feedback.on()
+        time.sleep(0.02)
+        feedback.off()
 
     # write to serial
     ser.write("?RBT|!")
