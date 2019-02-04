@@ -713,6 +713,9 @@ void loop() {
 //-----------------------------------------------------------------------------
 // serial input
 
+// TODO: this can be more cpp-like
+// readline, split on char, etc
+// 
 	if (Serial.available()) {
 
 		// get next char in serial buffer
