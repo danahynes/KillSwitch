@@ -95,6 +95,9 @@ if (hasg0):
     # pullup to set this pin HIGH
     feedback = g0.OutputDevice(pin_feedback)
 
+# set up serial
+ser = serial.Serial(serial_port, serial_speed, timeout = 1);
+
 #-------------------------------------------------------------------------------
 # initialize
 #-------------------------------------------------------------------------------
@@ -111,9 +114,6 @@ if (hasg0):
 #-------------------------------------------------------------------------------
 # main loop
 #-------------------------------------------------------------------------------
-
-# set up serial
-ser = serial.Serial(serial_port, serial_speed, timeout = 1);
 
 # watch serial
 while (1):
