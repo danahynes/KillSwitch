@@ -1,3 +1,3 @@
 # Python scripts for KillSwitch
 
-boot/shutdown/reboot/ (settings)
+boot/shutdown/reboot scripts for KillSwitch
