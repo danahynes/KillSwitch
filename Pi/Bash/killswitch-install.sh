@@ -175,10 +175,6 @@ systemctl enable killswitch-shutdown.service
 echo "Done"
 
 # copy shutdown script
-# echo -n "Copying killswitch-shutdown.sh to /usr/local/bin/... "
-# cp killswitch-shutdown.sh /usr/local/bin/
-# chmod +x /lib/systemd/system-shutdown/killswitch-shutdown.sh
-# echo "Done"
 echo -n "Copying killswitch-shutdown.py to /usr/local/bin/... "
 cp killswitch-shutdown.py /usr/local/bin/
 chmod +x /usr/local/bin/killswitch-shutdown.py
