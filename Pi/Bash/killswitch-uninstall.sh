@@ -54,8 +54,8 @@ rm /lib/systemd/system/killswitch-boot.service
 echo "Done"
 
 # remove monitor script
-echo -n "Removing killswitch-monitor.py from /usr/local/bin/... "
-rm /usr/local/bin/killswitch-monitor.py
+echo -n "Removing killswitch-boot.py from /usr/local/bin/... "
+rm /usr/local/bin/killswitch-boot.py
 echo "Done"
 
 # remove shutodwn service script
@@ -65,10 +65,7 @@ rm /lib/systemd/system/killswitch-shutdown.service
 echo "Done"
 
 # remove shutdown script
-# echo -n "Remove killswitch-shutdown.sh from /usr/local/bin... "
-# rm /usr/local/bin/killswitch-shutdown.sh
-# echo "Done"
-echo -n "Remove killswitch-shutdown.py from /usr/local/bin... "
+echo -n "Removing killswitch-shutdown.py from /usr/local/bin... "
 rm /usr/local/bin/killswitch-shutdown.py
 echo "Done"
 
@@ -79,9 +76,11 @@ echo "Done"
 
 # remove settings storage dir
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
-echo -n "Removing ${SETTINGS_DIR}... "
-rm -r "${SETTINGS_DIR}"
-echo "Done"
+if [ -d "$SETTINGS_DIR"]; then
+    echo -n "Removing ${SETTINGS_DIR}... "
+    rm -r "${SETTINGS_DIR}"
+    echo "Done"
+fi
 
 echo ""
 
