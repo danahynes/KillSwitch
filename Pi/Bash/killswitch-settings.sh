@@ -22,7 +22,7 @@ SETTINGS_DIR="${HOME}/.killswitch"
 SETTINGS_FILE="${SETTINGS_DIR}/killswitch-settings.conf"
 
 # TODO: change serial port
-SERIAL_PORT=/dev/pts/4
+SERIAL_PORT=/dev/pts/5
 SERIAL_SPEED=9600
 
 LEDB_DEFAULT=255            # 0-255
@@ -101,8 +101,8 @@ LED_MENU_ITEMS=(\
 LED_MENU_HELP=(\
     "Turn the LED on or off" \
     "Set the LED brightness" \
-    "Set the led type to flash or pulse" \
-    "Set whether the is on when the pi is on, or vice versa"
+    "Set the LED type to flash or pulse" \
+    "Set whether the LED is on when the pi is on, or vice versa"
 )
 
 LEDO_TITLE="LED on/off"
@@ -476,7 +476,7 @@ function doLEDType() {
         for (( i=0; i<$SIZE; i++ )); do
             if [ "${LEDT_TAGS[i]}" = "$RESULT" ]; then
                 writePropsFile $LEDT_SETTING $i
-                 $LEDT_ACTION $i
+                writeSerial $LEDT_ACTION $i
                 break
             fi
         done
@@ -524,7 +524,7 @@ function doLEDState() {
         for (( i=0; i<$SIZE; i++ )); do
             if [ "${LEDS_TAGS[i]}" = "$RESULT" ]; then
                 writePropsFile $LEDS_SETTING $i
-                 $LEDS_ACTION $i
+                writeSerial $LEDS_ACTION $i
                 break
             fi
         done
@@ -576,7 +576,7 @@ function doLongPressTime() {
         # trim whitespace
         RESULT=$(echo $RESULT | xargs)
         writePropsFile $LPT_SETTING $RESULT
-         $LPT_ACTION $RESULT
+        writeSerial $LPT_ACTION $RESULT
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
     fi
@@ -620,7 +620,7 @@ function doLongPressAction() {
         for (( i=0; i<$SIZE; i++ )); do
             if [ "${LPA_TAGS[i]}" = "$RESULT" ]; then
                 writePropsFile $LPA_SETTING $i
-                 $LPA_ACTION $i
+                writeSerial $LPA_ACTION $i
                 break
             fi
         done
@@ -853,7 +853,8 @@ function doUninstall() {
     if [ $BTN -eq $DIALOG_OK ]; then
         # TODO: replace this with real call
         # N.B. not sure if/how this will work, we are running the uninstaller in
-        # a subshell, so will it be able to delete this script?
+        # a subshell, so will it be able to delete this script? and what about
+        # the uninstaller? can it delete itself?
         # would forking it work?
         # one idea would be to write a small script that runs at reboot, to
         # delete this script and also the uninstaller script. but then we are
