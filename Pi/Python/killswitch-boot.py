@@ -35,7 +35,7 @@ time_hold = 5
 time_debounce = 0.05
 
 # TODO: change serial port
-serial_port = '/dev/pts/4'
+serial_port = '/dev/pts/5'
 serial_speed = 9600
 
 #-------------------------------------------------------------------------------
@@ -125,16 +125,20 @@ while (1):
         cmd = cmds[0]
         val = cmds[1]
 
-        # strip leading '?' and trailing '!'
+        # strip leading '?'
         cmd = cmd[1:]
 
-        # add two for CR/LF
+        # strip trailing '!' and add two for CR/LF
         val = val[:-3]
 
         if (cmd == "SHT"):
-            subprocess.call(['shutdown', '-h', 'now'], shell = False)
+            # TODO: replace with real command
+            #subprocess.call(['shutdown', '-h', 'now'], shell = False)
+            print("shutdown")
         elif (cmd == "RBT"):
-            subprocess.call(['shutdown', '-r', 'now'], shell = False)
+            # TODO: replace with real command
+            #subprocess.call(['shutdown', '-r', 'now'], shell = False)
+            print("reboot")
 
 #signal.pause()
 
