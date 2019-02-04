@@ -51,13 +51,12 @@ const int PROG_TIMEOUT = 15000;
 
 const int EEPROM_ADDR_CODE_ON = 0;
 const int EEPROM_ADDR_CODE_OFF = 4;
-const int EEPROM_ADDR_BRIGHTNESS = 8;
-const int EEPROM_ADDR_PULSE = 9;
-const int EEPROM_ADDR_INVERT = 10;
-const int EEPROM_ADDR_HOLD_TIME = 11;
-const int EEPROM_ADDR_HOLD_ACTION = 15;
-const int EEPROM_ADDR_BRIGHT_SET = 16;
-const int EEPROM_ADDR_STATUS_OFF = 17;
+const int EEPROM_ADDR_SET_DEFAULT = 8;
+const int EEPROM_ADDR_BRIGHTNESS = 9;
+const int EEPROM_ADDR_PULSE = 10;
+const int EEPROM_ADDR_INVERT = 11;
+const int EEPROM_ADDR_HOLD_TIME = 12;
+const int EEPROM_ADDR_HOLD_ACTION = 16;
 
 const int PULSE_CYCLE_SLOW = 500;
 const int PULSE_CYCLE_FAST = 125;
@@ -82,7 +81,7 @@ int state = STATE_OFF;
 int progState = PROG_STATE_NONE;
 int beforeProgState = STATE_OFF;
 
-DHButton button(PIN_BUTTON, true, DEBOUNCE_DELAY, HOLD_TIME_DEFAULT);
+DHButton button(PIN_BUTTON, true, DEBOUNCE_DELAY);
 
 IRrecv irrecv(PIN_IR);
 decode_results results;
@@ -450,7 +449,7 @@ void doCounterDone(DHPulseCounter* counter) {
 				// feedbackCounter.setValue(LOW);
 		// 	}
 		// } else if (state == STATE_PROGRAMMING) {
-		// 	// TODO: figure this out
+		// 	figure this out
 		// }
 	}
 	//feedbackCounter.start();
@@ -478,11 +477,23 @@ void setup() {
 	digitalWrite(PIN_TRIGGER, LOW);
 	digitalWrite(PIN_POWER, LOW);
 
-	// set up button
-	int holdTime = EEPROM.read(EEPROM_ADDR_HOLD_TIME);
-	if (holdTime == 0) {
+	// set defaults
+	int setDefaults = EEPROM.read(EEPROM_ADDR_SET_DEFAULT);
+	if (setDefaults == 0) {
+
+		// set hold time
 		holdTime = HOLD_TIME_DEFAULT;
+		EEPROMWriteLong(EEPROM_ADDR_HOLD_TIME, holdTime);
+
+		// set brightness
+		statusBrightness = STATUS_BRIGHTNESS_DEFAULT;
+		EEPROM.write(EEPROM_ADDR_BRIGHTNESS, statusBrightness);
+
+		// defaults are set
+		EEPROM.write(EEPROM_ADDR_INIT_SET, 1);
 	}
+
+	// set up button
 	button.setHoldTime(holdTime);
 	button.setOnShortPress(doShortPress);
 	button.setOnLongPress(doLongPress);
@@ -495,16 +506,16 @@ void setup() {
 	progTimer.setOnDone(doProgTimerUp);
 
 	// set up LED
-	byte statusBrightness = EEPROM.read(EEPROM_ADDR_BRIGHTNESS);
-	if (statusBrightness == 0) {
-		byte brightSet = EEPROM.read(EEPROM_ADDR_BRIGHT_SET);
-		if (!brightSet) {
-
-			// if brightness is 0 and set is 0, must be fresh so set default
-			statusBrightness = STATUS_BRIGHTNESS_DEFAULT;
-			EEPROM.update(EEPROM_ADDR_BRIGHT_SET, 1);
-		}
-	}
+//	byte statusBrightness = EEPROM.read(EEPROM_ADDR_BRIGHTNESS);
+	// if (statusBrightness == 0) {
+	// 	byte brightSet = EEPROM.read(EEPROM_ADDR_BRIGHT_SET);
+	// 	if (!brightSet) {
+	//
+	// 		// if brightness is 0 and set is 0, must be fresh so set default
+	// 		statusBrightness = STATUS_BRIGHTNESS_DEFAULT;
+	// 		EEPROM.update(EEPROM_ADDR_BRIGHT_SET, 1);
+	// 	}
+	// }
 	ledStatus.setLevel(statusBrightness);
 	ledStatus.setOnDoneFlashing(doLEDDoneFlashing);
 
