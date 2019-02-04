@@ -35,9 +35,6 @@ pin_feedback = 2
 serial_port = '/dev/pts/5'
 serial_speed = 9600
 
-# set up serial
-ser = serial.Serial(serial_port, serial_speed, timeout = 1);
-
 #-------------------------------------------------------------------------------
 # objects
 #-------------------------------------------------------------------------------
@@ -49,8 +46,11 @@ if (hasg0):
     # we then pulse the pin based on whether we are shutting down or rebooting
     feedback = g0.OutputDevice(pin_feedback)
 
+# set up serial
+ser = serial.Serial(serial_port, serial_speed, timeout = 1);
+
 #-------------------------------------------------------------------------------
-# get args
+# main code
 #-------------------------------------------------------------------------------
 
 if (sys.argv[1] == "poweroff") or (sys.argv[1] == "halt"):
