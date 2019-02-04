@@ -851,18 +851,9 @@ function doUninstall() {
 
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
-        # TODO: replace this with real call
-        # N.B. not sure if/how this will work, we are running the uninstaller in
-        # a subshell, so will it be able to delete this script? and what about
-        # the uninstaller? can it delete itself?
-        # would forking it work?
-        # one idea would be to write a small script that runs at reboot, to
-        # delete this script and also the uninstaller script. but then we are
-        # still left with that cleanup script, which would try running on every
-        # boot. that would have to be manually deleted.
-        # it seems we're always going to be left with at least one file
-        # somewhere...
-        echo "$UNINSTALL_COMMAND"
+
+        # run uninstaller
+        sudo "$UNINSTALL_COMMAND"
         MENU_DONE=1
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
@@ -909,8 +900,7 @@ done
 #-------------------------------------------------------------------------------
 # Cleanup
 
-# TODO: does this work in retropie? also what if uninstaller is running? we
-# want that output
+# TODO: does this work in retropie?
 clear
 
 # -)
