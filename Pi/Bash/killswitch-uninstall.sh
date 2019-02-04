@@ -76,7 +76,7 @@ echo "Done"
 
 # remove settings storage dir
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
-if [ -d "$SETTINGS_DIR"]; then
+if [ -d "$SETTINGS_DIR" ]; then
     echo -n "Removing ${SETTINGS_DIR}... "
     rm -r "${SETTINGS_DIR}"
     echo "Done"
@@ -104,9 +104,10 @@ echo "dialog, python, python-gpiozero, python-serial, avrdude"
 echo "You can remove them if you wish using apt-get"
 echo ""
 echo "If you wish to turn the login console back on, you can use the \
-raspi-setup script"
-echo "To remove this uninstaller, use 'sudo rm \
-/usr/local/bin/killswitch-uninstaller.sh'"
+raspi-setup \nscript"
+
+# remove this uninstaller script
+rm -- "$0"
 
 #-------------------------------------------------------------------------------
 # ask for reboot
@@ -119,9 +120,5 @@ case $answer in
     [Nn]* ) exit;;
         * ) shutdown -r now;;
 esac
-
-# TODO: test this - should delete itself
-# https://stackoverflow.com/questions/8981164/self-deleting-shell-script
-rm -- "%0"
 
 # -)
