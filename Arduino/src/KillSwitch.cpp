@@ -18,10 +18,16 @@
 #include "DHPulseCounter.h"
 
 //-----------------------------------------------------------------------------
+// Defines
+
+#define DH_DEBUG 1
+#define ERASE_EEPROM 0
+
+//-----------------------------------------------------------------------------
 // Constants
 
-const char VERSION_NUMBER[] = "0.1";
-const char VERSION_BUILD[] = "19.0.31";
+const char VERSION_NUMBER[] PROGMEM = "0.1";
+const char VERSION_BUILD[] PROGMEM = "19.01.31";
 
 const int STATE_OFF = 0;
 const int STATE_BOOTING = 1;
@@ -38,9 +44,13 @@ const int PIN_BUTTON = 12;
 const int PIN_IR = 7;
 const int PIN_FEEDBACK = 5;
 const int PIN_STATUS = 6;
-
 const int PIN_TRIGGER = 13;
 const int PIN_POWER = 4;
+
+#if DH_DEBUG == 1
+const int PIN_DH_DEBUG_IN = 8;
+const int PIN_DH_DEBUG_OUT = 9;
+#endif
 
 const int DEBOUNCE_DELAY = 50;
 const int HOLD_TIME_DEFAULT = 5000;
@@ -57,6 +67,7 @@ const int EEPROM_ADDR_PULSE = 10;
 const int EEPROM_ADDR_INVERT = 11;
 const int EEPROM_ADDR_HOLD_TIME = 12;
 const int EEPROM_ADDR_HOLD_ACTION = 16;
+const int EEPROM_ADDR_STATUS_OFF = 17;
 
 const int PULSE_CYCLE_SLOW = 500;
 const int PULSE_CYCLE_FAST = 125;
@@ -83,6 +94,10 @@ int beforeProgState = STATE_OFF;
 
 DHButton button(PIN_BUTTON, true, DEBOUNCE_DELAY);
 
+#if DH_DEBUG == 1
+DHButton tmpButton(PIN_DH_DEBUG_IN, true, DEBOUNCE_DELAY);
+#endif
+
 IRrecv irrecv(PIN_IR);
 decode_results results;
 
@@ -95,8 +110,6 @@ bool progFlashStart = false;
 DHTimer progTimer(PROG_TIMEOUT);
 
 DHTimer triggerTimer(TRIGGER_SHUTDOWN_TIME);
-
-//bool rebootFlag = false;
 
 String serialCmd = "";
 String serialValue = "";
@@ -150,7 +163,13 @@ void sendSerial(String CMD, String VAL) {
 void doBootup() {
 	if (state != STATE_BOOTING) {
 		state = STATE_BOOTING;
-		Serial.println("state changed to STATE_BOOTING");
+
+#if DH_DEBUG == 1
+		Serial.println(F("state changed to STATE_BOOTING"));
+#endif
+
+		// feedback state to watch for when booting
+		feedbackCounter.setValue(LOW);
 	}
 }
 
@@ -160,7 +179,13 @@ void doBootup() {
 void doShutdown(bool changeTrigger = true) {
 	if (state != STATE_SHUTDOWN) {
 		state = STATE_SHUTDOWN;
-		Serial.println("state changed to STATE_SHUTDOWN");
+
+#if DH_DEBUG == 1
+		Serial.println(F("state changed to STATE_SHUTDOWN"));
+#endif
+
+		// feedback state to watch for when shutting down
+		feedbackCounter.setValue(HIGH);
 
 		if (changeTrigger) {
 
@@ -178,14 +203,13 @@ void doShutdown(bool changeTrigger = true) {
 void doReboot(bool changeTrigger = true) {
 	if (state != STATE_REBOOT) {
 		state = STATE_REBOOT;
-		Serial.println("state changed to STATE_REBOOT");
 
-		// watch state is looking for LOW
+#if DH_DEBUG == 1
+		Serial.println(F("state changed to STATE_REBOOT"));
+#endif
+
+		// feedback state to watch for when rebooting
 		feedbackCounter.setValue(LOW);
-		//feedbackCounter.start();
-
-		// clear flag to ignore feedback
-		//rebootFlag = false;
 
 		if (changeTrigger) {
 
@@ -207,10 +231,12 @@ void startProgramming() {
 
 	// change state
 	state = STATE_PROGRAMMING;
-	Serial.println("state changed to STATE_PROGRAMMING");
-
 	progState = PROG_STATE_CODE_ON;
-	Serial.println("progState changed to PROG_STATE_CODE_ON");
+
+#if DH_DEBUG == 1
+	Serial.println(F("state changed to STATE_PROGRAMMING"));
+	Serial.println(F("progState changed to PROG_STATE_CODE_ON"));
+#endif
 
 	// don't count flashes, start watchdog
 	progChanging = false;
@@ -224,16 +250,16 @@ void stopProgramming() {
 
 	// restore state
 	state = beforeProgState;
-
-	// print restored state
-	if (state == STATE_OFF) {
-		Serial.println("state changed to STATE_OFF");
-	} else {
-		Serial.println("state changed to STATE_ON");
-	}
-
 	progState = PROG_STATE_NONE;
-	Serial.println("progState changed to PROG_STATE_NONE");
+
+#if DH_DEBUG == 1
+	if (state == STATE_OFF) {
+		Serial.println(F("state changed to STATE_OFF"));
+	} else {
+		Serial.println(F("state changed to STATE_ON"));
+	}
+	Serial.println(F("progState changed to PROG_STATE_NONE"));
+#endif
 
 	// don't count flashes, stop watchdog
 	progChanging = false;
@@ -282,7 +308,11 @@ void doLongPress(DHButton* button) {
 
 			// force shutdown
 			state = STATE_OFF;
-			Serial.println("state changed to STATE_OFF");
+
+#if DH_DEBUG == 1
+			Serial.println(F("state changed to STATE_OFF"));
+#endif
+
 		}
 	} else if (state == STATE_OFF) {
 		beforeProgState = STATE_OFF;
@@ -293,6 +323,24 @@ void doLongPress(DHButton* button) {
 		stopProgramming();
 	}
 }
+
+#if DH_DEBUG == 1
+/*-----------------------------------------------------------------------------
+ * Called when the DH_DEBUG feedback pin goes LOW.
+ * This is used to prevent bounce on the pin when using a jumper by hand.
+ ----------------------------------------------------------------------------*/
+void doTempPress(DHButton* button) {
+	digitalWrite(PIN_DH_DEBUG_OUT, LOW);
+}
+
+/*-----------------------------------------------------------------------------
+ * Called when the DH_DEBUG feedback pin goes HIGH.
+ * This is used to prevent bounce on the pin when using a jumper by hand.
+ ----------------------------------------------------------------------------*/
+void doTempRelease(DHButton* button) {
+	digitalWrite(PIN_DH_DEBUG_OUT, HIGH);
+}
+#endif
 
 /*-----------------------------------------------------------------------------
  * Called when the trigger timer expires.
@@ -322,10 +370,11 @@ void doLEDDoneFlashing(DHLED* led) {
 	// switch from on code to off code
 	if (progState == PROG_STATE_CODE_ON) {
 		progState = PROG_STATE_CODE_OFF;
-		Serial.println("progState changed to PROG_STATE_CODE_OFF");
 
-		// send serial to settings app
-		//sendSerial("PGM", "NEXT");
+#if DH_DEBUG == 1
+		Serial.println(F("progState changed to PROG_STATE_CODE_OFF"));
+#endif
+
 	} else if (progState == PROG_STATE_CODE_OFF) {
 
 		// done with off code
@@ -345,9 +394,11 @@ void doCounterDone(DHPulseCounter* counter) {
 	Only a permanent change is seen at bootup.
 	This method is only called when the pin changes from the NOT WANTED state to
 	the WANTED state. So if the line is LOW, and you're looking for a LOW, this
-	method will wait until the pin goes HIGH, and then goes LOW. (This  actually
-	makes it an edge detector, but that's really just semantics... and also this
-	class includes the counter part, which an edge detector would not)
+	method will wait until the pin goes HIGH, and then goes LOW. If the pin is
+	HIGH, and you're looking for a low, this method will be called as soon as
+	the pin changes. (This  actually makes it an edge detector, but that's
+	really just semantics... and also this class includes the counter part,
+	which an edge detector would not)
 
 	For pulses, the parameter to doShutdown/doReboot determines whether we
 	toggle the trigger pin, by testing for state.
@@ -372,8 +423,10 @@ void doCounterDone(DHPulseCounter* counter) {
 	// if there are pulses, we are early in the shutdown
 	if (pulses > 0) {
 
-		Serial.print("pulses: ");
-		Serial.println(i);
+#if DH_DEBUG == 1
+		Serial.print(F("pulses: "));
+		Serial.println(pulses);
+#endif
 
 		// if state is on, change came from GUI
 		if (state == STATE_ON) {
@@ -390,12 +443,18 @@ void doCounterDone(DHPulseCounter* counter) {
 
 	// no pulses, finish boot/shutdown/reboot
 	} else {
-		Serial.println("no pulses");
+
+#if DH_DEBUG == 1
+		Serial.println(F("no pulses"));
+#endif
 
 		// if feedback went LOW, we are booted
 		if (digitalRead(PIN_FEEDBACK) == LOW) {
 			state = STATE_ON;
-			Serial.println("state changed to STATE_ON");
+
+#if DH_DEBUG == 1
+			Serial.println(F("state changed to STATE_ON"));
+#endif
 
 			// new feedback state to watch for
 			feedbackCounter.setValue(HIGH);
@@ -403,56 +462,15 @@ void doCounterDone(DHPulseCounter* counter) {
 		// if feedback went HIGH, we are shut down
 		} else if (digitalRead(PIN_FEEDBACK) == HIGH) {
 			state = STATE_OFF;
-			Serial.println("state changed to STATE_OFF");
+
+#if DH_DEBUG == 1
+			Serial.println(F("state changed to STATE_OFF"));
+#endif
 
 			// new feedback state to watch for
 			feedbackCounter.setValue(LOW);
 		}
-
-
-
-		// if ((state == STATE_BOOTING) || (state == STATE_OFF) ||
-		// 		(state == STATE_REBOOT)) {
-		// 	if (digitalRead(PIN_FEEDBACK) == LOW) {
-		// 		state = STATE_ON;
-		// 		Serial.println("state changed to STATE_ON");
-		//
-		// 		// new feedback state to watch for
-		// 		feedbackCounter.setValue(HIGH);
-		// 	}
-		// } else if ((state == STATE_SHUTDOWN) || (state == STATE_ON)) {
-		// 	if (digitalRead(PIN_FEEDBACK) == HIGH) {
-		// 		state = STATE_OFF;
-		// 		Serial.println("state changed to STATE_OFF");
-		//
-		// 		// new feedback state to watch for
-		// 		feedbackCounter.setValue(LOW);
-		// 	}
-		// } else if (state == STATE_REBOOT) {
-		// 	if (digitalRead(PIN_FEEDBACK) == LOW) {
-				// if (rebootFlag) {
-					// state = STATE_ON;
-					// Serial.println("state changed to STATE_ON");
-
-					// // clear reboot flag
-					// rebootFlag = false;
-
-					// new feedback state to watch for
-					// feedbackCounter.setValue(HIGH);
-//				}
-
-			// } else {
-				// // set flag to watch feedback
-				// rebootFlag = true;
-				//
-				// // new feedback state to watch for
-				// feedbackCounter.setValue(LOW);
-		// 	}
-		// } else if (state == STATE_PROGRAMMING) {
-		// 	figure this out
-		// }
 	}
-	//feedbackCounter.start();
 }
 
 //-----------------------------------------------------------------------------
@@ -463,6 +481,18 @@ void doCounterDone(DHPulseCounter* counter) {
  ----------------------------------------------------------------------------*/
 void setup() {
 
+#if ERASE_EEPROM == 1
+	EEPROMWriteLong(EEPROM_ADDR_CODE_ON, 0);
+	EEPROMWriteLong(EEPROM_ADDR_CODE_OFF, 0);
+	EEPROM.write(EEPROM_ADDR_SET_DEFAULT, 0);
+	EEPROM.write(EEPROM_ADDR_BRIGHTNESS, 0);
+	EEPROM.write(EEPROM_ADDR_PULSE, 0);
+	EEPROM.write(EEPROM_ADDR_INVERT, 0);
+	EEPROMWriteLong(EEPROM_ADDR_HOLD_TIME, 0);
+	EEPROM.write(EEPROM_ADDR_HOLD_ACTION, 0);
+	EEPROM.write(EEPROM_ADDR_STATUS_OFF, 0);
+#endif
+
 	// start serial port
 	Serial.begin(9600);
 
@@ -472,12 +502,22 @@ void setup() {
 	pinMode(PIN_TRIGGER, OUTPUT);
 	pinMode(PIN_POWER, OUTPUT);
 
+#if DH_DEBUG == 1
+	pinMode(PIN_DH_DEBUG_OUT, OUTPUT);
+#endif
+
 	// pin values
 	digitalWrite(PIN_STATUS, LOW);
 	digitalWrite(PIN_TRIGGER, LOW);
 	digitalWrite(PIN_POWER, LOW);
 
+#if DH_DEBUG == 1
+	digitalWrite(PIN_DH_DEBUG_OUT, HIGH);
+#endif
+
 	// set defaults
+	int holdTime = EEPROMReadLong(EEPROM_ADDR_HOLD_TIME);
+	byte statusBrightness = EEPROM.read(EEPROM_ADDR_BRIGHTNESS);
 	int setDefaults = EEPROM.read(EEPROM_ADDR_SET_DEFAULT);
 	if (setDefaults == 0) {
 
@@ -490,7 +530,7 @@ void setup() {
 		EEPROM.write(EEPROM_ADDR_BRIGHTNESS, statusBrightness);
 
 		// defaults are set
-		EEPROM.write(EEPROM_ADDR_INIT_SET, 1);
+		EEPROM.write(EEPROM_ADDR_SET_DEFAULT, 1);
 	}
 
 	// set up button
@@ -498,30 +538,25 @@ void setup() {
 	button.setOnShortPress(doShortPress);
 	button.setOnLongPress(doLongPress);
 
+#if DH_DEBUG == 1
+	tmpButton.setOnPress(doTempPress);
+	tmpButton.setOnRelease(doTempRelease);
+#endif
+
 	// set up ir receiver
-//	irrecv.enableIRIn();
+	irrecv.enableIRIn();
 
 	// set up timers
 	triggerTimer.setOnDone(doTriggerTimerUp);
 	progTimer.setOnDone(doProgTimerUp);
 
 	// set up LED
-//	byte statusBrightness = EEPROM.read(EEPROM_ADDR_BRIGHTNESS);
-	// if (statusBrightness == 0) {
-	// 	byte brightSet = EEPROM.read(EEPROM_ADDR_BRIGHT_SET);
-	// 	if (!brightSet) {
-	//
-	// 		// if brightness is 0 and set is 0, must be fresh so set default
-	// 		statusBrightness = STATUS_BRIGHTNESS_DEFAULT;
-	// 		EEPROM.update(EEPROM_ADDR_BRIGHT_SET, 1);
-	// 	}
-	// }
 	ledStatus.setLevel(statusBrightness);
 	ledStatus.setOnDoneFlashing(doLEDDoneFlashing);
 
 	// set up pulse counter
 	feedbackCounter.setOnDone(doCounterDone);
-	feedbackCounter.start();
+	feedbackCounter.setValue(LOW);
 }
 
 /*-----------------------------------------------------------------------------
@@ -534,11 +569,18 @@ void loop() {
 
 	button.update();
 
+#if DH_DEBUG == 1
+	tmpButton.update();
+#endif
+
 //-----------------------------------------------------------------------------
 // ir
 
 	if (irrecv.decode(&results)) {
+
+#if DEBUG == 1
 		Serial.println(results.value, HEX);
+#endif
 
 		if (results.value != REPEAT) {
 
@@ -713,9 +755,6 @@ void loop() {
 //-----------------------------------------------------------------------------
 // serial input
 
-// TODO: this can be more cpp-like
-// readline, split on char, etc
-// 
 	if (Serial.available()) {
 
 		// get next char in serial buffer
@@ -734,14 +773,19 @@ void loop() {
 		// value end
 		} else if (c == CMD_END) {
 			serialState = SERIAL_STATE_NONE;
-			Serial.println("Serial cmd: " + serialCmd);
-			Serial.println("Serial val: " + serialValue);
+
+#if DH_DEBUG == 1
+			Serial.print(F("Serial cmd: "));
+			Serial.println(serialCmd);
+			Serial.print(F("Serial val: "));
+			Serial.println(serialValue);
+#endif
 
 			// check which command we got
-			if (serialCmd == "LEDO") {
+			if (serialCmd == F("LEDO")) {
 				int ledOff = serialValue.toInt();
 				EEPROM.update(EEPROM_ADDR_STATUS_OFF, ledOff);
-			} else if (serialCmd == "LEDB") {
+			} else if (serialCmd == F("LEDB")) {
 				int statusBrightness = serialValue.toInt();
 
 				// since we convert to int, clamp it at byte value
@@ -754,38 +798,34 @@ void loop() {
 				// will take effect in next update()
 				EEPROM.update(EEPROM_ADDR_BRIGHTNESS, statusBrightness);
 				ledStatus.setLevel(statusBrightness);
-			} else if (serialCmd == "LEDT") {
+			} else if (serialCmd == F("LEDT")) {
 
 				// will take effect in next update()
 				int pulse = serialValue.toInt();
 				EEPROM.update(EEPROM_ADDR_PULSE, pulse);
-			} else if (serialCmd == "LEDS") {
+			} else if (serialCmd == F("LEDS")) {
 
 				// will take effect in next update()
 				int inv = serialValue.toInt();
 				EEPROM.update(EEPROM_ADDR_INVERT, inv);
-			} else if (serialCmd == "REC") {
+			} else if (serialCmd == F("REC")) {
 				beforeProgState = STATE_ON;
 				startProgramming();
-			} else if (serialCmd == "LPT") {
+			} else if (serialCmd == F("LPT")) {
 
 				// will take effect in next uopdate()
 				unsigned long lpt = serialValue.toInt();
 				EEPROMWriteLong(EEPROM_ADDR_HOLD_TIME, lpt);
-			} else if (serialCmd == "LPA") {
+			} else if (serialCmd == F("LPA")) {
 
 				// will take effect in next uopdate()
 				int lpa = serialValue.toInt();
 				EEPROM.update(EEPROM_ADDR_HOLD_ACTION, lpa);
-			} else if (serialCmd == "VER") {
-				Serial.print("N=");
+			} else if (serialCmd == F("VER")) {
+				Serial.print(F("N="));
 				Serial.println(VERSION_NUMBER);
-				Serial.print("B=");
+				Serial.print(F("B="));
 				Serial.println(VERSION_BUILD);
-			// } else if (serialCmd == "SHT") {
-			// 	doShutdown();
-			// } else if (serialCmd == "RBT") {
-			// 	doReboot();
 			}
 
 		// build up command or value
@@ -799,4 +839,4 @@ void loop() {
 	}
 }
 
-\\ -)
+// -)
