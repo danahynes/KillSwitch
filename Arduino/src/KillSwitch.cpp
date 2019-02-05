@@ -77,13 +77,24 @@ const int FLASH_CYCLE_FAST = 250;
 const int TRIGGER_SHUTDOWN_TIME = 1000;
 const int TRIGGER_REBOOT_TIME = 5000;
 
-const char CMD_START = '!';
+const char CMD_START = '?';
 const char CMD_SEPERATOR = '|';
-const char CMD_END = '?';
+const char CMD_END = '!';
+
+const int SERIAL_BUFF_SIZE = 8;
 
 const int SERIAL_STATE_NONE = 0;
 const int SERIAL_STATE_CMD = 1;
 const int SERIAL_STATE_VALUE = 2;
+
+const char SERIAL_LEDO[] PROGMEM = "LEDO";
+const char SERIAL_LEDB[] PROGMEM = "LEDB";
+const char SERIAL_LEDT[] PROGMEM = "LEDT";
+const char SERIAL_LEDS[] PROGMEM = "LEDS";
+const char SERIAL_REC[] PROGMEM = "REC";
+const char SERIAL_LPT[] PROGMEM = "LPT";
+const char SERIAL_LPA[] PROGMEM = "LPA";
+const char SERIAL_VER[] PROGMEM = "VER";
 
 //-----------------------------------------------------------------------------
 // Variables
@@ -111,9 +122,10 @@ DHTimer progTimer(PROG_TIMEOUT);
 
 DHTimer triggerTimer(TRIGGER_SHUTDOWN_TIME);
 
-String serialCmd = "";
-String serialValue = "";
+char serialCmd[SERIAL_BUFF_SIZE];
+char serialValue[SERIAL_BUFF_SIZE];
 int serialState = SERIAL_STATE_NONE;
+int serialIndex = 0;
 
 //------------------------------------------------------------------------------
 // Helpers
@@ -153,8 +165,12 @@ long EEPROMReadLong(long address) {
 /*-----------------------------------------------------------------------------
  * Sends a command-value pair to the pi.
  ----------------------------------------------------------------------------*/
-void sendSerial(String CMD, String VAL) {
-	Serial.println(CMD_START + CMD + CMD_SEPERATOR + VAL + CMD_END);
+void sendSerial(char* CMD, char* VAL) {
+	Serial.print(CMD_START);
+	Serial.print(CMD);
+	Serial.print(CMD_SEPERATOR);
+	Serial.print(VAL);
+	Serial.println(CMD_END);
 }
 
 /*-----------------------------------------------------------------------------
@@ -763,16 +779,19 @@ void loop() {
 		// command start
 		if (c == CMD_START) {
 			serialState = SERIAL_STATE_CMD;
-			serialCmd = "";
-			serialValue = "";
+			memset(serialCmd, 0, SERIAL_BUFF_SIZE);
+			memset(serialValue, 0, SERIAL_BUFF_SIZE);
+			serialIndex = 0;
 
 		// command end, value start
 		} else if (c == CMD_SEPERATOR) {
 			serialState = SERIAL_STATE_VALUE;
+			serialIndex = 0;
 
 		// value end
 		} else if (c == CMD_END) {
 			serialState = SERIAL_STATE_NONE;
+			serialIndex = 0;
 
 #if DH_DEBUG == 1
 			Serial.print(F("Serial cmd: "));
@@ -782,11 +801,11 @@ void loop() {
 #endif
 
 			// check which command we got
-			if (serialCmd == F("LEDO")) {
-				int ledOff = serialValue.toInt();
+			if (strcmp_P(serialCmd, SERIAL_LEDO) == 0) {
+				int ledOff = atoi(serialValue);
 				EEPROM.update(EEPROM_ADDR_STATUS_OFF, ledOff);
-			} else if (serialCmd == F("LEDB")) {
-				int statusBrightness = serialValue.toInt();
+			} else if (strcmp_P(serialCmd, SERIAL_LEDB) == 0) {
+				int statusBrightness = atoi(serialValue);
 
 				// since we convert to int, clamp it at byte value
 				if (statusBrightness < 0) {
@@ -798,42 +817,51 @@ void loop() {
 				// will take effect in next update()
 				EEPROM.update(EEPROM_ADDR_BRIGHTNESS, statusBrightness);
 				ledStatus.setLevel(statusBrightness);
-			} else if (serialCmd == F("LEDT")) {
+			} else if (strcmp_P(serialCmd, SERIAL_LEDT) == 0) {
 
 				// will take effect in next update()
-				int pulse = serialValue.toInt();
+				int pulse = atoi(serialValue);
 				EEPROM.update(EEPROM_ADDR_PULSE, pulse);
-			} else if (serialCmd == F("LEDS")) {
+			} else if (strcmp_P(serialCmd, SERIAL_LEDS) == 0) {
 
 				// will take effect in next update()
-				int inv = serialValue.toInt();
+				int inv = atoi(serialValue);
 				EEPROM.update(EEPROM_ADDR_INVERT, inv);
-			} else if (serialCmd == F("REC")) {
+			} else if (strcmp_P(serialCmd, SERIAL_REC) == 0) {
 				beforeProgState = STATE_ON;
 				startProgramming();
-			} else if (serialCmd == F("LPT")) {
+			} else if (strcmp_P(serialCmd, SERIAL_LPT) == 0) {
 
 				// will take effect in next uopdate()
-				unsigned long lpt = serialValue.toInt();
+				unsigned long lpt = atol(serialValue);
 				EEPROMWriteLong(EEPROM_ADDR_HOLD_TIME, lpt);
-			} else if (serialCmd == F("LPA")) {
+			} else if (strcmp_P(serialCmd, SERIAL_LPA) == 0) {
 
 				// will take effect in next uopdate()
-				int lpa = serialValue.toInt();
+				int lpa = atoi(serialValue);
 				EEPROM.update(EEPROM_ADDR_HOLD_ACTION, lpa);
-			} else if (serialCmd == F("VER")) {
+			} else if (strcmp_P(serialCmd, SERIAL_VER) == 0) {
 				Serial.print(F("N="));
-				Serial.println(VERSION_NUMBER);
+				for (unsigned int k = 0; k < strlen_P(VERSION_NUMBER); k++) {
+					char myChar = pgm_read_byte_near(VERSION_NUMBER + k);
+					Serial.print(myChar);
+				}
+				Serial.println("");
+
 				Serial.print(F("B="));
-				Serial.println(VERSION_BUILD);
+				for (unsigned int k = 0; k < strlen_P(VERSION_BUILD); k++) {
+					char myChar = pgm_read_byte_near(VERSION_BUILD + k);
+					Serial.print(myChar);
+				}
+				Serial.println("");
 			}
 
 		// build up command or value
 		} else {
 			if (serialState == SERIAL_STATE_CMD) {
-				serialCmd += String(c);
+				serialCmd[serialIndex++] = c;
 			} else if (serialState == SERIAL_STATE_VALUE) {
-				serialValue += String(c);
+				serialValue[serialIndex++] = c;
 			}
 		}
 	}
