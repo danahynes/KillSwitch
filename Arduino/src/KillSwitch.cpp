@@ -48,8 +48,8 @@ const int PIN_TRIGGER = 13;
 const int PIN_POWER = 4;
 
 #if DH_DEBUG == 1
-const int PIN_DH_DEBUG_IN = 8;
-const int PIN_DH_DEBUG_OUT = 9;
+const int PIN_DEBUG_IN = 8;
+const int PIN_DEBUG_OUT = 9;
 #endif
 
 const int DEBOUNCE_DELAY = 50;
@@ -106,7 +106,7 @@ int beforeProgState = STATE_OFF;
 DHButton button(PIN_BUTTON, true, DEBOUNCE_DELAY);
 
 #if DH_DEBUG == 1
-DHButton tmpButton(PIN_DH_DEBUG_IN, true, DEBOUNCE_DELAY);
+DHButton tmpButton(PIN_DEBUG_IN, true, DEBOUNCE_DELAY);
 #endif
 
 IRrecv irrecv(PIN_IR);
@@ -342,19 +342,19 @@ void doLongPress(DHButton* button) {
 
 #if DH_DEBUG == 1
 /*-----------------------------------------------------------------------------
- * Called when the DH_DEBUG feedback pin goes LOW.
+ * Called when the DEBUG feedback pin goes LOW.
  * This is used to prevent bounce on the pin when using a jumper by hand.
  ----------------------------------------------------------------------------*/
 void doTempPress(DHButton* button) {
-	digitalWrite(PIN_DH_DEBUG_OUT, LOW);
+	digitalWrite(PIN_DEBUG_OUT, LOW);
 }
 
 /*-----------------------------------------------------------------------------
- * Called when the DH_DEBUG feedback pin goes HIGH.
+ * Called when the DEBUG feedback pin goes HIGH.
  * This is used to prevent bounce on the pin when using a jumper by hand.
  ----------------------------------------------------------------------------*/
 void doTempRelease(DHButton* button) {
-	digitalWrite(PIN_DH_DEBUG_OUT, HIGH);
+	digitalWrite(PIN_DEBUG_OUT, HIGH);
 }
 #endif
 
@@ -411,7 +411,7 @@ void doCounterDone(DHPulseCounter* counter) {
 	This method is only called when the pin changes from the NOT WANTED state to
 	the WANTED state. So if the line is LOW, and you're looking for a LOW, this
 	method will wait until the pin goes HIGH, and then goes LOW. If the pin is
-	HIGH, and you're looking for a low, this method will be called as soon as
+	HIGH, and you're looking for a LOW, this method will be called as soon as
 	the pin changes. (This  actually makes it an edge detector, but that's
 	really just semantics... and also this class includes the counter part,
 	which an edge detector would not)
@@ -426,7 +426,7 @@ void doCounterDone(DHPulseCounter* counter) {
 	pi what to do in their code, not here.
 	Ir is shutdown only. Button is shutdown, and reboot if set to reboot and not
 	force shutdown, otherwise it kills the power using the arduino's output and
-	there is no need for scripting (see killswitch-settings script).
+	there is no need for scripting (see the killswitch-settings script).
 
 	If it's a solid change (i.e. no pulses for longer than the default of 1
 	second), the pi has changed state. So we set the new state based on the old
@@ -519,7 +519,7 @@ void setup() {
 	pinMode(PIN_POWER, OUTPUT);
 
 #if DH_DEBUG == 1
-	pinMode(PIN_DH_DEBUG_OUT, OUTPUT);
+	pinMode(PIN_DEBUG_OUT, OUTPUT);
 #endif
 
 	// pin values
@@ -528,7 +528,7 @@ void setup() {
 	digitalWrite(PIN_POWER, LOW);
 
 #if DH_DEBUG == 1
-	digitalWrite(PIN_DH_DEBUG_OUT, HIGH);
+	digitalWrite(PIN_DEBUG_OUT, HIGH);
 #endif
 
 	// set defaults
@@ -841,16 +841,23 @@ void loop() {
 				int lpa = atoi(serialValue);
 				EEPROM.update(EEPROM_ADDR_HOLD_ACTION, lpa);
 			} else if (strcmp_P(serialCmd, SERIAL_VER) == 0) {
+
+				/*
+				N.B.
+				retrieving raw strings from flash is a PITA.
+				you need to read each byte and reassemble the string, so look
+				for null terminators using strlen_P.
+				 */
 				Serial.print(F("N="));
 				for (unsigned int k = 0; k < strlen_P(VERSION_NUMBER); k++) {
-					char myChar = pgm_read_byte_near(VERSION_NUMBER + k);
+					char myChar = pgm_read_byte(VERSION_NUMBER + k);
 					Serial.print(myChar);
 				}
 				Serial.println("");
 
 				Serial.print(F("B="));
 				for (unsigned int k = 0; k < strlen_P(VERSION_BUILD); k++) {
-					char myChar = pgm_read_byte_near(VERSION_BUILD + k);
+					char myChar = pgm_read_byte(VERSION_BUILD + k);
 					Serial.print(myChar);
 				}
 				Serial.println("");
