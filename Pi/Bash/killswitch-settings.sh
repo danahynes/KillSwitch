@@ -21,8 +21,8 @@ DIALOG_ESCAPE=255
 SETTINGS_DIR="${HOME}/.killswitch"
 SETTINGS_FILE="${SETTINGS_DIR}/killswitch-settings.conf"
 
-# TODO: change serial port
-SERIAL_PORT=/dev/pts/5
+#SERIAL_PORT=/dev/pts/5
+SERIAL_PORT=/dev/ttyS0
 SERIAL_SPEED=9600
 
 LEDB_DEFAULT=255            # 0-255
@@ -811,8 +811,7 @@ function doShutdown() {
 
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
-        # TODO: replace this with real call
-        echo "$SHUTDOWN_COMMAND"
+        $("$SHUTDOWN_COMMAND")
         MENU_DONE=1
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
@@ -831,8 +830,7 @@ function doReboot() {
 
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
-        # TODO: replace this with real call
-        echo "$REBOOT_COMMAND"
+        $("$REBOOT_COMMAND")
         MENU_DONE=1
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
