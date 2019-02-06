@@ -101,10 +101,10 @@ echo "***************************************************"
 echo ""
 echo "The following dependencies may have been installed with KillSwitch:"
 echo "dialog, python, python-gpiozero, python-serial, avrdude"
-echo "You can remove them if you wish using apt-get"
+echo "You can remove them if you wish using apt-get."
 echo ""
-echo "If you wish to turn the login console back on, you can use the \
-raspi-setup \nscript"
+echo -e "If you wish to turn the login console back on, you can use the \
+raspi-setup \nscript."
 
 # remove this uninstaller script
 rm -- "$0"
