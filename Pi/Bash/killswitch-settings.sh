@@ -21,8 +21,8 @@ DIALOG_ESCAPE=255
 SETTINGS_DIR="${HOME}/.killswitch"
 SETTINGS_FILE="${SETTINGS_DIR}/killswitch-settings.conf"
 
-#SERIAL_PORT=/dev/pts/5
-SERIAL_PORT=/dev/ttyS0
+SERIAL_PORT=/dev/pts/4
+#SERIAL_PORT=/dev/ttyS0
 SERIAL_SPEED=9600
 
 LEDB_DEFAULT=255            # 0-255
@@ -253,9 +253,8 @@ function writePropsFile() {
 }
 
 function readSerial() {
-    if [ read -r LINE < $SERIAL_PORT ]; then
-        echo $LINE
-    fi
+    read -r -t 30 LINE < $SERIAL_PORT
+    echo "$LINE"
 }
 
 function writeSerial() {
@@ -705,11 +704,8 @@ function doFirmware() {
 
     # get current version from arduino
     writeSerial "VER" ""
-    # TODO: read serial, this is faked
-    #FIRMWARE_LOCAL_VERSION_NUMBER=readSerial
-    #FIRMWARE_LOCAL_VERSION_BUILD=readSerial
-    FIRMWARE_LOCAL_VERSION_NUMBER="0.1"
-    FIRMWARE_LOCAL_VERSION_BUILD="19.01.24"
+    FIRMWARE_LOCAL_VERSION_NUMBER=$(readSerial)
+    FIRMWARE_LOCAL_VERSION_BUILD=$(readSerial)
 
     FIRMWARE_LOCAL_VERSION_NUMBER_A=$(echo $FIRMWARE_LOCAL_VERSION_NUMBER | \
     cut -d "." -f1)
@@ -754,23 +750,23 @@ function doFirmware() {
     fi
 
     # do comparison
-    IS_NEWER=1
+    IS_NEWER=0
 
-    if [ $FIRMWARE_LOCAL_VERSION_NUMBER_A -gt \
+    if [ $FIRMWARE_LOCAL_VERSION_NUMBER_A -lt \
     $FIRMWARE_REMOTE_VERSION_NUMBER_A ]; then
-        IS_NEWER=0
-    elif [ $FIRMWARE_LOCAL_VERSION_NUMBER_B -gt \
+        IS_NEWER=1
+    elif [ $FIRMWARE_LOCAL_VERSION_NUMBER_B -lt \
     $FIRMWARE_REMOTE_VERSION_NUMBER_B ]; then
-        IS_NEWER=0
-    elif [ $FIRMWARE_LOCAL_VERSION_BUILD_A -gt \
+        IS_NEWER=1
+    elif [ $FIRMWARE_LOCAL_VERSION_BUILD_A -lt \
     $FIRMWARE_REMOTE_VERSION_BUILD_A ]; then
-        IS_NEWER=0
-    elif [ $FIRMWARE_LOCAL_VERSION_BUILD_B -gt \
+        IS_NEWER=1
+    elif [ $FIRMWARE_LOCAL_VERSION_BUILD_B -lt \
     $FIRMWARE_REMOTE_VERSION_BUILD_B ]; then
-        IS_NEWER=0
-    elif [ $FIRMWARE_LOCAL_VERSION_BUILD_C -gt \
+        IS_NEWER=1
+    elif [ $FIRMWARE_LOCAL_VERSION_BUILD_C -lt \
     $FIRMWARE_REMOTE_VERSION_BUILD_C ]; then
-        IS_NEWER=0
+        IS_NEWER=1
     fi
 
     # remove local version file
@@ -778,11 +774,11 @@ function doFirmware() {
 
     # update text with version/build numbers
     FIRMWARE_TEXT="$FIRMWARE_TEXT_CURRENT"
-    FIRMWARE_TEXT+="${FIRMWARE_LOCAL_VERSION_NUMBER}-"
-    FIRMWARE_TEXT+="${FIRMWARE_LOCAL_VERSION_BUILD} \n"
+    FIRMWARE_TEXT+="${FIRMWARE_LOCAL_VERSION_NUMBER} ("
+    FIRMWARE_TEXT+="${FIRMWARE_LOCAL_VERSION_BUILD})\n"
     FIRMWARE_TEXT+="$FIRMWARE_TEXT_NEW"
-    FIRMWARE_TEXT+="${FIRMWARE_REMOTE_VERSION_NUMBER}-"
-    FIRMWARE_TEXT+="${FIRMWARE_REMOTE_VERSION_BUILD} \n"
+    FIRMWARE_TEXT+="${FIRMWARE_REMOTE_VERSION_NUMBER} ("
+    FIRMWARE_TEXT+="${FIRMWARE_REMOTE_VERSION_BUILD})\n"
     FIRMWARE_TEXT+="\n"
 
     #if newer, do yes/no
