@@ -12,16 +12,16 @@ VERSION_NUMBER = "0.1"
 VERSION_BUILD = "19.01.30"
 
 # are we running on a pi?
-hasg0 = False
+onPi = False
 
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
 try :
     import gpiozero as g0
-    hasg0 = True
+    onPi = True
 except ImportError:
-    hasg0 = False
+    onPi = False
 import serial
 import sys
 import time
@@ -31,15 +31,17 @@ import time
 #-------------------------------------------------------------------------------
 pin_feedback = 2
 
-# TODO: change serial port
-serial_port = '/dev/pts/5'
+if (onPi):
+    serial_port = '/dev/ttyS0'
+else:
+    serial_port = '/dev/pts/5'
 serial_speed = 9600
 
 #-------------------------------------------------------------------------------
 # objects
 #-------------------------------------------------------------------------------
 
-if (hasg0):
+if (onPi):
 
     # feedback (active_high = True, initial_value = False)
     # when the script starts, this pin will stay LOW
@@ -55,7 +57,7 @@ ser = serial.Serial(serial_port, serial_speed, timeout = 1);
 
 if (sys.argv[1] == "poweroff") or (sys.argv[1] == "halt"):
 
-    if (hasg0):
+    if (onPi):
 
         # pulse the pin once - high/low
         feedback.on()
@@ -66,7 +68,7 @@ if (sys.argv[1] == "poweroff") or (sys.argv[1] == "halt"):
     ser.write("?SHT|!")
 elif (sys.argv[1] == "reboot"):
 
-    if (hasg0):
+    if (onPi):
 
         # pulse the pin twice - high/low/high/low
         feedback.on()
