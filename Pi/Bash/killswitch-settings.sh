@@ -214,13 +214,11 @@ SHUTDOWN_TITLE="Shutdown"
 SHUTDOWN_TEXT="Are you sure you want to shut down?"
 SHUTDOWN_HEIGHT=7
 SHUTDOWN_WIDTH=40
-SHUTDOWN_COMMAND="sudo shutdown -h now"
 
 REBOOT_TITLE="Reboot"
 REBOOT_TEXT="Are you sure you want to reboot?"
 REBOOT_HEIGHT=7
 REBOOT_WIDTH=40
-REBOOT_COMMAND="sudo shutdown -r now"
 
 UNINSTALL_TITLE="Uninstall"
 UNINSTALL_TEXT="Are you sure you want to uninstall KillSwitch?"
@@ -811,7 +809,7 @@ function doShutdown() {
 
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
-        $("$SHUTDOWN_COMMAND")
+        sudo shutdown -h now
         MENU_DONE=1
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
@@ -830,7 +828,7 @@ function doReboot() {
 
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
-        $("$REBOOT_COMMAND")
+        sudo shutdown -r now
         MENU_DONE=1
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
