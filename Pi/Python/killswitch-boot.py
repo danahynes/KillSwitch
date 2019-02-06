@@ -12,16 +12,16 @@ VERSION_NUMBER = "0.1"
 VERSION_BUILD = "19.01.30"
 
 # are we running on a pi?
-hasg0 = False
+onPi = False
 
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
 try :
     import gpiozero as g0
-    hasg0 = True
+    onPi = True
 except ImportError:
-    hasg0 = False
+    onPi = False
 import serial
 #import signal
 import subprocess
@@ -34,8 +34,10 @@ pin_trigger = 3
 time_hold = 5
 time_debounce = 0.05
 
-# TODO: change serial port
-serial_port = '/dev/pts/5'
+if (onPi):
+    serial_port = '/dev/ttyS0'
+else:
+    serial_port = '/dev/pts/5'
 serial_speed = 9600
 
 #-------------------------------------------------------------------------------
@@ -80,7 +82,7 @@ def released():
 # objects
 #-------------------------------------------------------------------------------
 
-if (hasg0):
+if (onPi):
 
     # set up trigger pin
     trigger = g0.Button(pin_trigger, hold_time = time_hold, \
@@ -102,7 +104,7 @@ ser = serial.Serial(serial_port, serial_speed, timeout = 1);
 # initialize
 #-------------------------------------------------------------------------------
 
-if (hasg0):
+if (onPi):
 
     # make sure the pin starts off low (in case it was held over)
     trigger.wait_for_release()
@@ -132,13 +134,9 @@ while (1):
         val = val[:-3]
 
         if (cmd == "SHT"):
-            # TODO: replace with real command
-            #subprocess.call(['shutdown', '-h', 'now'], shell = False)
-            print("shutdown")
+            subprocess.call(['shutdown', '-h', 'now'], shell = False)
         elif (cmd == "RBT"):
-            # TODO: replace with real command
-            #subprocess.call(['shutdown', '-r', 'now'], shell = False)
-            print("reboot")
+            subprocess.call(['shutdown', '-r', 'now'], shell = False)
 
 #signal.pause()
 
