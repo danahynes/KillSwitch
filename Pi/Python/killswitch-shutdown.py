@@ -9,7 +9,7 @@
 #-------------------------------------------------------------------------------
 
 VERSION_NUMBER = "0.1"
-VERSION_BUILD = "19.01.30"
+VERSION_BUILD = "19.02.06"
 
 # are we running on a pi?
 onPi = False
