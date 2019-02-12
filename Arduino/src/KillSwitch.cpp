@@ -21,12 +21,12 @@
 // Defines
 
 #define DH_DEBUG 1
-#define ERASE_EEPROM 0
+#define ERASE_EEPROM 1
 
 //-----------------------------------------------------------------------------
 // Constants
 
-const char VERSION_NUMBER[] PROGMEM = "0.1";
+const char VERSION_NUMBER[] PROGMEM = "0.2";
 const char VERSION_BUILD[] PROGMEM = "19.02.06";
 
 const int STATE_OFF = 0;
@@ -34,48 +34,53 @@ const int STATE_BOOTING = 1;
 const int STATE_ON = 2;
 const int STATE_SHUTDOWN = 3;
 const int STATE_REBOOT = 4;
-const int STATE_PROGRAMMING = 5;
 
 const int PROG_STATE_NONE = 0;
 const int PROG_STATE_CODE_ON = 1;
 const int PROG_STATE_CODE_OFF = 2;
 
-const int PIN_BUTTON = 12;
+#if DH_DEBUG == 1
+const int PIN_BUTTON = 2;
 const int PIN_IR = 7;
 const int PIN_FEEDBACK = 5;
 const int PIN_STATUS = 6;
 const int PIN_TRIGGER = 13;
 const int PIN_POWER = 4;
 
-#if DH_DEBUG == 1
-const int PIN_DEBUG_IN = 8;
-const int PIN_DEBUG_OUT = 9;
+const int PIN_DEBUG_FEEDBACK_IN = 8;
+const int PIN_DEBUG_FEEDBACK_OUT = 9;
+#else
+// TODO: pins for ATTiny84
 #endif
 
 const int DEBOUNCE_DELAY = 50;
 const int HOLD_TIME_DEFAULT = 5000;
 
-const int STATUS_BRIGHTNESS_DEFAULT = 255;
+const int STATUS_ON_BRIGHTNESS_DEFAULT = 255;
+
+const int STATUS_TYPE_NORMAL = 0;
+const int STATUS_TYPE_INVERT = 1;
+const int STATUS_TYPE_OFF = 2;
 
 const int PROG_TIMEOUT = 15000;
 
 const int EEPROM_ADDR_CODE_ON = 0;
 const int EEPROM_ADDR_CODE_OFF = 4;
 const int EEPROM_ADDR_SET_DEFAULT = 8;
-const int EEPROM_ADDR_BRIGHTNESS = 9;
-const int EEPROM_ADDR_PULSE = 10;
-const int EEPROM_ADDR_INVERT = 11;
-const int EEPROM_ADDR_HOLD_TIME = 12;
-const int EEPROM_ADDR_HOLD_ACTION = 16;
-const int EEPROM_ADDR_STATUS_OFF = 17;
+const int EEPROM_ADDR_ON_BRIGHTNESS = 9;
+const int EEPROM_ADDR_OFF_BRIGHTNESS = 10;
+const int EEPROM_ADDR_TYPE = 11;
+const int EEPROM_ADDR_PULSE = 12;
+const int EEPROM_ADDR_HOLD_TIME = 13;
+const int EEPROM_ADDR_HOLD_ACTION = 17;
 
 const int PULSE_CYCLE_SLOW = 500;
 const int PULSE_CYCLE_FAST = 125;
 const int FLASH_CYCLE_SLOW = 1000;
 const int FLASH_CYCLE_FAST = 250;
 
-const int TRIGGER_SHUTDOWN_TIME = 1000;
-const int TRIGGER_REBOOT_TIME = 5000;
+const int TRIGGER_SHUTDOWN_TIME = 100;
+const int TRIGGER_REBOOT_TIME = 500;
 
 const char CMD_START = '?';
 const char CMD_SEPERATOR = '|';
@@ -87,10 +92,10 @@ const int SERIAL_STATE_NONE = 0;
 const int SERIAL_STATE_CMD = 1;
 const int SERIAL_STATE_VALUE = 2;
 
-const char SERIAL_LEDO[] PROGMEM = "LEDO";
-const char SERIAL_LEDB[] PROGMEM = "LEDB";
-const char SERIAL_LEDT[] PROGMEM = "LEDT";
-const char SERIAL_LEDS[] PROGMEM = "LEDS";
+const char SERIAL_LBN[] PROGMEM = "LBN"; // led on brightness
+const char SERIAL_LBF[] PROGMEM = "LBF"; // led off brightness
+const char SERIAL_LTP[] PROGMEM = "LTP"; // led type
+const char SERIAL_LPL[] PROGMEM = "LPL"; // led pulse
 const char SERIAL_REC[] PROGMEM = "REC";
 const char SERIAL_LPT[] PROGMEM = "LPT";
 const char SERIAL_LPA[] PROGMEM = "LPA";
@@ -101,12 +106,11 @@ const char SERIAL_VER[] PROGMEM = "VER";
 
 int state = STATE_OFF;
 int progState = PROG_STATE_NONE;
-int beforeProgState = STATE_OFF;
 
 DHButton button(PIN_BUTTON, true, DEBOUNCE_DELAY);
 
 #if DH_DEBUG == 1
-DHButton tmpButton(PIN_DEBUG_IN, true, DEBOUNCE_DELAY);
+DHButton tmpFeedback(PIN_DEBUG_FEEDBACK_IN, true, DEBOUNCE_DELAY);
 #endif
 
 IRrecv irrecv(PIN_IR);
@@ -180,6 +184,10 @@ void doBootup() {
 	if (state != STATE_BOOTING) {
 		state = STATE_BOOTING;
 
+		// reset brightness
+		int statusOnBrightness = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
+		ledStatus.setLevel(statusOnBrightness);
+
 #if DH_DEBUG == 1
 		Serial.println(F("state changed to STATE_BOOTING"));
 #endif
@@ -195,6 +203,10 @@ void doBootup() {
 void doShutdown(bool changeTrigger = true) {
 	if (state != STATE_SHUTDOWN) {
 		state = STATE_SHUTDOWN;
+
+		// reset brightness
+		int statusOnBrightness = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
+		ledStatus.setLevel(statusOnBrightness);
 
 #if DH_DEBUG == 1
 		Serial.println(F("state changed to STATE_SHUTDOWN"));
@@ -220,6 +232,10 @@ void doReboot(bool changeTrigger = true) {
 	if (state != STATE_REBOOT) {
 		state = STATE_REBOOT;
 
+		// reset brightness
+		int statusOnBrightness = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
+		ledStatus.setLevel(statusOnBrightness);
+
 #if DH_DEBUG == 1
 		Serial.println(F("state changed to STATE_REBOOT"));
 #endif
@@ -242,15 +258,14 @@ void doReboot(bool changeTrigger = true) {
  ----------------------------------------------------------------------------*/
 void startProgramming() {
 
-	// store state
-	beforeProgState = state;
+	// reset brightness
+	int statusOnBrightness = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
+	ledStatus.setLevel(statusOnBrightness);
 
-	// change state
-	state = STATE_PROGRAMMING;
+	// change prog state
 	progState = PROG_STATE_CODE_ON;
 
 #if DH_DEBUG == 1
-	Serial.println(F("state changed to STATE_PROGRAMMING"));
 	Serial.println(F("progState changed to PROG_STATE_CODE_ON"));
 #endif
 
@@ -264,16 +279,10 @@ void startProgramming() {
  ----------------------------------------------------------------------------*/
 void stopProgramming() {
 
-	// restore state
-	state = beforeProgState;
+	// change prog state
 	progState = PROG_STATE_NONE;
 
 #if DH_DEBUG == 1
-	if (state == STATE_OFF) {
-		Serial.println(F("state changed to STATE_OFF"));
-	} else {
-		Serial.println(F("state changed to STATE_ON"));
-	}
 	Serial.println(F("progState changed to PROG_STATE_NONE"));
 #endif
 
@@ -286,11 +295,17 @@ void stopProgramming() {
  * Called when the button has been pressed for a short time (< hold time).
  ----------------------------------------------------------------------------*/
 void doShortPress(DHButton* button) {
-	if (state == STATE_OFF) {
-		doBootup();
-	} else if (state == STATE_ON) {
-		doShutdown();
-	} else if (state == STATE_PROGRAMMING) {
+
+	// normal
+	if (progState == PROG_STATE_NONE) {
+		if (state == STATE_OFF) {
+			doBootup();
+		} else if (state == STATE_ON) {
+			doShutdown();
+		}
+
+	// programming
+	} else {
 		if (progState == PROG_STATE_CODE_ON) {
 
 			// count flashes, start watchdog
@@ -314,26 +329,29 @@ void doShortPress(DHButton* button) {
  ----------------------------------------------------------------------------*/
 void doLongPress(DHButton* button) {
 
-	// get long press action
-	bool forceQuitOnHold = EEPROM.read(EEPROM_ADDR_HOLD_ACTION);
+	// normal
+	if (progState == PROG_STATE_NONE) {
 
-	if (state == STATE_ON) {
-		if (!forceQuitOnHold) {
-			doReboot();
-		} else {
+		// get long press action
+		bool forceQuitOnHold = EEPROM.read(EEPROM_ADDR_HOLD_ACTION);
 
-			// force shutdown
-			state = STATE_OFF;
+		if (state == STATE_ON) {
+			if (!forceQuitOnHold) {
+				doReboot();
+			} else {
+
+				// force shutdown
+				state = STATE_OFF;
 
 #if DH_DEBUG == 1
-			Serial.println(F("state changed to STATE_OFF"));
+				Serial.println(F("state changed to STATE_OFF"));
 #endif
 
+			}
+		} else if (state == STATE_OFF) {
+			startProgramming();
 		}
-	} else if (state == STATE_OFF) {
-		beforeProgState = STATE_OFF;
-		startProgramming();
-	} else if (state == STATE_PROGRAMMING) {
+	} else {
 
 		// abort programming
 		stopProgramming();
@@ -345,16 +363,16 @@ void doLongPress(DHButton* button) {
  * Called when the DEBUG feedback pin goes LOW.
  * This is used to prevent bounce on the pin when using a jumper by hand.
  ----------------------------------------------------------------------------*/
-void doTempPress(DHButton* button) {
-	digitalWrite(PIN_DEBUG_OUT, LOW);
+void doFeedbackPress(DHButton* button) {
+	digitalWrite(PIN_DEBUG_FEEDBACK_OUT, LOW);
 }
 
 /*-----------------------------------------------------------------------------
  * Called when the DEBUG feedback pin goes HIGH.
  * This is used to prevent bounce on the pin when using a jumper by hand.
  ----------------------------------------------------------------------------*/
-void doTempRelease(DHButton* button) {
-	digitalWrite(PIN_DEBUG_OUT, HIGH);
+void doFeedbackRelease(DHButton* button) {
+	digitalWrite(PIN_DEBUG_FEEDBACK_OUT, HIGH);
 }
 #endif
 
@@ -378,6 +396,11 @@ void doProgTimerUp(DHTimer* timer) {
  * Called when the LED is done flashing for a count.
  ----------------------------------------------------------------------------*/
 void doLEDDoneFlashing(DHLED* led) {
+
+	// XXX: delay() is bad but we need to differentiate between
+	// the "waiting for code" flashes and the "got a code" flashes
+	// is it worth a whole other timer/callback for this?
+	delay(FLASH_CYCLE_SLOW / 2);
 
 	// stop counting flashes
 	progFlashStart = false;
@@ -501,13 +524,17 @@ void setup() {
 	EEPROMWriteLong(EEPROM_ADDR_CODE_ON, 0);
 	EEPROMWriteLong(EEPROM_ADDR_CODE_OFF, 0);
 	EEPROM.write(EEPROM_ADDR_SET_DEFAULT, 0);
-	EEPROM.write(EEPROM_ADDR_BRIGHTNESS, 0);
+	EEPROM.write(EEPROM_ADDR_ON_BRIGHTNESS, 0);
+	EEPROM.write(EEPROM_ADDR_OFF_BRIGHTNESS, 0);
+	EEPROM.write(EEPROM_ADDR_TYPE, 0);
 	EEPROM.write(EEPROM_ADDR_PULSE, 0);
-	EEPROM.write(EEPROM_ADDR_INVERT, 0);
 	EEPROMWriteLong(EEPROM_ADDR_HOLD_TIME, 0);
 	EEPROM.write(EEPROM_ADDR_HOLD_ACTION, 0);
-	EEPROM.write(EEPROM_ADDR_STATUS_OFF, 0);
 #endif
+
+	//EEPROM.write(EEPROM_ADDR_TYPE, STATUS_TYPE_OFF);
+	//EEPROM.write(EEPROM_ADDR_OFF_BRIGHTNESS, 1);
+	EEPROM.write(EEPROM_ADDR_PULSE, 1);
 
 	// start serial port
 	Serial.begin(9600);
@@ -519,7 +546,7 @@ void setup() {
 	pinMode(PIN_POWER, OUTPUT);
 
 #if DH_DEBUG == 1
-	pinMode(PIN_DEBUG_OUT, OUTPUT);
+	pinMode(PIN_DEBUG_FEEDBACK_OUT, OUTPUT);
 #endif
 
 	// pin values
@@ -528,12 +555,12 @@ void setup() {
 	digitalWrite(PIN_POWER, LOW);
 
 #if DH_DEBUG == 1
-	digitalWrite(PIN_DEBUG_OUT, HIGH);
+	digitalWrite(PIN_DEBUG_FEEDBACK_OUT, HIGH);
 #endif
 
 	// set defaults
 	int holdTime = EEPROMReadLong(EEPROM_ADDR_HOLD_TIME);
-	byte statusBrightness = EEPROM.read(EEPROM_ADDR_BRIGHTNESS);
+	byte statusOnBrightness = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
 	int setDefaults = EEPROM.read(EEPROM_ADDR_SET_DEFAULT);
 	if (setDefaults == 0) {
 
@@ -541,9 +568,9 @@ void setup() {
 		holdTime = HOLD_TIME_DEFAULT;
 		EEPROMWriteLong(EEPROM_ADDR_HOLD_TIME, holdTime);
 
-		// set brightness
-		statusBrightness = STATUS_BRIGHTNESS_DEFAULT;
-		EEPROM.write(EEPROM_ADDR_BRIGHTNESS, statusBrightness);
+		// set on brightness
+		statusOnBrightness = STATUS_ON_BRIGHTNESS_DEFAULT;
+		EEPROM.write(EEPROM_ADDR_ON_BRIGHTNESS, statusOnBrightness);
 
 		// defaults are set
 		EEPROM.write(EEPROM_ADDR_SET_DEFAULT, 1);
@@ -555,20 +582,22 @@ void setup() {
 	button.setOnLongPress(doLongPress);
 
 #if DH_DEBUG == 1
-	tmpButton.setOnPress(doTempPress);
-	tmpButton.setOnRelease(doTempRelease);
+	tmpFeedback.setOnPress(doFeedbackPress);
+	tmpFeedback.setOnRelease(doFeedbackRelease);
 #endif
 
 	// set up ir receiver
-	irrecv.enableIRIn();
+	//irrecv.enableIRIn();
 
 	// set up timers
 	triggerTimer.setOnDone(doTriggerTimerUp);
 	progTimer.setOnDone(doProgTimerUp);
 
 	// set up LED
-	ledStatus.setLevel(statusBrightness);
+	int statusOffBrightness = EEPROM.read(EEPROM_ADDR_OFF_BRIGHTNESS);
+	ledStatus.setLevel(statusOffBrightness);
 	ledStatus.setOnDoneFlashing(doLEDDoneFlashing);
+	ledStatus.on();
 
 	// set up pulse counter
 	feedbackCounter.setOnDone(doCounterDone);
@@ -586,7 +615,7 @@ void loop() {
 	button.update();
 
 #if DH_DEBUG == 1
-	tmpButton.update();
+	tmpFeedback.update();
 #endif
 
 //-----------------------------------------------------------------------------
@@ -601,7 +630,7 @@ void loop() {
 		if (results.value != REPEAT) {
 
 			// normal on/off
-			if (state != STATE_PROGRAMMING) {
+			if (progState == PROG_STATE_NONE) {
 				unsigned long onCode = EEPROMReadLong(EEPROM_ADDR_CODE_ON);
 				unsigned long offCode = EEPROMReadLong(EEPROM_ADDR_CODE_OFF);
 				if ((results.value == onCode) && (state == STATE_OFF)) {
@@ -643,59 +672,71 @@ void loop() {
 
 	ledStatus.update();
 
-	// get current values of pulse and invert from properties
-	bool statusOff = EEPROM.read(EEPROM_ADDR_STATUS_OFF);
+	// get current values of type and pulse from properties
+	int statusType = EEPROM.read(EEPROM_ADDR_TYPE);
+	bool statusOff = (statusType == STATUS_TYPE_OFF);
+	bool statusInvert = (statusType == STATUS_TYPE_INVERT);
 	bool statusPulse = EEPROM.read(EEPROM_ADDR_PULSE);
-	bool statusInvert = EEPROM.read(EEPROM_ADDR_INVERT);
 
-	if ((state == STATE_BOOTING) ||
-			(state == STATE_SHUTDOWN) ||
-			(state == STATE_REBOOT)) {
+	// normal
+	if (progState == PROG_STATE_NONE) {
 
-		// flash/pulse slow
-		if (!statusOff) {
-			if (ledStatus.getState() != ledStatus.FLASHING) {
-				if (statusPulse) {
-					ledStatus.setOnTime(PULSE_CYCLE_SLOW / 2);
-					ledStatus.setOffTime(PULSE_CYCLE_SLOW / 2);
-					ledStatus.setFadeOnTime(PULSE_CYCLE_SLOW / 2);
-					ledStatus.setFadeOffTime(PULSE_CYCLE_SLOW / 2);
-				} else {
-					ledStatus.setOnTime(FLASH_CYCLE_SLOW / 2);
-					ledStatus.setOffTime(FLASH_CYCLE_SLOW / 2);
+		// states that require flashing
+		if ((state == STATE_BOOTING) ||
+				(state == STATE_SHUTDOWN) ||
+				(state == STATE_REBOOT)) {
+
+			// flash/pulse slow
+			if (statusOff) {
+				ledStatus.off();
+			} else {
+				if (ledStatus.getState() != ledStatus.FLASHING) {
+					if (statusPulse) {
+						ledStatus.setOnTime(PULSE_CYCLE_SLOW / 2);
+						ledStatus.setOffTime(PULSE_CYCLE_SLOW / 2);
+						ledStatus.setFadeOnTime(PULSE_CYCLE_SLOW / 2);
+						ledStatus.setFadeOffTime(PULSE_CYCLE_SLOW / 2);
+					} else {
+						ledStatus.setOnTime(FLASH_CYCLE_SLOW / 2);
+						ledStatus.setOffTime(FLASH_CYCLE_SLOW / 2);
+					}
+					ledStatus.flash(statusPulse);
 				}
-				ledStatus.flash(statusPulse);
 			}
-		} else {
-			ledStatus.off();
-		}
-
-	} else if (state == STATE_ON) {
 
 		// no flashing
-		if (!statusOff) {
-			if (statusInvert) {
-				 ledStatus.off();
+		} else if (state == STATE_ON) {
+			if (statusOff) {
+				ledStatus.off();
 			} else {
+				if (statusInvert) {
+					byte br = EEPROM.read(EEPROM_ADDR_OFF_BRIGHTNESS);
+					ledStatus.setLevel(br);
+				} else {
+					byte br = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
+					ledStatus.setLevel(br);
+				}
 				ledStatus.on();
 			}
-		} else {
-			ledStatus.off();
-		}
-	} else if (state == STATE_OFF) {
 
 		// no flashing
-		if (!statusOff) {
-			if (statusInvert) {
-				 ledStatus.on();
-			} else {
+		} else if (state == STATE_OFF) {
+			if (statusOff) {
 				ledStatus.off();
+			} else {
+				if (statusInvert) {
+					byte br = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
+					ledStatus.setLevel(br);
+				} else {
+					byte br = EEPROM.read(EEPROM_ADDR_OFF_BRIGHTNESS);
+					ledStatus.setLevel(br);
+				}
+				ledStatus.on();
 			}
-		} else {
-			ledStatus.off();
 		}
-	} else if (state == STATE_PROGRAMMING) {
+	} else {
 
+		// slow flash for confirmation
 		if (progChanging) {
 
 			// put the led in a known state and start a new cycle
@@ -757,7 +798,7 @@ void loop() {
 // power
 
 	// states that do not require pi to be powered
-	if ((state == STATE_OFF) || (state == STATE_PROGRAMMING)) {
+	if (state == STATE_OFF) {
 		digitalWrite(PIN_POWER, LOW);
 	} else {
 		digitalWrite(PIN_POWER, HIGH);
@@ -801,34 +842,27 @@ void loop() {
 #endif
 
 			// check which command we got
-			if (strcmp_P(serialCmd, SERIAL_LEDO) == 0) {
-				int ledOff = atoi(serialValue);
-				EEPROM.update(EEPROM_ADDR_STATUS_OFF, ledOff);
-			} else if (strcmp_P(serialCmd, SERIAL_LEDB) == 0) {
-				int statusBrightness = atoi(serialValue);
-
-				// since we convert to int, clamp it at byte value
-				if (statusBrightness < 0) {
-					statusBrightness = 0;
-				} else if (statusBrightness > 255) {
-					statusBrightness = 255;
-				}
+			if (strcmp_P(serialCmd, SERIAL_LBN) == 0) {
+				int lbn = atoi(serialValue);
 
 				// will take effect in next update()
-				EEPROM.update(EEPROM_ADDR_BRIGHTNESS, statusBrightness);
-				ledStatus.setLevel(statusBrightness);
-			} else if (strcmp_P(serialCmd, SERIAL_LEDT) == 0) {
+				EEPROM.update(EEPROM_ADDR_ON_BRIGHTNESS, lbn);
+			} else if (strcmp_P(serialCmd, SERIAL_LBF) == 0) {
+				int lbf = atoi(serialValue);
 
 				// will take effect in next update()
-				int pulse = atoi(serialValue);
-				EEPROM.update(EEPROM_ADDR_PULSE, pulse);
-			} else if (strcmp_P(serialCmd, SERIAL_LEDS) == 0) {
+				EEPROM.update(EEPROM_ADDR_OFF_BRIGHTNESS, lbf);
+			} else if (strcmp_P(serialCmd, SERIAL_LTP) == 0) {
+				int ltp = atoi(serialValue);
 
 				// will take effect in next update()
-				int inv = atoi(serialValue);
-				EEPROM.update(EEPROM_ADDR_INVERT, inv);
+				EEPROM.update(EEPROM_ADDR_TYPE, ltp);
+			} else if (strcmp_P(serialCmd, SERIAL_LPL) == 0) {
+
+				// will take effect in next update()
+				int lpl = atoi(serialValue);
+				EEPROM.update(EEPROM_ADDR_PULSE, lpl);
 			} else if (strcmp_P(serialCmd, SERIAL_REC) == 0) {
-				beforeProgState = STATE_ON;
 				startProgramming();
 			} else if (strcmp_P(serialCmd, SERIAL_LPT) == 0) {
 
