@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER="0.1"
+VERSION_NUMBER="0.2"
 VERSION_BUILD="19.02.06"
 
 DIALOG_OK=0
@@ -25,7 +25,7 @@ SERIAL_PORT=/dev/pts/4
 #SERIAL_PORT=/dev/ttyS0
 SERIAL_SPEED=9600
 
-LEDB_DEFAULT=255            # 0-255
+LEDN_DEFAULT=255            # 0-255
 LPT_DEFAULT=5               # in seconds
 
 ACTION_START="?"
@@ -85,7 +85,7 @@ LED_MENU_TITLE="LED Options"
 LED_MENU_TEXT="Choose an item:"
 LED_MENU_HEIGHT=11
 LED_MENU_WIDTH=40
-LED_MENU_ITEM_HEIGHT=9
+LED_MENU_ITEM_HEIGHT=10
 LED_MENU_TAGS=(\
     "1" \
     "2" \
@@ -93,56 +93,60 @@ LED_MENU_TAGS=(\
     "4" \
 )
 LED_MENU_ITEMS=(\
-    "LED on/off" \
-    "LED brightness" \
     "LED type" \
-    "LED state" \
+    "LED style" \
+    "LED on brightness" \
+    "LED off brightness" \
 )
 LED_MENU_HELP=(\
-    "Turn the LED on or off" \
-    "Set the LED brightness" \
-    "Set the LED type to flash or pulse" \
-    "Set whether the LED is on when the pi is on, or vice versa"
+    "Set the LED type to normal, inverted, or off" \
+    "Set the LED style to flash or pulse" \
+    "Set the brightness when the LED is on" \
+    "Set the brightness when the LED is off" \
 )
 
-LEDO_TITLE="LED on/off"
-LEDO_TEXT="Turn the LED on or off"
-LEDO_HEIGHT=10
-LEDO_WIDTH=40
-LEDO_ITEM_HEIGHT=2
-LEDO_TAGS=("1" "2")
-LEDO_ITEMS=("On" "Off")
-LEDO_SETTING="LEDO"
-LEDO_ACTION="LEDO"
-
-LEDB_TITLE="LED brightness"
-LEDB_TEXT="Set the LED brightness (0 - 255):"
-LEDB_HEIGHT=3
-LEDB_WIDTH=40
-LEDB_MIN=0
-LEDB_MAX=255
-LEDB_SETTING="LEDB"
-LEDB_ACTION="LEDB"
-
 LEDT_TITLE="LED type"
-LEDT_TEXT="Select the LED type:"
+LEDT_TEXT="Set the LED type:"
 LEDT_HEIGHT=10
 LEDT_WIDTH=40
-LEDT_ITEM_HEIGHT=2
-LEDT_TAGS=("1" "2")
-LEDT_ITEMS=("Flash" "Pulse")
-LEDT_SETTING="LEDT"
-LEDT_ACTION="LEDT"
+LEDT_ITEM_HEIGHT=3
+LEDT_TAGS=("1" "2" "3")
+LEDT_ITEMS=("Normal" "Inverted" "Off")
+LEDT_HELP=(\
+    "The LED is on when the Pi is on, and off when the Pi is off"\
+    "The LED is off when the Pi is on, and on when the Pi is off"\
+    "The LED is always off, except when programming"\
+)
+LEDT_SETTING="LTP"
+LEDT_ACTION="LTP"
 
-LEDS_TITLE="LED state"
-LEDS_TEXT="Select whether to invert the LED state:"
+LEDS_TITLE="LED style"
+LEDS_TEXT="Select the LED style:"
 LEDS_HEIGHT=10
 LEDS_WIDTH=40
 LEDS_ITEM_HEIGHT=2
 LEDS_TAGS=("1" "2")
-LEDS_ITEMS=("Normal" "Invert")
-LEDS_SETTING="LEDS"
-LEDS_ACTION="LEDS"
+LEDS_ITEMS=("Flash" "Pulse")
+LEDS_SETTING="LPL"
+LEDS_ACTION="LPL"
+
+LEDN_TITLE="LED on brightness"
+LEDN_TEXT="Set the LED on brightness (0 - 255):"
+LEDN_HEIGHT=3
+LEDN_WIDTH=40
+LEDN_MIN=0
+LEDN_MAX=255
+LEDN_SETTING="LBN"
+LEDN_ACTION="LBN"
+
+LEDF_TITLE="LED off brightness"
+LEDF_TEXT="Set the LED off brightness (0 - 255):"
+LEDF_HEIGHT=3
+LEDF_WIDTH=40
+LEDF_MIN=0
+LEDF_MAX=255
+LEDF_SETTING="LBF"
+LEDF_ACTION="LBF"
 
 REC_TITLE="Record new remote codes"
 REC_TEXT="Press OK to start recording new codes on the device. The status LED \
@@ -226,7 +230,7 @@ UNINSTALL_HEIGHT=7
 UNINSTALL_WIDTH=40
 UNINSTALL_COMMAND="/usr/local/bin/killswitch-uninstall.sh"
 
-# N.B. don't change $scriptdir name (used by joy2keyStart)
+# N.B. don't change $scriptdir variable name (used by joy2keyStart)
 scriptdir="${HOME}/RetroPie-Setup"
 
 #-------------------------------------------------------------------------------
@@ -236,8 +240,7 @@ MENU_DONE=0
 MENU_SEL=""
 LED_MENU_DONE=0
 LED_MENU_SEL=""
-LEDO_STATES=($STATE_ON $STATE_OFF)
-LEDT_STATES=($STATE_ON $STATE_OFF)
+LEDT_STATES=($STATE_ON $STATE_OFF $STATE_OFF)
 LEDS_STATES=($STATE_ON $STATE_OFF)
 LPA_STATES=($STATE_ON $STATE_OFF)
 
@@ -348,90 +351,13 @@ function doLEDMenu () {
 
     LED_MENU_SEL="$RESULT"
     if [ "$RESULT" = "${LED_MENU_TAGS[0]}" ]; then
-        doLEDOn
-    elif [ "$RESULT" = "${LED_MENU_TAGS[1]}" ]; then
-        doLEDBrightness
-    elif [ "$RESULT" = "${LED_MENU_TAGS[2]}" ]; then
         doLEDType
+    elif [ "$RESULT" = "${LED_MENU_TAGS[1]}" ]; then
+        doLEDStyle
+    elif [ "$RESULT" = "${LED_MENU_TAGS[2]}" ]; then
+        doLEDOnBrightness
     elif [ "$RESULT" = "${LED_MENU_TAGS[3]}" ]; then
-        doLEDState
-    fi
-}
-
-function doLEDOn() {
-    LEDO_VALUE=$(readPropsFile $LEDO_SETTING)
-
-    # set highlighted item
-    LEDO_HIGHLIGHT="${LEDO_ITEMS[$LEDO_VALUE]}"
-
-    # size of array
-    SIZE=${#LEDO_STATES[@]}
-
-    # all off
-    for (( i=0; i<$SIZE; i++ )); do
-        LEDO_STATES[i]=$STATE_OFF
-    done
-
-    # set checked item
-    LEDO_STATES[$LEDO_VALUE]=$STATE_ON
-
-    RESULT=$(dialog \
-    --backtitle "$WINDOW_TITLE" \
-    --title "$LEDO_TITLE" \
-    --cancel-label "$BACK_LABEL" \
-    --default-item "$LEDO_HIGHLIGHT" \
-    --radiolist \
-    "$LEDO_TEXT" \
-    $LEDO_HEIGHT \
-    $LEDO_WIDTH \
-    $LEDO_ITEM_HEIGHT \
-    "${LEDO_TAGS[0]}" "${LEDO_ITEMS[0]}" "${LEDO_STATES[0]}" \
-    "${LEDO_TAGS[1]}" "${LEDO_ITEMS[1]}" "${LEDO_STATES[1]}" \
-    3>&1 1>&2 2>&3 3>&-)
-
-    BTN=$?
-    if [ $BTN -eq $DIALOG_OK ]; then
-
-        # save highlighted/selected item
-        for (( i=0; i<$SIZE; i++ )); do
-            if [ "${LEDO_TAGS[i]}" = "$RESULT" ]; then
-                writePropsFile $LEDO_SETTING $i
-                writeSerial $LEDO_ACTION $i
-                break
-            fi
-        done
-    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
-        LED_MENU_DONE=1
-        MENU_DONE=1
-    fi
-}
-
-function doLEDBrightness() {
-    LEDB_VALUE=$(readPropsFile $LEDB_SETTING)
-
-    RESULT=$(dialog \
-    --backtitle "$WINDOW_TITLE" \
-    --title "$LEDB_TITLE" \
-    --cancel-label "$BACK_LABEL" \
-    --rangebox \
-    "$LEDB_TEXT" \
-    $LEDB_HEIGHT \
-    $LEDB_WIDTH \
-    $LEDB_MIN \
-    $LEDB_MAX \
-    $LEDB_VALUE \
-    3>&1 1>&2 2>&3 3>&-)
-
-    BTN=$?
-    if [ $BTN -eq $DIALOG_OK ]; then
-
-        # trim whitespace
-        RESULT=$(echo $RESULT | xargs)
-        writePropsFile $LEDB_SETTING $RESULT
-        writeSerial $LEDB_ACTION $RESULT
-    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
-        LED_MENU_DONE=1
-        MENU_DONE=1
+        doLEDOffBrightness
     fi
 }
 
@@ -457,13 +383,15 @@ function doLEDType() {
     --title "$LEDT_TITLE" \
     --cancel-label "$BACK_LABEL" \
     --default-item "$LEDT_HIGHLIGHT" \
+    --item-help \
     --radiolist \
     "$LEDT_TEXT" \
     $LEDT_HEIGHT \
     $LEDT_WIDTH \
     $LEDT_ITEM_HEIGHT \
-    "${LEDT_TAGS[0]}" "${LEDT_ITEMS[0]}" "${LEDT_STATES[0]}" \
-    "${LEDT_TAGS[1]}" "${LEDT_ITEMS[1]}" "${LEDT_STATES[1]}" \
+    "${LEDT_TAGS[0]}" "${LEDT_ITEMS[0]}" "${LEDT_STATES[0]}" "${LEDT_HELP[0]}" \
+    "${LEDT_TAGS[1]}" "${LEDT_ITEMS[1]}" "${LEDT_STATES[1]}" "${LEDT_HELP[1]}" \
+    "${LEDT_TAGS[2]}" "${LEDT_ITEMS[2]}" "${LEDT_STATES[2]}" "${LEDT_HELP[2]}" \
     3>&1 1>&2 2>&3 3>&-)
 
     BTN=$?
@@ -477,13 +405,13 @@ function doLEDType() {
                 break
             fi
         done
-    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
+    elif [ $BTN == $DIALOG_ESCAPE ]; then
         LED_MENU_DONE=1
         MENU_DONE=1
     fi
 }
 
-function doLEDState() {
+function doLEDStyle() {
     LEDS_VALUE=$(readPropsFile $LEDS_SETTING)
 
     # set highlighted item
@@ -525,7 +453,65 @@ function doLEDState() {
                 break
             fi
         done
-    elif [ $BTN == $DIALOG_ESCAPE ]; then
+    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
+        LED_MENU_DONE=1
+        MENU_DONE=1
+    fi
+}
+
+function doLEDOnBrightness() {
+    LEDN_VALUE=$(readPropsFile $LEDN_SETTING)
+
+    RESULT=$(dialog \
+    --backtitle "$WINDOW_TITLE" \
+    --title "$LEDN_TITLE" \
+    --cancel-label "$BACK_LABEL" \
+    --rangebox \
+    "$LEDN_TEXT" \
+    $LEDN_HEIGHT \
+    $LEDN_WIDTH \
+    $LEDN_MIN \
+    $LEDN_MAX \
+    $LEDN_VALUE \
+    3>&1 1>&2 2>&3 3>&-)
+
+    BTN=$?
+    if [ $BTN -eq $DIALOG_OK ]; then
+
+        # trim whitespace
+        RESULT=$(echo $RESULT | xargs)
+        writePropsFile $LEDN_SETTING $RESULT
+        writeSerial $LEDN_ACTION $RESULT
+    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
+        LED_MENU_DONE=1
+        MENU_DONE=1
+    fi
+}
+
+function doLEDOffBrightness() {
+    LEDF_VALUE=$(readPropsFile $LEDF_SETTING)
+
+    RESULT=$(dialog \
+    --backtitle "$WINDOW_TITLE" \
+    --title "$LEDF_TITLE" \
+    --cancel-label "$BACK_LABEL" \
+    --rangebox \
+    "$LEDF_TEXT" \
+    $LEDF_HEIGHT \
+    $LEDF_WIDTH \
+    $LEDF_MIN \
+    $LEDF_MAX \
+    $LEDF_VALUE \
+    3>&1 1>&2 2>&3 3>&-)
+
+    BTN=$?
+    if [ $BTN -eq $DIALOG_OK ]; then
+
+        # trim whitespace
+        RESULT=$(echo $RESULT | xargs)
+        writePropsFile $LEDF_SETTING $RESULT
+        writeSerial $LEDF_ACTION $RESULT
+    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         LED_MENU_DONE=1
         MENU_DONE=1
     fi
@@ -865,12 +851,12 @@ if [ ! -f "$SETTINGS_FILE" ]; then
     # if not, write defaults
     mkdir -p "${SETTINGS_DIR}"
     touch "$SETTINGS_FILE"
-    echo $LEDO_SETTING"="$LEDO_DEFAULT >> "$SETTINGS_FILE"
-    echo $LEDB_SETTING"="$LEDB_DEFAULT >> "$SETTINGS_FILE"
-    echo $LEDT_SETTING"="$LEDT_DEFAULT >> "$SETTINGS_FILE"
-    echo $LEDS_SETTING"="$LEDS_DEFAULT >> "$SETTINGS_FILE"
+    echo $LEDT_SETTING"=0" >> "$SETTINGS_FILE"
+    echo $LEDS_SETTING"=0" >> "$SETTINGS_FILE"
+    echo $LEDN_SETTING"="$LEDN_DEFAULT >> "$SETTINGS_FILE"
+    echo $LEDF_SETTING"=0" >> "$SETTINGS_FILE"
     echo $LPT_SETTING"="$LPT_DEFAULT >> "$SETTINGS_FILE"
-    echo $LPA_SETTING"="$LPA_DEFAULT >> "$SETTINGS_FILE"
+    echo $LPA_SETTING"=0" >> "$SETTINGS_FILE"
 fi
 
 # map joystick to keyboard if running RetroPie
