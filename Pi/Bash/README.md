@@ -1,3 +1,5 @@
 # Bash files for KillSwitch
 
-install/uninstall/settings
+install/uninstall/settings files for KillSwirch on the Pi
+
+# -)

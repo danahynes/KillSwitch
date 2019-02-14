@@ -1,3 +1,5 @@
 #KillSwitch services
 
-Service for KillSwitch at bootup/shutdown
+bootup/shutdown services for KillSwitch on the Pi
+
+# -)

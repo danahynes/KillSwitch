@@ -1,3 +1,9 @@
+# KillSwitch libraries
+
+KillSwitch makes use of the IRremote library by Ken Shirriff, et. al.
+See IRremote/README.md for more info.
+
+This is the original text of lib/README.md from PlatformIO:
 
 This directory is intended for project specific (private) libraries.
 PlatformIO will compile them to static libraries and link into executable file.
@@ -44,3 +50,5 @@ libraries scanning project source files.
 
 More information about PlatformIO Library Dependency Finder
 - https://docs.platformio.org/page/librarymanager/ldf.html
+
+# -)
