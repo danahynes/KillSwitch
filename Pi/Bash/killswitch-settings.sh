@@ -46,7 +46,7 @@ MENU_TITLE="KillSwitch Settings"
 MENU_TEXT="Choose an item:"
 MENU_HEIGHT=16
 MENU_WIDTH=40
-MENU_ITEM_HEIGHT=9
+MENU_ITEM_HEIGHT=10
 MENU_TAGS=(\
     "1" \
     "2" \
@@ -57,6 +57,7 @@ MENU_TAGS=(\
     "7" \
     "8" \
     "9" \
+    "10" \
 )
 MENU_ITEMS=(\
     "Status LED options" \
@@ -64,6 +65,7 @@ MENU_ITEMS=(\
     "Long press time" \
     "Long press action" \
     "Firmware update" \
+    "Software update" \
     "Shutdown" \
     "Reboot" \
     "Uninstall" \
@@ -75,6 +77,7 @@ MENU_HELP=(\
 	"Set how long to hold the button for a long press action" \
 	"Set the action to take when the button is held" \
 	"Update the code in the KillSwitch module" \
+    "Update the files on the Pi" \
 	"Shut down the Raspberry Pi" \
 	"Reboot the Raspberry Pi" \
 	"Uninstall all KillSwitch files" \
@@ -189,9 +192,9 @@ FIRMWARE_OK_TEXT="Your firmware is up to date."
 # TODO: hide this
 FIRMWARE_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
 FIRMWARE_REMOTE_REPO=\
-"https://api.github.com/repos/danahynes/KillSwitch/contents/Arduino"
+"https://api.github.com/repos/danahynes/KillSwitch/contents/Firmware"
 
-FIRMWARE_REMOTE_FILE_NAME="version.txt"
+FIRMWARE_REMOTE_FILE_NAME="firmware-version.txt"
 FIRMWARE_REMOTE_VERSION_FILE=\
 "${FIRMWARE_REMOTE_REPO}/${FIRMWARE_REMOTE_FILE_NAME}"
 FIRMWARE_REMOTE_COPY_VERSION_FILE=\
@@ -207,6 +210,37 @@ ${FIRMWARE_REMOTE_VERSION_NUMBER}-${FIRMWARE_REMOTE_VERSION_BUILD}.hex"
 FIRMWARE_REMOTE_COPY_HEX_FILE=\
 "${SETTINGS_DIR}/${FIRMWARE_REMOTE_COPY_HEX_BASE_FILE}-\
 ${FIRMWARE_REMOTE_VERSION_NUMBER}-${FIRMWARE_REMOTE_VERSION_BUILD}.hex"
+
+SOFTWARE_TITLE="Software update"
+SOFTWARE_TEXT=""
+SOFTWARE_HEIGHT=12
+SOFTWARE_WIDTH=40
+SOFTWARE_TEXT_CURRENT="Current version: "
+SOFTWARE_TEXT_NEW="Latest version:  "
+SOFTWARE_UPDATE_TEXT="Are you sure you want to update?"
+SOFTWARE_OK_TEXT="Your software is up to date."
+
+# TODO: hide this
+SOFTWARE_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
+SOFTWARE_REMOTE_REPO=\
+"https://api.github.com/repos/danahynes/KillSwitch/contents/Pi"
+
+SOFTWARE_REMOTE_FILE_NAME="pi-version.txt"
+SOFTWARE_REMOTE_VERSION_FILE=\
+"${SOFTWARE_REMOTE_REPO}/${SOFTWARE_REMOTE_FILE_NAME}"
+SOFTWARE_REMOTE_COPY_VERSION_FILE=\
+"${SETTINGS_DIR}/${SOFTWARE_REMOTE_FILE_NAME}"
+
+SOFTWARE_REMOTE_VERSION_NUMBER=""
+SOFTWARE_REMOTE_VERSION_BUILD=""
+
+SOFTWARE_REMOTE_ZIP_BASE_FILE="KillSwitch"
+SOFTWARE_REMOTE_ZIP_FILE=\
+"${SOFTWARE_REMOTE_REPO}/${SOFTWARE_REMOTE_ZIP_BASE_FILE}-\
+${SOFTWARE_REMOTE_VERSION_NUMBER}-${SOFTWARE_REMOTE_VERSION_BUILD}.tar.gz"
+SOFTWARE_REMOTE_COPY_ZIP_FILE=\
+"${SETTINGS_DIR}/${SOFTWARE_REMOTE_COPY_ZIP_BASE_FILE}-\
+${SOFTWARE_REMOTE_VERSION_NUMBER}-${SOFTWARE_REMOTE_VERSION_BUILD}.tar.gz"
 
 ERROR_TITLE="Error"
 ERROR_TEXT="There was an error downloading. Please check your internet \
@@ -289,6 +323,7 @@ function doMain() {
     "${MENU_TAGS[6]}" "${MENU_ITEMS[6]}" "${MENU_HELP[6]}" \
     "${MENU_TAGS[7]}" "${MENU_ITEMS[7]}" "${MENU_HELP[7]}" \
     "${MENU_TAGS[8]}" "${MENU_ITEMS[8]}" "${MENU_HELP[8]}" \
+    "${MENU_TAGS[9]}" "${MENU_ITEMS[9]}" "${MENU_HELP[9]}" \
     3>&1 1>&2 2>&3 3>&-)
 
     BTN=$?
@@ -312,12 +347,14 @@ function doMain() {
     elif [ "$RESULT" = "${MENU_TAGS[4]}" ]; then
         doFirmware
     elif [ "$RESULT" = "${MENU_TAGS[5]}" ]; then
+        doSoftware
+    elif [ "$RESULT" = "${MENU_T5GS[6]}" ]; then
         doShutdown
-    elif [ "$RESULT" = "${MENU_TAGS[6]}" ]; then
-        doReboot
     elif [ "$RESULT" = "${MENU_TAGS[7]}" ]; then
-    	doUninstall
+        doReboot
     elif [ "$RESULT" = "${MENU_TAGS[8]}" ]; then
+    	doUninstall
+    elif [ "$RESULT" = "${MENU_TAGS[9]}" ]; then
         doExit
     fi
 }
@@ -628,7 +665,7 @@ function doError() {
     fi
 }
 
-function doUpdateFirmware() {
+function doFirmwareUpdate() {
     RESULT=$(dialog \
     --backtitle "$WINDOW_TITLE" \
     --title "$FIRMWARE_TITLE" \
@@ -655,6 +692,7 @@ function doUpdateFirmware() {
             doError
             return
         else
+
             # do avrdude update with hex file
             avrdude \
             -p atmega328p \
@@ -670,7 +708,7 @@ function doUpdateFirmware() {
     fi
 }
 
-function doIsUpToDate() {
+function doFirmwareIsUpToDate() {
     RESULT=$(dialog \
     --backtitle "$WINDOW_TITLE" \
     --title "$FIRMWARE_TITLE" \
@@ -759,10 +797,10 @@ function doFirmware() {
     rm "${FIRMWARE_REMOTE_COPY_VERSION_FILE}"
 
     # update text with version/build numbers
-    FIRMWARE_TEXT="$FIRMWARE_TEXT_CURRENT"
+    FIRMWARE_TEXT="${FIRMWARE_TEXT_CURRENT}"
     FIRMWARE_TEXT+="${FIRMWARE_LOCAL_VERSION_NUMBER} ("
     FIRMWARE_TEXT+="${FIRMWARE_LOCAL_VERSION_BUILD})\n"
-    FIRMWARE_TEXT+="$FIRMWARE_TEXT_NEW"
+    FIRMWARE_TEXT+="${FIRMWARE_TEXT_NEW}"
     FIRMWARE_TEXT+="${FIRMWARE_REMOTE_VERSION_NUMBER} ("
     FIRMWARE_TEXT+="${FIRMWARE_REMOTE_VERSION_BUILD})\n"
     FIRMWARE_TEXT+="\n"
@@ -770,12 +808,159 @@ function doFirmware() {
     #if newer, do yes/no
     if [ $IS_NEWER -eq 1 ]; then
         FIRMWARE_TEXT+="$FIRMWARE_UPDATE_TEXT"
-        doUpdateFirmware
+        doFirmwareUpdate
 
     # show message "up to date"
     else
         FIRMWARE_TEXT+="$FIRMWARE_OK_TEXT"
-        doIsUpToDate
+        doFirmwareIsUpToDate
+    fi
+}
+
+function doSoftwareUpdate() {
+    RESULT=$(dialog \
+    --backtitle "$WINDOW_TITLE" \
+    --title "$SOFTWARE_TITLE" \
+    --yesno \
+    "$SOFTWARE_TEXT" \
+    $SOFTWARE_HEIGHT \
+    $SOFTWARE_WIDTH \
+    3>&1 1>&2 2>&3 3>&-)
+
+    BTN=$?
+    if [ $BTN -eq $DIALOG_OK ]; then
+
+        # get lastest firmware from github
+        RES=$(curl \
+        -H "Authorization: token ${SOFTWARE_TOKEN}" \
+        -H "Accept: application/vnd.github.v3.raw" \
+        -L "${SOFTWARE_REMOTE_ZIP_FILE}" \
+        -o "${SOFTWARE_REMOTE_COPY_ZIP_FILE}" \
+        -s \
+        > /dev/null)
+
+        RES=$?
+        if [ $RES -ne 0 ]; then
+            doError
+            return
+        else
+
+            # TODO: unzip and install
+
+            # remove hex file
+            rm "$SOFTWARE_REMOTE_COPY_ZIP_FILE"
+        fi
+    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
+        MENU_DONE=1
+    fi
+}
+
+function doSoftwareIsUpToDate() {
+    RESULT=$(dialog \
+    --backtitle "$WINDOW_TITLE" \
+    --title "$SOFTWARE_TITLE" \
+    --msgbox \
+    "$SOFTWARE_TEXT" \
+    $SOFTWARE_HEIGHT \
+    $SOFTWARE_WIDTH \
+    3>&1 1>&2 2>&3 3>&-)
+
+    BTN=$?
+    if [ $BTN -eq $DIALOG_ESCAPE ]; then
+        MENU_DONE=1
+    fi
+}
+
+function doSoftware() {
+
+    # get current version from arduino
+    #writeSerial "VER" ""
+    SOFTWARE_LOCAL_VERSION_NUMBER=$VERSION_NUMBER #$(readSerial)
+    SOFTWARE_LOCAL_VERSION_BUILD=$VERSION_BUILD #$(readSerial)
+
+    SOFTWARE_LOCAL_VERSION_NUMBER_A=$(echo $SOFTWARE_LOCAL_VERSION_NUMBER | \
+    cut -d "." -f1)
+    SOFTWARE_LOCAL_VERSION_NUMBER_B=$(echo $SOFTWARE_LOCAL_VERSION_NUMBER | \
+    cut -d "." -f2)
+    SOFTWARE_LOCAL_VERSION_BUILD_A=$(echo $SOFTWARE_LOCAL_VERSION_BUILD | \
+    cut -d "." -f1)
+    SOFTWARE_LOCAL_VERSION_BUILD_B=$(echo $SOFTWARE_LOCAL_VERSION_BUILD | \
+    cut -d "." -f2)
+    SOFTWARE_LOCAL_VERSION_BUILD_C=$(echo $SOFTWARE_LOCAL_VERSION_BUILD | \
+    cut -d "." -f3)
+
+    # get lastest software version from github
+    RESULT=$(curl \
+    -H "Authorization: token ${SOFTMWARE_TOKEN}" \
+    -H "Accept: application/vnd.github.v3.raw" \
+    -L "${SOFTWARE_REMOTE_VERSION_FILE}" \
+    -o "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" \
+    -s \
+    > /dev/null)
+
+    RES=$?
+    if [ $RES -ne 0 ]; then
+        doError
+        return
+    else
+        SOFTWARE_REMOTE_VERSION_NUMBER=$(grep "VERSION_NUMBER=" \
+        "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
+        SOFTWARE_REMOTE_VERSION_BUILD=$(grep "VERSION_BUILD=" \
+        "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
+
+        SOFTWARE_REMOTE_VERSION_NUMBER_A=$(echo \
+        $SOFTWARE_REMOTE_VERSION_NUMBER | cut -d "." -f1)
+        SOFTWARE_REMOTE_VERSION_NUMBER_B=$(echo \
+        $SOFTWARE_REMOTE_VERSION_NUMBER | cut -d "." -f2)
+        SOFTWARE_REMOTE_VERSION_BUILD_A=$(echo \
+        $SOFTWARE_REMOTE_VERSION_BUILD | cut -d "." -f1)
+        SOFTWARE_REMOTE_VERSION_BUILD_B=$(echo \
+        $SOFTWARE_REMOTE_VERSION_BUILD | cut -d "." -f2)
+        SOFTWARE_REMOTE_VERSION_BUILD_C=$(echo \
+        $SOFTWARE_REMOTE_VERSION_BUILD | cut -d "." -f3)
+    fi
+
+    # do comparison
+    IS_NEWER=0
+
+    if [ $SOFTWARE_LOCAL_VERSION_NUMBER_A -lt \
+    $SOFTWARE_REMOTE_VERSION_NUMBER_A ]; then
+        IS_NEWER=1
+    elif [ $SOFTWARE_LOCAL_VERSION_NUMBER_B -lt \
+    $SOFTWARE_REMOTE_VERSION_NUMBER_B ]; then
+        IS_NEWER=1
+    elif [ $SOFTWARE_LOCAL_VERSION_BUILD_A -lt \
+    $SOFTWARE_REMOTE_VERSION_BUILD_A ]; then
+        IS_NEWER=1
+    elif [ $SOFTWARE_LOCAL_VERSION_BUILD_B -lt \
+    $SOFTWARE_REMOTE_VERSION_BUILD_B ]; then
+        IS_NEWER=1
+    elif [ $SOFTWARE_LOCAL_VERSION_BUILD_C -lt \
+    $SOFTWARE_REMOTE_VERSION_BUILD_C ]; then
+        IS_NEWER=1
+    fi
+
+    # remove local version file
+    rm "${SOFTWARE_REMOTE_COPY_VERSION_FILE}"
+
+    # update text with version/build numbers
+    SOFTWARE_TEXT="${SOFTWARE_TEXT_CURRENT}"
+    SOFTWARE_TEXT+="${SOFTWARE_LOCAL_VERSION_NUMBER} ("
+    SOFTWARE_TEXT+="${SOFTWARE_LOCAL_VERSION_BUILD})\n"
+    SOFTWARE_TEXT+="${SOFTWARE_TEXT_NEW}"
+    SOFTWARE_TEXT+="${SOFTWARE_REMOTE_VERSION_NUMBER} ("
+    SOFTWARE_TEXT+="${SOFTWARE_REMOTE_VERSION_BUILD})\n"
+    SOFTWARE_TEXT+="\n"
+
+    #if newer, do yes/no
+    if [ $IS_NEWER -eq 1 ]; then
+        SOFTWARE_TEXT+="$SOFTWARE_UPDATE_TEXT"
+        doSoftwareUpdate
+
+    # show message "up to date"
+    else
+        SOFTWARE_TEXT+="$SOFTWARE_OK_TEXT"
+        doSoftwareIsUpToDate
     fi
 }
 
