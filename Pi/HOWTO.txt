@@ -7,6 +7,5 @@ sudo apt-get update
 sudo apt-get upgrade
 
 Step 3:
-Open a terminal to the KillSwitch folder (the folder containing this file)
-chmod +x killswitch-install.sh
+Open a terminal to the KillSwitch/Bash folder
 sudo ./killswitch-install.sh
