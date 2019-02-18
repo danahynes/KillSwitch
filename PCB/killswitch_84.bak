@@ -9,8 +9,8 @@ Title "KillSwitch on ATTiny84"
 Date "2019-02-06"
 Rev "0.1"
 Comp "Dana Hynes"
-Comment1 ""
-Comment2 ""
+Comment1 "Copyright (c) 2019"
+Comment2 "All rights reserved"
 Comment3 ""
 Comment4 ""
 $EndDescr
@@ -636,7 +636,7 @@ U 1 1 5C61E818
 P 10100 3100
 F 0 "U4" H 9650 2400 50  0000 C CNN
 F 1 "TXB0108DQSR" H 9650 2300 50  0000 C CNN
-F 2 "TO_SOT_Packages_SMD:USON-20_2x4mm_Pitch0.4mm" H 10450 3550 50  0001 L CNN
+F 2 "Housings_SON:USON-20_2x4mm_Pitch0.4mm" H 10450 3550 50  0001 L CNN
 F 3 "http://www.ti.com/lit/ds/symlink/txb0108.pdf" H 10100 3000 50  0001 C CNN
 	1    10100 3100
 	1    0    0    -1  
