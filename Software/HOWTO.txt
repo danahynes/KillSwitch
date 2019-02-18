@@ -1,5 +1,5 @@
 Step 1:
-Download and extract the KillSwitch.tar.gz file
+Download and extract the KillSwitch_x.x_xx.xx.xx.tar.gz file
 (If you are reading this, congratulations! Step 1 is done...)
 
 Step 2: (recommended)
@@ -9,3 +9,5 @@ sudo apt-get upgrade
 Step 3:
 Open a terminal to the KillSwitch/Bash folder
 sudo ./killswitch-install.sh
+
+-)

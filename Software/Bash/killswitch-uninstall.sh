@@ -11,8 +11,8 @@
 #-------------------------------------------------------------------------------
 # version
 
-VERSION_NUMBER="0.1"
-VERSION_BUILD="19.02.06"
+VERSION_NUMBER="0.2"
+VERSION_BUILD="19.02.18"
 
 #-------------------------------------------------------------------------------
 # start
@@ -36,7 +36,7 @@ Dana Hynes"
 echo ""
 
 #-------------------------------------------------------------------------------
-# the rest
+# let's go!
 
 echo "Uninstalling KillSwitch..."
 echo ""
@@ -74,6 +74,11 @@ echo -n "Removing kilswitch-settings.sh from /usr/local/bin/... "
 rm /usr/local/bin/killswitch-settings.sh
 echo "Done"
 
+# remove uninstaller script
+echo -n "Removing kilswitch-uninstaller.sh from /usr/local/bin/... "
+rm /usr/local/bin/killswitch-uninstall.sh
+echo "Done"
+
 # remove settings storage dir
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 if [ -d "$SETTINGS_DIR" ]; then
@@ -105,9 +110,6 @@ echo "You can remove them if you wish using apt-get."
 echo ""
 echo -e "If you wish to turn the login console back on, you can use the \
 raspi-setup \nscript."
-
-# remove this uninstaller script
-rm -- "$0"
 
 #-------------------------------------------------------------------------------
 # ask for reboot

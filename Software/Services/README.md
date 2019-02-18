@@ -1,5 +1,8 @@
 #KillSwitch services
 
-bootup/shutdown services for KillSwitch on the Pi
+bootup/shutdown/reboot services for KillSwitch
+
+These files are used by systemd to run Python scripts at the appropriate time,
+either at startup, shutdown, or reboot.
 
 # -)
