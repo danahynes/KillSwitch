@@ -11,8 +11,8 @@
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER="0.2"
-VERSION_BUILD="19.02.06"
+VERSION_NUMBER="0.1"
+VERSION_BUILD="19.02.05"
 
 DIALOG_OK=0
 DIALOG_CANCEL=1
@@ -44,7 +44,7 @@ CANCEL_LABEL="Cancel"
 
 MENU_TITLE="KillSwitch Settings"
 MENU_TEXT="Choose an item:"
-MENU_HEIGHT=16
+MENU_HEIGHT=17
 MENU_WIDTH=40
 MENU_ITEM_HEIGHT=10
 MENU_TAGS=(\
@@ -204,12 +204,6 @@ FIRMWARE_REMOTE_VERSION_NUMBER=""
 FIRMWARE_REMOTE_VERSION_BUILD=""
 
 FIRMWARE_REMOTE_HEX_BASE_FILE="killswitch-firmware"
-FIRMWARE_REMOTE_HEX_FILE=\
-"${FIRMWARE_REMOTE_REPO}/${FIRMWARE_REMOTE_HEX_BASE_FILE}-\
-${FIRMWARE_REMOTE_VERSION_NUMBER}-${FIRMWARE_REMOTE_VERSION_BUILD}.hex"
-FIRMWARE_REMOTE_COPY_HEX_FILE=\
-"${SETTINGS_DIR}/${FIRMWARE_REMOTE_COPY_HEX_BASE_FILE}-\
-${FIRMWARE_REMOTE_VERSION_NUMBER}-${FIRMWARE_REMOTE_VERSION_BUILD}.hex"
 
 SOFTWARE_TITLE="Software update"
 SOFTWARE_TEXT=""
@@ -235,12 +229,6 @@ SOFTWARE_REMOTE_VERSION_NUMBER=""
 SOFTWARE_REMOTE_VERSION_BUILD=""
 
 SOFTWARE_REMOTE_ZIP_BASE_FILE="KillSwitch"
-SOFTWARE_REMOTE_ZIP_FILE=\
-"${SOFTWARE_REMOTE_REPO}/${SOFTWARE_REMOTE_ZIP_BASE_FILE}-\
-${SOFTWARE_REMOTE_VERSION_NUMBER}-${SOFTWARE_REMOTE_VERSION_BUILD}.tar.gz"
-SOFTWARE_REMOTE_COPY_ZIP_FILE=\
-"${SETTINGS_DIR}/${SOFTWARE_REMOTE_COPY_ZIP_BASE_FILE}-\
-${SOFTWARE_REMOTE_VERSION_NUMBER}-${SOFTWARE_REMOTE_VERSION_BUILD}.tar.gz"
 
 ERROR_TITLE="Error"
 ERROR_TEXT="There was an error downloading. Please check your internet \
@@ -348,7 +336,7 @@ function doMain() {
         doFirmware
     elif [ "$RESULT" = "${MENU_TAGS[5]}" ]; then
         doSoftware
-    elif [ "$RESULT" = "${MENU_T5GS[6]}" ]; then
+    elif [ "$RESULT" = "${MENU_TAGS[6]}" ]; then
         doShutdown
     elif [ "$RESULT" = "${MENU_TAGS[7]}" ]; then
         doReboot
@@ -678,6 +666,13 @@ function doFirmwareUpdate() {
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
 
+        FIRMWARE_REMOTE_HEX_FILE=\
+"${FIRMWARE_REMOTE_REPO}/${FIRMWARE_REMOTE_HEX_BASE_FILE}_\
+${FIRMWARE_REMOTE_VERSION_NUMBER}_${FIRMWARE_REMOTE_VERSION_BUILD}.hex"
+        FIRMWARE_REMOTE_COPY_HEX_FILE=\
+"${SETTINGS_DIR}/${FIRMWARE_REMOTE_HEX_BASE_FILE}_\
+${FIRMWARE_REMOTE_VERSION_NUMBER}_${FIRMWARE_REMOTE_VERSION_BUILD}.hex"
+
         # get lastest firmware from github
         RES=$(curl \
         -H "Authorization: token ${FIRMWARE_TOKEN}" \
@@ -728,8 +723,8 @@ function doFirmware() {
 
     # get current version from arduino
     writeSerial "VER" ""
-    FIRMWARE_LOCAL_VERSION_NUMBER=$(readSerial)
-    FIRMWARE_LOCAL_VERSION_BUILD=$(readSerial)
+    FIRMWARE_LOCAL_VERSION_NUMBER="0.1" #$(readSerial)
+    FIRMWARE_LOCAL_VERSION_BUILD="19.01.12" #$(readSerial)
 
     FIRMWARE_LOCAL_VERSION_NUMBER_A=$(echo $FIRMWARE_LOCAL_VERSION_NUMBER | \
     cut -d "." -f1)
@@ -755,23 +750,23 @@ function doFirmware() {
     if [ $RES -ne 0 ]; then
         doError
         return
-    else
-        FIRMWARE_REMOTE_VERSION_NUMBER=$(grep "VERSION_NUMBER=" \
-        "${FIRMWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
-        FIRMWARE_REMOTE_VERSION_BUILD=$(grep "VERSION_BUILD=" \
-        "${FIRMWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
-
-        FIRMWARE_REMOTE_VERSION_NUMBER_A=$(echo \
-        $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f1)
-        FIRMWARE_REMOTE_VERSION_NUMBER_B=$(echo \
-        $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f2)
-        FIRMWARE_REMOTE_VERSION_BUILD_A=$(echo \
-        $FIRMWARE_REMOTE_VERSION_BUILD | cut -d "." -f1)
-        FIRMWARE_REMOTE_VERSION_BUILD_B=$(echo \
-        $FIRMWARE_REMOTE_VERSION_BUILD | cut -d "." -f2)
-        FIRMWARE_REMOTE_VERSION_BUILD_C=$(echo \
-        $FIRMWARE_REMOTE_VERSION_BUILD | cut -d "." -f3)
     fi
+
+    FIRMWARE_REMOTE_VERSION_NUMBER=$(grep "VERSION_NUMBER=" \
+    "${FIRMWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
+    FIRMWARE_REMOTE_VERSION_BUILD=$(grep "VERSION_BUILD=" \
+    "${FIRMWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
+
+    FIRMWARE_REMOTE_VERSION_NUMBER_A=$(echo \
+    $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f1)
+    FIRMWARE_REMOTE_VERSION_NUMBER_B=$(echo \
+    $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f2)
+    FIRMWARE_REMOTE_VERSION_BUILD_A=$(echo \
+    $FIRMWARE_REMOTE_VERSION_BUILD | cut -d "." -f1)
+    FIRMWARE_REMOTE_VERSION_BUILD_B=$(echo \
+    $FIRMWARE_REMOTE_VERSION_BUILD | cut -d "." -f2)
+    FIRMWARE_REMOTE_VERSION_BUILD_C=$(echo \
+    $FIRMWARE_REMOTE_VERSION_BUILD | cut -d "." -f3)
 
     # do comparison
     IS_NEWER=0
@@ -830,6 +825,14 @@ function doSoftwareUpdate() {
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
 
+        SOFTWARE_REMOTE_ZIP_FILE=\
+"${SOFTWARE_REMOTE_REPO}/${SOFTWARE_REMOTE_ZIP_BASE_FILE}_\
+${SOFTWARE_REMOTE_VERSION_NUMBER}_${SOFTWARE_REMOTE_VERSION_BUILD}.tar.gz"
+        SOFTWARE_REMOTE_COPY_ZIP_FILE=\
+"${SETTINGS_DIR}/${SOFTWARE_REMOTE_ZIP_BASE_FILE}_\
+${SOFTWARE_REMOTE_VERSION_NUMBER}_${SOFTWARE_REMOTE_VERSION_BUILD}.tar.gz"
+        echo "$SOFTWARE_REMOTE_ZIP_FILE"
+        echo "$SOFTWARE_REMOTE_COPY_ZIP_FILE"
         # get lastest firmware from github
         RES=$(curl \
         -H "Authorization: token ${SOFTWARE_TOKEN}" \
@@ -845,10 +848,20 @@ function doSoftwareUpdate() {
             return
         else
 
-            # TODO: unzip and install
+            # extract tar.gz
+            cd "${SETTINGS_DIR}"
+            tar -zxvf "$SOFTWARE_REMOTE_COPY_ZIP_FILE"
 
-            # remove hex file
+            # remove tar.gz file
             rm "$SOFTWARE_REMOTE_COPY_ZIP_FILE"
+
+            # run installer
+            cd "KillSwitch/Bash"
+            sudo ./killswitch-install.sh
+
+            # remove download
+            cd ../..
+            rm -r "KillSwitch"
         fi
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
@@ -873,10 +886,9 @@ function doSoftwareIsUpToDate() {
 
 function doSoftware() {
 
-    # get current version from arduino
-    #writeSerial "VER" ""
-    SOFTWARE_LOCAL_VERSION_NUMBER=$VERSION_NUMBER #$(readSerial)
-    SOFTWARE_LOCAL_VERSION_BUILD=$VERSION_BUILD #$(readSerial)
+    # get current version from ???
+    SOFTWARE_LOCAL_VERSION_NUMBER=$VERSION_NUMBER
+    SOFTWARE_LOCAL_VERSION_BUILD=$VERSION_BUILD
 
     SOFTWARE_LOCAL_VERSION_NUMBER_A=$(echo $SOFTWARE_LOCAL_VERSION_NUMBER | \
     cut -d "." -f1)
@@ -891,7 +903,7 @@ function doSoftware() {
 
     # get lastest software version from github
     RESULT=$(curl \
-    -H "Authorization: token ${SOFTMWARE_TOKEN}" \
+    -H "Authorization: token ${SOFTWARE_TOKEN}" \
     -H "Accept: application/vnd.github.v3.raw" \
     -L "${SOFTWARE_REMOTE_VERSION_FILE}" \
     -o "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" \
@@ -902,23 +914,23 @@ function doSoftware() {
     if [ $RES -ne 0 ]; then
         doError
         return
-    else
-        SOFTWARE_REMOTE_VERSION_NUMBER=$(grep "VERSION_NUMBER=" \
-        "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
-        SOFTWARE_REMOTE_VERSION_BUILD=$(grep "VERSION_BUILD=" \
-        "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
-
-        SOFTWARE_REMOTE_VERSION_NUMBER_A=$(echo \
-        $SOFTWARE_REMOTE_VERSION_NUMBER | cut -d "." -f1)
-        SOFTWARE_REMOTE_VERSION_NUMBER_B=$(echo \
-        $SOFTWARE_REMOTE_VERSION_NUMBER | cut -d "." -f2)
-        SOFTWARE_REMOTE_VERSION_BUILD_A=$(echo \
-        $SOFTWARE_REMOTE_VERSION_BUILD | cut -d "." -f1)
-        SOFTWARE_REMOTE_VERSION_BUILD_B=$(echo \
-        $SOFTWARE_REMOTE_VERSION_BUILD | cut -d "." -f2)
-        SOFTWARE_REMOTE_VERSION_BUILD_C=$(echo \
-        $SOFTWARE_REMOTE_VERSION_BUILD | cut -d "." -f3)
     fi
+
+    SOFTWARE_REMOTE_VERSION_NUMBER=$(grep "VERSION_NUMBER=" \
+    "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
+    SOFTWARE_REMOTE_VERSION_BUILD=$(grep "VERSION_BUILD=" \
+    "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
+
+    SOFTWARE_REMOTE_VERSION_NUMBER_A=$(echo \
+    $SOFTWARE_REMOTE_VERSION_NUMBER | cut -d "." -f1)
+    SOFTWARE_REMOTE_VERSION_NUMBER_B=$(echo \
+    $SOFTWARE_REMOTE_VERSION_NUMBER | cut -d "." -f2)
+    SOFTWARE_REMOTE_VERSION_BUILD_A=$(echo \
+    $SOFTWARE_REMOTE_VERSION_BUILD | cut -d "." -f1)
+    SOFTWARE_REMOTE_VERSION_BUILD_B=$(echo \
+    $SOFTWARE_REMOTE_VERSION_BUILD | cut -d "." -f2)
+    SOFTWARE_REMOTE_VERSION_BUILD_C=$(echo \
+    $SOFTWARE_REMOTE_VERSION_BUILD | cut -d "." -f3)
 
     # do comparison
     IS_NEWER=0
