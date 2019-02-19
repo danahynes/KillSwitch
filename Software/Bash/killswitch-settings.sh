@@ -21,7 +21,9 @@ DIALOG_ESCAPE=255
 SETTINGS_DIR="${HOME}/.killswitch"
 SETTINGS_FILE="${SETTINGS_DIR}/killswitch-settings.conf"
 
+# laptop port
 #SERIAL_PORT=/dev/pts/4
+# pi port
 SERIAL_PORT=/dev/ttyS0
 SERIAL_SPEED=9600
 
@@ -214,15 +216,15 @@ SOFTWARE_OK_TEXT="Your software is up to date."
 # TODO: hide this
 SOFTWARE_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
 SOFTWARE_REMOTE_REPO=\
-"https://api.github.com/repos/danahynes/KillSwitch/contents/Pi"
-SOFTWARE_REMOTE_FILE_NAME="pi-version.txt"
+"https://api.github.com/repos/danahynes/KillSwitch/contents/Software"
+SOFTWARE_REMOTE_FILE_NAME="software-version.txt"
 SOFTWARE_REMOTE_VERSION_FILE=\
 "${SOFTWARE_REMOTE_REPO}/${SOFTWARE_REMOTE_FILE_NAME}"
 SOFTWARE_REMOTE_COPY_VERSION_FILE=\
 "${SETTINGS_DIR}/${SOFTWARE_REMOTE_FILE_NAME}"
 SOFTWARE_REMOTE_VERSION_NUMBER=""
 SOFTWARE_REMOTE_VERSION_BUILD=""
-SOFTWARE_REMOTE_ZIP_BASE_FILE="KillSwitch"
+SOFTWARE_REMOTE_ZIP_BASE_FILE="killswitch-software"
 
 ERROR_TITLE="Error"
 ERROR_TEXT="There was an error downloading. Please check your internet \
@@ -660,17 +662,16 @@ function doFirmwareUpdate() {
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
 
-        FIRMWARE_REMOTE_HEX_FILE=\
-"${FIRMWARE_REMOTE_REPO}/${FIRMWARE_REMOTE_HEX_BASE_FILE}_\
+        FIRMWARE_FILE_NAME="${FIRMWARE_REMOTE_HEX_BASE_FILE}_\
 ${FIRMWARE_REMOTE_VERSION_NUMBER}_${FIRMWARE_REMOTE_VERSION_BUILD}.hex"
-        FIRMWARE_REMOTE_COPY_HEX_FILE=\
-"${SETTINGS_DIR}/${FIRMWARE_REMOTE_HEX_BASE_FILE}_\
-${FIRMWARE_REMOTE_VERSION_NUMBER}_${FIRMWARE_REMOTE_VERSION_BUILD}.hex"
+        FIRMWARE_REMOTE_HEX_FILE="${FIRMWARE_REMOTE_REPO}/${FIRMWARE_FILE_PATH}"
+        FIRMWARE_REMOTE_COPY_HEX_FILE="${SETTINGS_DIR}/${FIRMWARE_FILE_PATH}"
 
         # get lastest firmware from github
         RES=$(curl \
         -H "Authorization: token ${FIRMWARE_TOKEN}" \
         -H "Accept: application/vnd.github.v3.raw" \
+        -H "ref: release_${VERSION_NUMBER}" \
         -L "${FIRMWARE_REMOTE_HEX_FILE}" \
         -o "${FIRMWARE_REMOTE_COPY_HEX_FILE}" \
         -s \
@@ -735,6 +736,7 @@ function doFirmware() {
     RESULT=$(curl \
     -H "Authorization: token ${FIRMWARE_TOKEN}" \
     -H "Accept: application/vnd.github.v3.raw" \
+    -H "ref: release_${VERSION_NUMBER}" \   # only use files from same branch
     -L "${FIRMWARE_REMOTE_VERSION_FILE}" \
     -o "${FIRMWARE_REMOTE_COPY_VERSION_FILE}" \
     -s \
@@ -819,17 +821,16 @@ function doSoftwareUpdate() {
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
 
-        SOFTWARE_REMOTE_ZIP_FILE=\
-"${SOFTWARE_REMOTE_REPO}/${SOFTWARE_REMOTE_ZIP_BASE_FILE}_\
+        SOFTWARE_FILE_NAME="${SOFTWARE_REMOTE_ZIP_BASE_FILE}_\
 ${SOFTWARE_REMOTE_VERSION_NUMBER}_${SOFTWARE_REMOTE_VERSION_BUILD}.tar.gz"
-        SOFTWARE_REMOTE_COPY_ZIP_FILE=\
-"${SETTINGS_DIR}/${SOFTWARE_REMOTE_ZIP_BASE_FILE}_\
-${SOFTWARE_REMOTE_VERSION_NUMBER}_${SOFTWARE_REMOTE_VERSION_BUILD}.tar.gz"
+        SOFTWARE_REMOTE_ZIP_FILE="${SOFTWARE_REMOTE_REPO}/${SOFTWARE_FILE_NAME}"
+        SOFTWARE_REMOTE_COPY_ZIP_FILE="${SETTINGS_DIR}/${SOFTWARE_FILE_NAME}"
 
         # get lastest firmware from github
         RES=$(curl \
         -H "Authorization: token ${SOFTWARE_TOKEN}" \
         -H "Accept: application/vnd.github.v3.raw" \
+        -H "ref: release_${VERSION_NUMBER}" \
         -L "${SOFTWARE_REMOTE_ZIP_FILE}" \
         -o "${SOFTWARE_REMOTE_COPY_ZIP_FILE}" \
         -s \
@@ -843,10 +844,10 @@ ${SOFTWARE_REMOTE_VERSION_NUMBER}_${SOFTWARE_REMOTE_VERSION_BUILD}.tar.gz"
 
             # extract tar.gz
             cd "${SETTINGS_DIR}"
-            tar -zxvf "$SOFTWARE_REMOTE_COPY_ZIP_FILE"
+            tar -zxvf "${SOFTWARE_REMOTE_COPY_ZIP_FILE}"
 
             # remove tar.gz file
-            rm "$SOFTWARE_REMOTE_COPY_ZIP_FILE"
+            rm "${SOFTWARE_REMOTE_COPY_ZIP_FILE}"
 
             # run installer
             cd "KillSwitch/Bash"
@@ -898,6 +899,7 @@ function doSoftware() {
     RESULT=$(curl \
     -H "Authorization: token ${SOFTWARE_TOKEN}" \
     -H "Accept: application/vnd.github.v3.raw" \
+    -H "ref: release_${VERSION_NUMBER}" \   # only use files from smae branch
     -L "${SOFTWARE_REMOTE_VERSION_FILE}" \
     -o "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" \
     -s \
