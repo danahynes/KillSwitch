@@ -1,10 +1,10 @@
-# KillSwitch files for Pi
+# KillSwitch software files
 
 These are the files that get installed on you Raspberry Pi when you install
 KillSwitch.
 
-Bash - scripts that run at startup/shutdown and the settings script
-Python - scripts that control the feedback pin and watch the trigger pin
+Bash - scripts that install/uninstall KillSwitch, and the settings script
+Python - scripts that watch the trigger pin and control the feedback pin
 Services - runs the Python scripts at boot and shutdown/reboot
 
 # -)

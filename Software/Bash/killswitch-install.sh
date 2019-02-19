@@ -11,8 +11,8 @@
 #-------------------------------------------------------------------------------
 # version
 
-VERSION_NUMBER="0.1"
-VERSION_BUILD="19.02.06"
+VERSION_NUMBER="0.2"
+VERSION_BUILD="19.02.18"
 
 #-------------------------------------------------------------------------------
 # start
@@ -44,7 +44,7 @@ apt-get install dialog python python-gpiozero python-serial avrdude
 echo ""
 
 #-------------------------------------------------------------------------------
-# the rest
+# let's go!
 
 echo "Installing KillSwitch..."
 echo ""
@@ -61,14 +61,15 @@ echo ""
 echo -n "Turning off login console... "
 
 # filenames
-cmd_file_old="/boot/cmdline.txt"
-cmd_file_new="/boot/cmdline_tmp.txt"
+CMD_FILE_OLD="/boot/cmdline.txt"
+CMD_FILE_NEW="/boot/cmdline_tmp.txt"
 
 # move everthing except login console to new file
-echo $(cat < "$cmd_file_old") | sed 's/ console=.*,[0-9]*//' > "$cmd_file_new"
+echo $(cat < "${CMD_FILE_OLD}") | sed 's/ console=.*,[0-9]*//' > \
+"${CMD_FILE_NEW}"
 
 # move new file to old file
-mv "$cmd_file_new" "$cmd_file_old"
+mv "${CMD_FILE_NEW}" "${CMD_FILE_OLD}"
 
 echo "Done"
 
@@ -78,17 +79,17 @@ echo "Done"
 echo -n "Turning on serial hardware... "
 
 # filenames
-config_file_old="/boot/config.txt"
-config_file_new="/boot/config_tmp.txt"
+CFG_FILE_OLD="/boot/config.txt"
+CFG_FILE_NEW="/boot/config_tmp.txt"
 
 # move everything except old enable_uart (if present) to new file
-grep -v "enable_uart=" "$config_file_old" > "$config_file_new"
+grep -v "enable_uart=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
 
 # add new enable_uart line
-echo "enable_uart=1" >> "$config_file_new"
+echo "enable_uart=1" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
-mv "$config_file_new" "$config_file_old"
+mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
 
 echo "Done"
 echo ""
@@ -105,17 +106,17 @@ echo ""
 echo -n "Setting shutdown permission... "
 
 # filenames
-config_file_old="/home/${SUDO_USER}/.bash_aliases"
-config_file_new="/home/${SUDO_USER}/.bash_aliases_tmp"
+CFG_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
+CFG_FILE_NEW="/home/${SUDO_USER}/.bash_aliases_tmp"
 
 # move everything except old shutdown (if present) to new file
-grep -v "alias shutdown=" "$config_file_old" > "$config_file_new"
+grep -v "alias shutdown=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
 
 # add new shutdown line
-echo "alias shutdown='sudo shutdown -h now'" >> "$config_file_new"
+echo "alias shutdown='sudo shutdown -h now'" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
-mv "$config_file_new" "$config_file_old"
+mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
 
 echo "Done"
 
@@ -125,17 +126,17 @@ echo "Done"
 echo -n "Setting reboot permission... "
 
 # filenames
-config_file_old="/home/${SUDO_USER}/.bash_aliases"
-config_file_new="/home/${SUDO_USER}/.bash_aliases_tmp"
+CFG_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
+CFG_FILE_NEW="/home/${SUDO_USER}/.bash_aliases_tmp"
 
 # move everything except old reboot (if present) to new file
-grep -v "alias reboot=" "$config_file_old" > "$config_file_new"
+grep -v "alias reboot=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
 
 # add new reboot line
-echo "alias reboot='sudo shutdown -r now'" >> "$config_file_new"
+echo "alias reboot='sudo shutdown -r now'" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
-mv "$config_file_new" "$config_file_old"
+mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
 
 echo "Done"
 
@@ -158,25 +159,25 @@ echo ""
 
 # copy boot service script
 echo -n "Copying killswitch-boot.service to /lib/systemd/system/... "
-cp killswitch-boot.service /lib/systemd/system/
+cp ../Services/killswitch-boot.service /lib/systemd/system/
 systemctl enable killswitch-boot.service
 echo "Done"
 
 # copy boot script
 echo -n "Copying killswitch-boot.py to /usr/local/bin/... "
-cp killswitch-boot.py /usr/local/bin/
+cp ../Python/killswitch-boot.py /usr/local/bin/
 chmod +x /usr/local/bin/killswitch-boot.py
 echo "Done"
 
 # copy shutodwn service script
 echo -n "Copying killswitch-shutdown.service to /lib/systemd/system/... "
-cp killswitch-shutdown.service /lib/systemd/system/
+cp ../Services/killswitch-shutdown.service /lib/systemd/system/
 systemctl enable killswitch-shutdown.service
 echo "Done"
 
 # copy shutdown script
 echo -n "Copying killswitch-shutdown.py to /usr/local/bin/... "
-cp killswitch-shutdown.py /usr/local/bin/
+cp ../Python/killswitch-shutdown.py /usr/local/bin/
 chmod +x /usr/local/bin/killswitch-shutdown.py
 echo "Done"
 
@@ -203,19 +204,19 @@ echo -n "Setting up avrdude..."
 AVRDUDE_CONF="/etc/avrdude.conf"
 
 # check if already set up
-grep -q "killswitch" "$AVRDUDE_CONF"
+grep -q "killswitch" "${AVRDUDE_CONF}"
 IS_SETUP=$?
 
 if [ $IS_SETUP -ne 0 ]; then
-    echo "programmer" >> "$AVRDUDE_CONF"
-    echo "  id    = \"killswitch\";" >> "$AVRDUDE_CONF"
+    echo "programmer" >> "${AVRDUDE_CONF}"
+    echo "  id    = \"killswitch\";" >> "${AVRDUDE_CONF}"
     echo "  desc  = \"Update KillSwitch firmware using GPIO\";" >> \
-    "$AVRDUDE_CONF"
-    echo "  type  = \"linuxgpio\";" >> "$AVRDUDE_CONF"
-    echo "  reset = 4;" >> "$AVRDUDE_CONF"
-    echo "  sck   = 2;" >> "$AVRDUDE_CONF"
-    echo "  mosi  = 14;" >> "$AVRDUDE_CONF"
-    echo "  miso  = 15;" >> "$AVRDUDE_CONF"
+    "${AVRDUDE_CONF}"
+    echo "  type  = \"linuxgpio\";" >> "${AVRDUDE_CONF}"
+    echo "  reset = 4;" >> "${AVRDUDE_CONF}"
+    echo "  sck   = 2;" >> "${AVRDUDE_CONF}"
+    echo "  mosi  = 14;" >> "${AVRDUDE_CONF}"
+    echo "  miso  = 15;" >> "${AVRDUDE_CONF}"
 fi
 
 echo "Done"

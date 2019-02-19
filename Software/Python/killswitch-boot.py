@@ -8,8 +8,8 @@
 # All rights reserved.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER = "0.1"
-VERSION_BUILD = "19.02.06"
+VERSION_NUMBER = "0.2"
+VERSION_BUILD = "19.02.18"
 
 # are we running on a pi?
 onPi = False
@@ -22,8 +22,8 @@ try :
     onPi = True
 except ImportError:
     onPi = False
-import serial
-#import signal
+#import serial
+import signal
 import subprocess
 
 #-------------------------------------------------------------------------------
@@ -31,14 +31,14 @@ import subprocess
 #-------------------------------------------------------------------------------
 pin_feedback = 2
 pin_trigger = 3
-time_hold = 5
+time_hold = 0.5
 time_debounce = 0.05
 
-if (onPi):
-    serial_port = '/dev/ttyS0'
-else:
-    serial_port = '/dev/pts/5'
-serial_speed = 9600
+#if (onPi):
+#    serial_port = '/dev/ttyS0'
+#else:
+#    serial_port = '/dev/pts/5'
+#serial_speed = 9600
 
 #-------------------------------------------------------------------------------
 # variables
@@ -98,7 +98,7 @@ if (onPi):
     feedback = g0.OutputDevice(pin_feedback)
 
 # set up serial
-ser = serial.Serial(serial_port, serial_speed, timeout = 1);
+#ser = serial.Serial(serial_port, serial_speed, timeout = 1);
 
 #-------------------------------------------------------------------------------
 # initialize
@@ -106,7 +106,7 @@ ser = serial.Serial(serial_port, serial_speed, timeout = 1);
 
 if (onPi):
 
-    # make sure the pin starts off low (in case it was held over)
+    # make sure the pin starts off LOW (in case it was held over)
     trigger.wait_for_release()
 
     # assign button functions
@@ -118,26 +118,26 @@ if (onPi):
 #-------------------------------------------------------------------------------
 
 # watch serial
-while (1):
-    line = ser.readline()
-    if (len(line) > 0):
+# while (1):
+#     line = ser.readline()
+#     if (len(line) > 0):
+#
+#         # split by separator
+#         cmds = line.split("|")
+#         cmd = cmds[0]
+#         val = cmds[1]
+#
+#         # strip leading '?'
+#         cmd = cmd[1:]
+#
+#         # strip trailing '!' and add two for CR/LF
+#         val = val[:-3]
+#
+#         if (cmd == "SHT"):
+#             subprocess.call(['shutdown', '-h', 'now'], shell = False)
+#         elif (cmd == "RBT"):
+#             subprocess.call(['shutdown', '-r', 'now'], shell = False)
 
-        # split by separator
-        cmds = line.split("|")
-        cmd = cmds[0]
-        val = cmds[1]
-
-        # strip leading '?'
-        cmd = cmd[1:]
-
-        # strip trailing '!' and add two for CR/LF
-        val = val[:-3]
-
-        if (cmd == "SHT"):
-            subprocess.call(['shutdown', '-h', 'now'], shell = False)
-        elif (cmd == "RBT"):
-            subprocess.call(['shutdown', '-r', 'now'], shell = False)
-
-#signal.pause()
+signal.pause()
 
 # -)

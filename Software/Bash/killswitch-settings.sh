@@ -11,8 +11,8 @@
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER="0.1"
-VERSION_BUILD="19.02.05"
+VERSION_NUMBER="0.2"
+VERSION_BUILD="19.02.18"
 
 DIALOG_OK=0
 DIALOG_CANCEL=1
@@ -21,8 +21,8 @@ DIALOG_ESCAPE=255
 SETTINGS_DIR="${HOME}/.killswitch"
 SETTINGS_FILE="${SETTINGS_DIR}/killswitch-settings.conf"
 
-SERIAL_PORT=/dev/pts/4
-#SERIAL_PORT=/dev/ttyS0
+#SERIAL_PORT=/dev/pts/4
+SERIAL_PORT=/dev/ttyS0
 SERIAL_SPEED=9600
 
 LEDN_DEFAULT=255            # 0-255
@@ -193,16 +193,13 @@ FIRMWARE_OK_TEXT="Your firmware is up to date."
 FIRMWARE_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
 FIRMWARE_REMOTE_REPO=\
 "https://api.github.com/repos/danahynes/KillSwitch/contents/Firmware"
-
 FIRMWARE_REMOTE_FILE_NAME="firmware-version.txt"
 FIRMWARE_REMOTE_VERSION_FILE=\
 "${FIRMWARE_REMOTE_REPO}/${FIRMWARE_REMOTE_FILE_NAME}"
 FIRMWARE_REMOTE_COPY_VERSION_FILE=\
 "${SETTINGS_DIR}/${FIRMWARE_REMOTE_FILE_NAME}"
-
 FIRMWARE_REMOTE_VERSION_NUMBER=""
 FIRMWARE_REMOTE_VERSION_BUILD=""
-
 FIRMWARE_REMOTE_HEX_BASE_FILE="killswitch-firmware"
 
 SOFTWARE_TITLE="Software update"
@@ -218,16 +215,13 @@ SOFTWARE_OK_TEXT="Your software is up to date."
 SOFTWARE_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
 SOFTWARE_REMOTE_REPO=\
 "https://api.github.com/repos/danahynes/KillSwitch/contents/Pi"
-
 SOFTWARE_REMOTE_FILE_NAME="pi-version.txt"
 SOFTWARE_REMOTE_VERSION_FILE=\
 "${SOFTWARE_REMOTE_REPO}/${SOFTWARE_REMOTE_FILE_NAME}"
 SOFTWARE_REMOTE_COPY_VERSION_FILE=\
 "${SETTINGS_DIR}/${SOFTWARE_REMOTE_FILE_NAME}"
-
 SOFTWARE_REMOTE_VERSION_NUMBER=""
 SOFTWARE_REMOTE_VERSION_BUILD=""
-
 SOFTWARE_REMOTE_ZIP_BASE_FILE="KillSwitch"
 
 ERROR_TITLE="Error"
@@ -270,21 +264,21 @@ LPA_STATES=($STATE_ON $STATE_OFF)
 # Helpers
 
 function readPropsFile() {
-    echo $(grep "${1}=" "$SETTINGS_FILE" | cut -d "=" -f2)
+    echo $(grep "${1}=" "${SETTINGS_FILE}" | cut -d "=" -f2)
 }
 
 function writePropsFile() {
-    sed -i "s/^${1}=.*/${1}=${2}/g" "$SETTINGS_FILE"
+    sed -i "s/^${1}=.*/${1}=${2}/g" "${SETTINGS_FILE}"
 }
 
 function readSerial() {
     read -r -t 30 LINE < $SERIAL_PORT
-    echo "$LINE"
+    echo "${LINE}"
 }
 
 function writeSerial() {
     CMD="${ACTION_START}${1}${ACTION_SEPARATOR}${2}${ACTION_END}"
-    echo "$CMD" > $SERIAL_PORT
+    echo "${CMD}" > $SERIAL_PORT
 }
 
 #-------------------------------------------------------------------------------
@@ -721,10 +715,10 @@ function doFirmwareIsUpToDate() {
 
 function doFirmware() {
 
-    # get current version from arduino
+    # get current version from firmware
     writeSerial "VER" ""
-    FIRMWARE_LOCAL_VERSION_NUMBER="0.1" #$(readSerial)
-    FIRMWARE_LOCAL_VERSION_BUILD="19.01.12" #$(readSerial)
+    FIRMWARE_LOCAL_VERSION_NUMBER=$(readSerial)
+    FIRMWARE_LOCAL_VERSION_BUILD=$(readSerial)
 
     FIRMWARE_LOCAL_VERSION_NUMBER_A=$(echo $FIRMWARE_LOCAL_VERSION_NUMBER | \
     cut -d "." -f1)
@@ -831,8 +825,7 @@ ${SOFTWARE_REMOTE_VERSION_NUMBER}_${SOFTWARE_REMOTE_VERSION_BUILD}.tar.gz"
         SOFTWARE_REMOTE_COPY_ZIP_FILE=\
 "${SETTINGS_DIR}/${SOFTWARE_REMOTE_ZIP_BASE_FILE}_\
 ${SOFTWARE_REMOTE_VERSION_NUMBER}_${SOFTWARE_REMOTE_VERSION_BUILD}.tar.gz"
-        echo "$SOFTWARE_REMOTE_ZIP_FILE"
-        echo "$SOFTWARE_REMOTE_COPY_ZIP_FILE"
+
         # get lastest firmware from github
         RES=$(curl \
         -H "Authorization: token ${SOFTWARE_TOKEN}" \
@@ -1043,17 +1036,17 @@ function doExit() {
 # Init
 
 # check if file exists
-if [ ! -f "$SETTINGS_FILE" ]; then
+if [ ! -f "${SETTINGS_FILE}" ]; then
 
     # if not, write defaults
     mkdir -p "${SETTINGS_DIR}"
-    touch "$SETTINGS_FILE"
-    echo $LEDT_SETTING"=0" >> "$SETTINGS_FILE"
-    echo $LEDS_SETTING"=0" >> "$SETTINGS_FILE"
-    echo $LEDN_SETTING"="$LEDN_DEFAULT >> "$SETTINGS_FILE"
-    echo $LEDF_SETTING"=0" >> "$SETTINGS_FILE"
-    echo $LPT_SETTING"="$LPT_DEFAULT >> "$SETTINGS_FILE"
-    echo $LPA_SETTING"=0" >> "$SETTINGS_FILE"
+    touch "${SETTINGS_FILE}"
+    echo $LEDT_SETTING"=0" >> "${SETTINGS_FILE}"
+    echo $LEDS_SETTING"=0" >> "${SETTINGS_FILE}"
+    echo $LEDN_SETTING"="$LEDN_DEFAULT >> "${SETTINGS_FILE}"
+    echo $LEDF_SETTING"=0" >> "${SETTINGS_FILE}"
+    echo $LPT_SETTING"="$LPT_DEFAULT >> "${SETTINGS_FILE}"
+    echo $LPA_SETTING"=0" >> "${SETTINGS_FILE}"
 fi
 
 # map joystick to keyboard if running RetroPie
