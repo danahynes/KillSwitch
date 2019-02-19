@@ -397,7 +397,7 @@ void doProgTimerUp(DHTimer* timer) {
  ----------------------------------------------------------------------------*/
 void doLEDDoneFlashing(DHLED* led) {
 
-	// XXX: delay() is bad but we need to differentiate between
+	// NB: delay() is bad but we need to differentiate between
 	// the "waiting for code" flashes and the "got a code" flashes
 	// is it worth a whole other timer/callback for this?
 	delay(FLASH_CYCLE_SLOW / 2);
@@ -746,7 +746,7 @@ void loop() {
 				// off for half cycle before flash
 				ledStatus.off();
 
-				// XXX: delay() is bad but we need to differentiate between
+				// NB: delay() is bad but we need to differentiate between
 				// the "waiting for code" flashes and the "got a code" flashes
 				// is it worth a whole other timer/callback for this?
 				delay(FLASH_CYCLE_SLOW / 2);
