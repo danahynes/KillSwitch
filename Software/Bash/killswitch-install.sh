@@ -159,25 +159,25 @@ echo ""
 
 # copy boot service script
 echo -n "Copying killswitch-boot.service to /lib/systemd/system/... "
-cp killswitch-boot.service /lib/systemd/system/
+cp ../Services/killswitch-boot.service /lib/systemd/system/
 systemctl enable killswitch-boot.service
 echo "Done"
 
 # copy boot script
 echo -n "Copying killswitch-boot.py to /usr/local/bin/... "
-cp killswitch-boot.py /usr/local/bin/
+cp ../Python/killswitch-boot.py /usr/local/bin/
 chmod +x /usr/local/bin/killswitch-boot.py
 echo "Done"
 
 # copy shutodwn service script
 echo -n "Copying killswitch-shutdown.service to /lib/systemd/system/... "
-cp killswitch-shutdown.service /lib/systemd/system/
+cp ../Services/killswitch-shutdown.service /lib/systemd/system/
 systemctl enable killswitch-shutdown.service
 echo "Done"
 
 # copy shutdown script
 echo -n "Copying killswitch-shutdown.py to /usr/local/bin/... "
-cp killswitch-shutdown.py /usr/local/bin/
+cp ../Python/killswitch-shutdown.py /usr/local/bin/
 chmod +x /usr/local/bin/killswitch-shutdown.py
 echo "Done"
 
