@@ -11,6 +11,8 @@
 #-------------------------------------------------------------------------------
 # Constants
 
+DEBUG=1
+
 VERSION_NUMBER="0.2"
 VERSION_BUILD="19.02.18"
 
@@ -21,11 +23,16 @@ DIALOG_ESCAPE=255
 SETTINGS_DIR="${HOME}/.killswitch"
 SETTINGS_FILE="${SETTINGS_DIR}/killswitch-settings.conf"
 
-# laptop port
-#SERIAL_PORT=/dev/pts/4
-# pi port
-SERIAL_PORT=/dev/ttyS0
-SERIAL_SPEED=9600
+if [ $DEBUG -eq 1 ]; then
+
+    # laptop port
+    SERIAL_PORT=/dev/pts/4
+else
+
+    # pi port
+    SERIAL_PORT=/dev/ttyS0
+    SERIAL_SPEED=9600
+fi
 
 LEDN_DEFAULT=255            # 0-255
 LPT_DEFAULT=5               # in seconds
@@ -716,10 +723,18 @@ function doFirmwareIsUpToDate() {
 
 function doFirmware() {
 
-    # get current version from firmware
-    writeSerial "VER" ""
-    FIRMWARE_LOCAL_VERSION_NUMBER=$(readSerial)
-    FIRMWARE_LOCAL_VERSION_BUILD=$(readSerial)
+    if [ $DEBUG -eq 1 ]; then
+
+        # fake it till you make it
+        FIRMWARE_LOCAL_VERSION_NUMBER=${VERSION_NUMBER}
+        FIRMWARE_LOCAL_VERSION_BUILD=${VERSION_BUILD}
+    else
+
+        # get current version from firmware
+        writeSerial "VER" ""
+        FIRMWARE_LOCAL_VERSION_NUMBER=$(readSerial)
+        FIRMWARE_LOCAL_VERSION_BUILD=$(readSerial)
+    fi
 
     FIRMWARE_LOCAL_VERSION_NUMBER_A=$(echo $FIRMWARE_LOCAL_VERSION_NUMBER | \
     cut -d "." -f1)
