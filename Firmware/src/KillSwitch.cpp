@@ -21,13 +21,13 @@
 // Defines
 
 #define DH_DEBUG 1
-#define ERASE_EEPROM 1
+#define ERASE_EEPROM 0
 
 //-----------------------------------------------------------------------------
 // Constants
 
 const char VERSION_NUMBER[] PROGMEM = "0.2";
-const char VERSION_BUILD[] PROGMEM = "19.02.06";
+const char VERSION_BUILD[] PROGMEM = "19.02.18";
 
 const int STATE_OFF = 0;
 const int STATE_BOOTING = 1;
@@ -532,9 +532,11 @@ void setup() {
 	EEPROM.write(EEPROM_ADDR_HOLD_ACTION, 0);
 #endif
 
+#if DH_DEBUG == 1
 	//EEPROM.write(EEPROM_ADDR_TYPE, STATUS_TYPE_OFF);
 	//EEPROM.write(EEPROM_ADDR_OFF_BRIGHTNESS, 1);
 	EEPROM.write(EEPROM_ADDR_PULSE, 1);
+#endif
 
 	// start serial port
 	Serial.begin(9600);
@@ -586,8 +588,10 @@ void setup() {
 	tmpFeedback.setOnRelease(doFeedbackRelease);
 #endif
 
+#if DH_BEBUG == 0
 	// set up ir receiver
-	//irrecv.enableIRIn();
+	irrecv.enableIRIn();
+#endif
 
 	// set up timers
 	triggerTimer.setOnDone(doTriggerTimerUp);
