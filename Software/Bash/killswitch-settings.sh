@@ -13,8 +13,8 @@
 
 DEBUG=1
 
-VERSION_NUMBER="0.2"
-VERSION_BUILD="19.02.18"
+VERSION_NUMBER="0.3"
+VERSION_BUILD="19.02.20"
 
 DIALOG_OK=0
 DIALOG_CANCEL=1
@@ -671,8 +671,9 @@ function doFirmwareUpdate() {
 
         FIRMWARE_FILE_NAME="${FIRMWARE_REMOTE_HEX_BASE_FILE}_\
 ${FIRMWARE_REMOTE_VERSION_NUMBER}_${FIRMWARE_REMOTE_VERSION_BUILD}.hex"
-        FIRMWARE_REMOTE_HEX_FILE="${FIRMWARE_REMOTE_REPO}/${FIRMWARE_FILE_PATH}"
-        FIRMWARE_REMOTE_COPY_HEX_FILE="${SETTINGS_DIR}/${FIRMWARE_FILE_PATH}"
+        FIRMWARE_REMOTE_HEX_FILE="${FIRMWARE_REMOTE_REPO}/Firmware/\
+${FIRMWARE_FILE_PATH}"
+        FIRMWARE_REMOTE_COPY_HEX_FILE="${SETTINGS_DIR}/${FIRMWARE_FILE_NAME}"
 
         # get lastest firmware from github
         RES=$(curl \
@@ -726,8 +727,8 @@ function doFirmware() {
     if [ $DEBUG -eq 1 ]; then
 
         # fake it till you make it
-        FIRMWARE_LOCAL_VERSION_NUMBER=${VERSION_NUMBER}
-        FIRMWARE_LOCAL_VERSION_BUILD=${VERSION_BUILD}
+        FIRMWARE_LOCAL_VERSION_NUMBER="0.2" #${VERSION_NUMBER}
+        FIRMWARE_LOCAL_VERSION_BUILD="19.02.18" #${VERSION_BUILD}
     else
 
         # get current version from firmware
@@ -838,7 +839,8 @@ function doSoftwareUpdate() {
 
         SOFTWARE_FILE_NAME="${SOFTWARE_REMOTE_ZIP_BASE_FILE}_\
 ${SOFTWARE_REMOTE_VERSION_NUMBER}_${SOFTWARE_REMOTE_VERSION_BUILD}.tar.gz"
-        SOFTWARE_REMOTE_ZIP_FILE="${SOFTWARE_REMOTE_REPO}/${SOFTWARE_FILE_NAME}"
+        SOFTWARE_REMOTE_ZIP_FILE="${SOFTWARE_REMOTE_REPO}/Software/\
+${SOFTWARE_FILE_NAME}"
         SOFTWARE_REMOTE_COPY_ZIP_FILE="${SETTINGS_DIR}/${SOFTWARE_FILE_NAME}"
 
         # get lastest firmware from github
@@ -859,7 +861,7 @@ ${SOFTWARE_REMOTE_VERSION_NUMBER}_${SOFTWARE_REMOTE_VERSION_BUILD}.tar.gz"
 
             # extract tar.gz
             cd "${SETTINGS_DIR}"
-            tar -zxvf "${SOFTWARE_REMOTE_COPY_ZIP_FILE}"
+            tar -zxvf "${SOFTWARE_REMOTE_COPY_ZIP_FILE}" > /dev/null
 
             # remove tar.gz file
             rm "${SOFTWARE_REMOTE_COPY_ZIP_FILE}"

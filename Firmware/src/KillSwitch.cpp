@@ -26,8 +26,8 @@
 //-----------------------------------------------------------------------------
 // Constants
 
-const char VERSION_NUMBER[] PROGMEM = "0.2";
-const char VERSION_BUILD[] PROGMEM = "19.02.18";
+const char VERSION_NUMBER[] PROGMEM = "0.3";
+const char VERSION_BUILD[] PROGMEM = "19.02.20";
 
 const int STATE_OFF = 0;
 const int STATE_BOOTING = 1;
