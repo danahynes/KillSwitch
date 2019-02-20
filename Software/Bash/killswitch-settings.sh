@@ -1058,7 +1058,7 @@ if [ -d $scriptdir ]; then
 fi
 
 # set up serial port
-stty -F $SERIAL_PORT speed $SERIAL_SPEED -cstopb -parenb cs8
+stty -F $SERIAL_PORT speed $SERIAL_SPEED -cstopb -parenb cs8 > /dev/null 2>&1
 
 #-------------------------------------------------------------------------------
 # Main loop
