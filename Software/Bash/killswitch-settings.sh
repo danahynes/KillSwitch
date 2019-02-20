@@ -194,7 +194,7 @@ FIRMWARE_OK_TEXT="Your firmware is up to date."
 # TODO: hide this
 FIRMWARE_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
 FIRMWARE_REMOTE_REPO=\
-"https://api.github.com/repos/danahynes/KillSwitch/contents/Firmware"
+"https://api.github.com/repos/danahynes/KillSwitch/contents"
 FIRMWARE_REMOTE_FILE_NAME="firmware-version.txt"
 FIRMWARE_REMOTE_VERSION_FILE=\
 "${FIRMWARE_REMOTE_REPO}/${FIRMWARE_REMOTE_FILE_NAME}"
@@ -216,7 +216,7 @@ SOFTWARE_OK_TEXT="Your software is up to date."
 # TODO: hide this
 SOFTWARE_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
 SOFTWARE_REMOTE_REPO=\
-"https://api.github.com/repos/danahynes/KillSwitch/contents/Software"
+"https://api.github.com/repos/danahynes/KillSwitch/contents"
 SOFTWARE_REMOTE_FILE_NAME="software-version.txt"
 SOFTWARE_REMOTE_VERSION_FILE=\
 "${SOFTWARE_REMOTE_REPO}/${SOFTWARE_REMOTE_FILE_NAME}"
@@ -671,7 +671,7 @@ ${FIRMWARE_REMOTE_VERSION_NUMBER}_${FIRMWARE_REMOTE_VERSION_BUILD}.hex"
         RES=$(curl \
         -H "Authorization: token ${FIRMWARE_TOKEN}" \
         -H "Accept: application/vnd.github.v3.raw" \
-        -H "ref: release_${VERSION_NUMBER}" \
+        -H "ref: release_${FIRMWARE_REMOTE_VERSION_NUMBER}" \
         -L "${FIRMWARE_REMOTE_HEX_FILE}" \
         -o "${FIRMWARE_REMOTE_COPY_HEX_FILE}" \
         -s \
@@ -736,7 +736,7 @@ function doFirmware() {
     RESULT=$(curl \
     -H "Authorization: token ${FIRMWARE_TOKEN}" \
     -H "Accept: application/vnd.github.v3.raw" \
-    -H "ref: release_${VERSION_NUMBER}" \
+    -H "ref: master" \
     -L "${FIRMWARE_REMOTE_VERSION_FILE}" \
     -o "${FIRMWARE_REMOTE_COPY_VERSION_FILE}" \
     -s \
@@ -830,7 +830,7 @@ ${SOFTWARE_REMOTE_VERSION_NUMBER}_${SOFTWARE_REMOTE_VERSION_BUILD}.tar.gz"
         RES=$(curl \
         -H "Authorization: token ${SOFTWARE_TOKEN}" \
         -H "Accept: application/vnd.github.v3.raw" \
-        -H "ref: release_${VERSION_NUMBER}" \
+        -H "ref: release_${SOFTWARE_REMOTE_VERSION_NUMBER}" \
         -L "${SOFTWARE_REMOTE_ZIP_FILE}" \
         -o "${SOFTWARE_REMOTE_COPY_ZIP_FILE}" \
         -s \
@@ -899,7 +899,7 @@ function doSoftware() {
     RESULT=$(curl \
     -H "Authorization: token ${SOFTWARE_TOKEN}" \
     -H "Accept: application/vnd.github.v3.raw" \
-    -H "ref: release_${VERSION_NUMBER}" \
+    -H "ref: master" \
     -L "${SOFTWARE_REMOTE_VERSION_FILE}" \
     -o "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" \
     -s \
