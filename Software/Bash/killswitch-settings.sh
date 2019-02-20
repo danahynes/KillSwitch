@@ -214,15 +214,15 @@ SOFTWARE_OK_TEXT="Your software is up to date."
 # TODO: hide this
 SOFTWARE_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
 SOFTWARE_REMOTE_REPO=\
-"https://api.github.com/repos/danahynes/KillSwitch/contents/Pi"
-SOFTWARE_REMOTE_FILE_NAME="pi-version.txt"
+"https://api.github.com/repos/danahynes/KillSwitch/contents/Software"
+SOFTWARE_REMOTE_FILE_NAME="software-version.txt"
 SOFTWARE_REMOTE_VERSION_FILE=\
 "${SOFTWARE_REMOTE_REPO}/${SOFTWARE_REMOTE_FILE_NAME}"
 SOFTWARE_REMOTE_COPY_VERSION_FILE=\
 "${SETTINGS_DIR}/${SOFTWARE_REMOTE_FILE_NAME}"
 SOFTWARE_REMOTE_VERSION_NUMBER=""
 SOFTWARE_REMOTE_VERSION_BUILD=""
-SOFTWARE_REMOTE_ZIP_BASE_FILE="KillSwitch"
+SOFTWARE_REMOTE_ZIP_BASE_FILE="killswitch-software"
 
 ERROR_TITLE="Error"
 ERROR_TEXT="There was an error downloading. Please check your internet \
