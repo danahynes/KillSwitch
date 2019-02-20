@@ -153,7 +153,7 @@ LEDF_MAX=255
 LEDF_SETTING="LBF"
 LEDF_ACTION="LBF"
 
-REC_TITLE="Record new remote codes"
+REC_TITLE="Start recording"
 REC_TEXT="Press OK to start recording new codes on the device. The status LED \
 will begin flashing rapidly. Point the remote at the device and press the \
 button for 'on'. When you see the status LED flash once slowly, point the \
@@ -736,7 +736,7 @@ function doFirmware() {
     RESULT=$(curl \
     -H "Authorization: token ${FIRMWARE_TOKEN}" \
     -H "Accept: application/vnd.github.v3.raw" \
-    -H "ref: release_${VERSION_NUMBER}" \   # only use files from same branch
+    -H "ref: release_${VERSION_NUMBER}" \
     -L "${FIRMWARE_REMOTE_VERSION_FILE}" \
     -o "${FIRMWARE_REMOTE_COPY_VERSION_FILE}" \
     -s \
@@ -899,7 +899,7 @@ function doSoftware() {
     RESULT=$(curl \
     -H "Authorization: token ${SOFTWARE_TOKEN}" \
     -H "Accept: application/vnd.github.v3.raw" \
-    -H "ref: release_${VERSION_NUMBER}" \   # only use files from smae branch
+    -H "ref: release_${VERSION_NUMBER}" \
     -L "${SOFTWARE_REMOTE_VERSION_FILE}" \
     -o "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" \
     -s \
