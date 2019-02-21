@@ -14,6 +14,11 @@
 VERSION_NUMBER="0.3"
 VERSION_BUILD="19.02.20"
 
+function doError() {
+    echo "Error"
+    exit 1
+}
+
 #-------------------------------------------------------------------------------
 # start
 
@@ -40,7 +45,10 @@ echo ""
 
 echo "Installing dependencies..."
 echo ""
-apt-get install dialog python python-gpiozero python-serial avrdude
+RES=$(apt-get install dialog python python-gpiozero python-serial avrdude)
+if [ $RES -ne 0 ]; then
+    doError
+fi
 echo ""
 
 #-------------------------------------------------------------------------------
@@ -64,12 +72,18 @@ echo -n "Turning off login console... "
 CMD_FILE_OLD="/boot/cmdline.txt"
 CMD_FILE_NEW="/boot/cmdline_tmp.txt"
 
-# move everthing except login console to new file
-echo $(cat < "${CMD_FILE_OLD}") | sed 's/ console=.*,[0-9]*//' > \
-"${CMD_FILE_NEW}"
+# move everything except login console to new file
+RES=$(echo cat < "${CMD_FILE_OLD}") | sed 's/ console=.*,[0-9]*//' > \
+"${CMD_FILE_NEW}")
+if [ $RES -ne 0 ]; then
+    doError
+fi
 
 # move new file to old file
-mv "${CMD_FILE_NEW}" "${CMD_FILE_OLD}"
+RES=$(mv "${CMD_FILE_NEW}" "${CMD_FILE_OLD}")
+if [ $RES -ne 0 ]; then
+    doError
+fi
 
 echo "Done"
 
@@ -83,13 +97,22 @@ CFG_FILE_OLD="/boot/config.txt"
 CFG_FILE_NEW="/boot/config_tmp.txt"
 
 # move everything except old enable_uart (if present) to new file
-grep -v "enable_uart=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
+RES=$(grep -v "enable_uart=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}")
+if [ $RES -ne 0 ]; then
+    doError
+fi
 
 # add new enable_uart line
-echo "enable_uart=1" >> "${CFG_FILE_NEW}"
+RES=$(echo "enable_uart=1" >> "${CFG_FILE_NEW}")
+if [ $RES -ne 0 ]; then
+    doError
+fi
 
 # move new file to old file
-mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
+RES=$(mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}")
+if [ $RES -ne 0 ]; then
+    doError
+fi
 
 echo "Done"
 echo ""
@@ -110,13 +133,22 @@ CFG_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
 CFG_FILE_NEW="/home/${SUDO_USER}/.bash_aliases_tmp"
 
 # move everything except old shutdown (if present) to new file
-grep -v "alias shutdown=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
+RES=$(grep -v "alias shutdown=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}")
+if [ $RES -ne 0 ]; then
+    doError
+fi
 
 # add new shutdown line
-echo "alias shutdown='sudo shutdown -h now'" >> "${CFG_FILE_NEW}"
+RES=$(echo "alias shutdown='sudo shutdown -h now'" >> "${CFG_FILE_NEW}")
+if [ $RES -ne 0 ]; then
+    doError
+fi
 
 # move new file to old file
-mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
+RES=$(mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}")
+if [ $RES -ne 0 ]; then
+    doError
+fi
 
 echo "Done"
 
@@ -130,13 +162,23 @@ CFG_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
 CFG_FILE_NEW="/home/${SUDO_USER}/.bash_aliases_tmp"
 
 # move everything except old reboot (if present) to new file
-grep -v "alias reboot=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
+RES=$(grep -v "alias reboot=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}")
+if [ $RES -ne 0 ]; then
+    doError
+fi
 
 # add new reboot line
-echo "alias reboot='sudo shutdown -r now'" >> "${CFG_FILE_NEW}"
+RES=$(echo "alias reboot='sudo shutdown -r now'" >> "${CFG_FILE_NEW}")
+if [ $RES -ne 0 ]; then
+    doError
+fi
 
 # move new file to old file
-mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
+RES=$(mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}")
+if [ $RES -ne 0 ]; then
+    doError
+    exit 1
+fi
 
 echo "Done"
 
@@ -159,38 +201,86 @@ echo ""
 
 # copy boot service script
 echo -n "Copying killswitch-boot.service to /lib/systemd/system/... "
-cp ../Services/killswitch-boot.service /lib/systemd/system/
-systemctl enable killswitch-boot.service
+RES=$(cp ../Services/killswitch-boot.service /lib/systemd/system/)
+if [ $RES -ne 0 ]; then
+    doError
+    exit 1
+fi
+RES=$(systemctl enable killswitch-boot.service)
+if [ $RES -ne 0 ]; then
+    doError
+    exit 1
+fi
 echo "Done"
 
 # copy boot script
 echo -n "Copying killswitch-boot.py to /usr/local/bin/... "
-cp ../Python/killswitch-boot.py /usr/local/bin/
-chmod +x /usr/local/bin/killswitch-boot.py
+RES=$(cp ../Python/killswitch-boot.py /usr/local/bin/)
+if [ $RES -ne 0 ]; then
+    doError
+    exit 1
+fi
+RES+$(chmod +x /usr/local/bin/killswitch-boot.py)
+if [ $RES -ne 0 ]; then
+    doError
+    exit 1
+fi
 echo "Done"
 
 # copy shutodwn service script
 echo -n "Copying killswitch-shutdown.service to /lib/systemd/system/... "
-cp ../Services/killswitch-shutdown.service /lib/systemd/system/
-systemctl enable killswitch-shutdown.service
+RES=$(cp ../Services/killswitch-shutdown.service /lib/systemd/system/)
+if [ $RES -ne 0 ]; then
+    doError
+    exit 1
+fi
+RES=$(systemctl enable killswitch-shutdown.service)
+if [ $RES -ne 0 ]; then
+    doError
+    exit 1
+fi
 echo "Done"
 
 # copy shutdown script
 echo -n "Copying killswitch-shutdown.py to /usr/local/bin/... "
-cp ../Python/killswitch-shutdown.py /usr/local/bin/
-chmod +x /usr/local/bin/killswitch-shutdown.py
+RES=$(cp ../Python/killswitch-shutdown.py /usr/local/bin/)
+if [ $RES -ne 0 ]; then
+    doError
+    exit 1
+fi
+RES=$(chmod +x /usr/local/bin/killswitch-shutdown.py)
+if [ $RES -ne 0 ]; then
+    doError
+    exit 1
+fi
 echo "Done"
 
 # copy settings gui script
 echo -n "Copying kilswitch-settings.sh to /usr/local/bin/... "
-cp killswitch-settings.sh /usr/local/bin/
-chmod +x /usr/local/bin/killswitch-settings.sh
+RES=$(cp killswitch-settings.sh /usr/local/bin/)
+if [ $RES -ne 0 ]; then
+    doError
+    exit 1
+fi
+RES=$(chmod +x /usr/local/bin/killswitch-settings.sh)
+if [ $RES -ne 0 ]; then
+    doError
+    exit 1
+fi
 echo "Done"
 
 # copy uninstaller script
 echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
-cp killswitch-uninstall.sh /usr/local/bin
-chmod +x /usr/local/bin/killswitch-uninstall.sh
+RES=$(cp killswitch-uninstall.sh /usr/local/bin)
+if [ $RES -ne 0 ]; then
+    doError
+    exit 1
+fi
+RES=$(chmod +x /usr/local/bin/killswitch-uninstall.sh)
+if [ $RES -ne 0 ]; then
+    doError
+    exit 1
+fi
 echo "Done"
 
 echo ""
