@@ -521,30 +521,17 @@ Wire Wire Line
 $Comp
 L power:GND #PWR09
 U 1 1 5C0C0F0C
-P 5000 1650
-F 0 "#PWR09" H 5000 1400 50  0001 C CNN
-F 1 "GND" H 5005 1477 50  0000 C CNN
-F 2 "" H 5000 1650 50  0001 C CNN
-F 3 "" H 5000 1650 50  0001 C CNN
-	1    5000 1650
-	1    0    0    -1  
-$EndComp
-$Comp
-L conn:Conn_01x04 J2
-U 1 1 5C5C8DB3
-P 5250 1350
-F 0 "J2" H 5330 1342 50  0000 L CNN
-F 1 "BTN/LED" H 5330 1251 50  0000 L CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 5250 1350 50  0001 C CNN
-F 3 "~" H 5250 1350 50  0001 C CNN
-	1    5250 1350
+P 5000 2050
+F 0 "#PWR09" H 5000 1800 50  0001 C CNN
+F 1 "GND" H 5005 1877 50  0000 C CNN
+F 2 "" H 5000 2050 50  0001 C CNN
+F 3 "" H 5000 2050 50  0001 C CNN
+	1    5000 2050
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	5050 1550 5000 1550
 Connection ~ 5000 1550
-Wire Wire Line
-	5000 1550 5000 1650
 Connection ~ 7500 1250
 Wire Wire Line
 	7650 1450 7650 1850
@@ -914,4 +901,43 @@ Wire Wire Line
 Connection ~ 10200 2250
 Wire Wire Line
 	2850 1750 2850 1900
+$Comp
+L conn:Conn_01x07 J2
+U 1 1 5C6F40BD
+P 5250 1550
+F 0 "J2" H 5329 1592 50  0000 L CNN
+F 1 "REMOTE" H 5329 1501 50  0000 L CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x07_Pitch1.27mm" H 5250 1550 50  0001 C CNN
+F 3 "~" H 5250 1550 50  0001 C CNN
+	1    5250 1550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5000 1550 5000 1850
+Wire Wire Line
+	5050 1850 5000 1850
+Connection ~ 5000 1850
+Wire Wire Line
+	5000 1850 5000 2050
+$Comp
+L power:+5V #PWR010
+U 1 1 5C6FA291
+P 4500 1300
+F 0 "#PWR010" H 4500 1150 50  0001 C CNN
+F 1 "+5V" H 4515 1473 50  0000 C CNN
+F 2 "" H 4500 1300 50  0001 C CNN
+F 3 "" H 4500 1300 50  0001 C CNN
+	1    4500 1300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4500 1300 4500 1650
+Wire Wire Line
+	4500 1650 5050 1650
+Wire Wire Line
+	5050 1750 4850 1750
+Text GLabel 4850 1750 0    50   Input ~ 0
+IR
+Text GLabel 6000 3700 0    50   Input ~ 0
+IR
 $EndSCHEMATC
