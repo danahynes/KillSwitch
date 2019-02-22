@@ -6,8 +6,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "KillSwitch on ATTiny84"
-Date "2019-02-06"
-Rev "0.1"
+Date "2019-02-20"
+Rev "0.3"
 Comp "Dana Hynes"
 Comment1 "Copyright (c) 2019"
 Comment2 "All rights reserved"
@@ -506,18 +506,12 @@ Text GLabel 6000 3100 0    50   Input ~ 0
 BTN
 Text GLabel 6000 3500 0    50   Input ~ 0
 LED
-Text GLabel 4850 1350 0    50   Input ~ 0
+Text GLabel 4850 1250 0    50   Input ~ 0
 BTN
 Text GLabel 4850 1450 0    50   Input ~ 0
 LED
 Wire Wire Line
-	4850 1350 5050 1350
-Wire Wire Line
 	5050 1450 4850 1450
-Wire Wire Line
-	5050 1250 5000 1250
-Wire Wire Line
-	5000 1250 5000 1550
 $Comp
 L power:GND #PWR09
 U 1 1 5C0C0F0C
@@ -531,7 +525,6 @@ F 3 "" H 5000 2050 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	5050 1550 5000 1550
-Connection ~ 5000 1550
 Connection ~ 7500 1250
 Wire Wire Line
 	7650 1450 7650 1850
@@ -907,7 +900,7 @@ U 1 1 5C6F40BD
 P 5250 1550
 F 0 "J2" H 5329 1592 50  0000 L CNN
 F 1 "REMOTE" H 5329 1501 50  0000 L CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x07_Pitch1.27mm" H 5250 1550 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x07_Pitch2.54mm" H 5250 1550 50  0001 C CNN
 F 3 "~" H 5250 1550 50  0001 C CNN
 	1    5250 1550
 	1    0    0    -1  
@@ -940,4 +933,58 @@ Text GLabel 4850 1750 0    50   Input ~ 0
 IR
 Text GLabel 6000 3700 0    50   Input ~ 0
 IR
+Wire Wire Line
+	4850 1250 5050 1250
+Wire Wire Line
+	5050 1350 5000 1350
+Wire Wire Line
+	5000 1350 5000 1550
+Connection ~ 5000 1550
+$Comp
+L device:LED D2
+U 1 1 5C703E52
+P 1850 1250
+F 0 "D2" V 1888 1133 50  0000 R CNN
+F 1 "LED" V 1797 1133 50  0000 R CNN
+F 2 "LEDs:LED_0603_HandSoldering" H 1850 1250 50  0001 C CNN
+F 3 "" H 1850 1250 50  0001 C CNN
+	1    1850 1250
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	1850 1100 1850 1050
+Wire Wire Line
+	1850 1050 1350 1050
+Connection ~ 1350 1050
+$Comp
+L device:R R7
+U 1 1 5C7077B8
+P 1850 1650
+F 0 "R7" H 1920 1696 50  0000 L CNN
+F 1 "1K" H 1920 1605 50  0000 L CNN
+F 2 "Resistors_SMD:R_0603_HandSoldering" V 1780 1650 50  0001 C CNN
+F 3 "" H 1850 1650 50  0001 C CNN
+	1    1850 1650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1850 1500 1850 1400
+Wire Wire Line
+	1850 2200 1350 2200
+Connection ~ 1350 2200
+$Comp
+L device:Jumper_NO_Small JP1
+U 1 1 5C70F89C
+P 1850 2000
+F 0 "JP1" V 1804 2048 50  0000 L CNN
+F 1 "Jumper_NO_Small" V 1895 2048 50  0000 L CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Bridged2Bar_Pad1.0x1.5mm" H 1850 2000 50  0001 C CNN
+F 3 "" H 1850 2000 50  0001 C CNN
+	1    1850 2000
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1850 2100 1850 2200
+Wire Wire Line
+	1850 1900 1850 1800
 $EndSCHEMATC
