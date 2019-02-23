@@ -11,9 +11,10 @@
 #-------------------------------------------------------------------------------
 # version
 
-VERSION_NUMBER="0.3"
-VERSION_BUILD="19.02.20"
+VERSION_NUMBER="0.3.0"
 
+#-------------------------------------------------------------------------------
+# something went wrong, report error and bail
 function doError() {
     echo "Error"
     exit 1
@@ -36,8 +37,7 @@ fi
 #-------------------------------------------------------------------------------
 # about
 
-echo "KillSwitch Installer v${VERSION_NUMBER} (${VERSION_BUILD}) (c) 2019 Dana \
-Hynes"
+echo "KillSwitch Installer v${VERSION_NUMBER} (c) 2019 Dana Hynes"
 echo ""
 
 #-------------------------------------------------------------------------------

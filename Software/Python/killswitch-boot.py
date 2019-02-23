@@ -8,8 +8,7 @@
 # All rights reserved.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER = "0.3"
-VERSION_BUILD = "19.02.20"
+VERSION_NUMBER = "0.3.0"
 
 # are we running on a pi?
 onPi = False

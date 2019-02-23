@@ -26,8 +26,7 @@
 //-----------------------------------------------------------------------------
 // Constants
 
-const char VERSION_NUMBER[] PROGMEM = "0.3";
-const char VERSION_BUILD[] PROGMEM = "19.02.20";
+const char VERSION_NUMBER[] PROGMEM = "0.3.0";
 
 const int STATE_OFF = 0;
 const int STATE_BOOTING = 1;
@@ -886,16 +885,8 @@ void loop() {
 				you need to read each byte and reassemble the string, so look
 				for null terminators using strlen_P.
 				 */
-				Serial.print(F("N="));
 				for (unsigned int k = 0; k < strlen_P(VERSION_NUMBER); k++) {
 					char myChar = pgm_read_byte(VERSION_NUMBER + k);
-					Serial.print(myChar);
-				}
-				Serial.println("");
-
-				Serial.print(F("B="));
-				for (unsigned int k = 0; k < strlen_P(VERSION_BUILD); k++) {
-					char myChar = pgm_read_byte(VERSION_BUILD + k);
 					Serial.print(myChar);
 				}
 				Serial.println("");
