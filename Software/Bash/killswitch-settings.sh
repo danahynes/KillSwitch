@@ -53,7 +53,7 @@ MENU_TITLE="KillSwitch Settings"
 MENU_TEXT="Choose an item:"
 MENU_HEIGHT=17
 MENU_WIDTH=40
-MENU_ITEM_HEIGHT=10
+MENU_ITEM_HEIGHT=9
 MENU_TAGS=(\
     "1" \
     "2" \
@@ -64,15 +64,13 @@ MENU_TAGS=(\
     "7" \
     "8" \
     "9" \
-    "10" \
 )
 MENU_ITEMS=(\
     "Status LED options" \
     "Start recording" \
     "Long press time" \
     "Long press action" \
-    "Firmware update" \
-    "Software update" \
+    "Update" \
     "Shutdown" \
     "Reboot" \
     "Uninstall" \
@@ -83,8 +81,7 @@ MENU_HELP=(\
 	"Start recording new remote codes" \
 	"Set how long to hold the button for a long press action" \
 	"Set the action to take when the button is held" \
-	"Update the code in the KillSwitch module" \
-    "Update the files on the Pi" \
+    "Update the files on the Pi and the code in the KillSwitch module" \
 	"Shut down the Raspberry Pi" \
 	"Reboot the Raspberry Pi" \
 	"Uninstall all KillSwitch files" \
@@ -191,40 +188,16 @@ LPA_ACTION="LPA"
 GITHUB_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 
-FIRMWARE_TITLE="Firmware update"
-FIRMWARE_TEXT=""
-FIRMWARE_HEIGHT=8
-FIRMWARE_WIDTH=40
-FIRMWARE_TEXT_CURRENT="Current version: "
-FIRMWARE_TEXT_NEW="Latest version:  "
-FIRMWARE_UPDATE_TEXT="Are you sure you want to update?"
-FIRMWARE_OK_TEXT="Your firmware is up to date."
-FIRMWARE_URL=""
-
-#FIRMWARE_REMOTE_FILE_NAME="firmware-version.txt"
-#FIRMWARE_REMOTE_VERSION_FILE=\
-#"${FIRMWARE_REMOTE_REPO}/${FIRMWARE_REMOTE_FILE_NAME}"
-#FIRMWARE_REMOTE_COPY_VERSION_FILE=\
-#"${SETTINGS_DIR}/${FIRMWARE_REMOTE_FILE_NAME}"
-#FIRMWARE_REMOTE_VERSION_NUMBER=""
-#FIRMWARE_REMOTE_HEX_BASE_FILE="killswitch-firmware"
-
-SOFTWARE_TITLE="Software update"
-SOFTWARE_TEXT=""
-SOFTWARE_HEIGHT=8
-SOFTWARE_WIDTH=40
-SOFTWARE_TEXT_CURRENT="Current version: "
-SOFTWARE_TEXT_NEW="Latest version:  "
-SOFTWARE_UPDATE_TEXT="Are you sure you want to update?"
-SOFTWARE_OK_TEXT="Your software is up to date."
-
-#SOFTWARE_REMOTE_FILE_NAME="software-version.txt"
-#SOFTWARE_REMOTE_VERSION_FILE=\
-#"${SOFTWARE_REMOTE_REPO}/${SOFTWARE_REMOTE_FILE_NAME}"
-#SOFTWARE_REMOTE_COPY_VERSION_FILE=\
-#"${SETTINGS_DIR}/${SOFTWARE_REMOTE_FILE_NAME}"
-#SOFTWARE_REMOTE_VERSION_NUMBER=""
-#SOFTWARE_REMOTE_ZIP_BASE_FILE="killswitch-software"
+UPDATE_TITLE="Update"
+UPDATE_TEXT=""
+UPDATE_HEIGHT=11
+UPDATE_WIDTH=40
+UPDATE_TEXT_CURRENT="Current version: "
+UPDATE_TEXT_NEW="Latest version:  "
+UPDATE_UPDATE_TEXT="Are you sure you want to update?\n(Note that you will need \
+a keyboard attached to enter the root password when the installer starts.)"
+UPDATE_OK_TEXT="Your firmware and software are up to date."
+UPDATE_URL=""
 
 ERROR_TITLE="Error"
 ERROR_TEXT="There was an error downloading. Please check your internet \
@@ -307,7 +280,6 @@ function doMain() {
     "${MENU_TAGS[6]}" "${MENU_ITEMS[6]}" "${MENU_HELP[6]}" \
     "${MENU_TAGS[7]}" "${MENU_ITEMS[7]}" "${MENU_HELP[7]}" \
     "${MENU_TAGS[8]}" "${MENU_ITEMS[8]}" "${MENU_HELP[8]}" \
-    "${MENU_TAGS[9]}" "${MENU_ITEMS[9]}" "${MENU_HELP[9]}" \
     3>&1 1>&2 2>&3 3>&-)
 
     BTN=$?
@@ -329,16 +301,14 @@ function doMain() {
     elif [ "$RESULT" = "${MENU_TAGS[3]}" ]; then
         doLongPressAction
     elif [ "$RESULT" = "${MENU_TAGS[4]}" ]; then
-        doFirmware
+        doUpdate
     elif [ "$RESULT" = "${MENU_TAGS[5]}" ]; then
-        doSoftware
-    elif [ "$RESULT" = "${MENU_TAGS[6]}" ]; then
         doShutdown
-    elif [ "$RESULT" = "${MENU_TAGS[7]}" ]; then
+    elif [ "$RESULT" = "${MENU_TAGS[6]}" ]; then
         doReboot
-    elif [ "$RESULT" = "${MENU_TAGS[8]}" ]; then
+    elif [ "$RESULT" = "${MENU_TAGS[7]}" ]; then
     	doUninstall
-    elif [ "$RESULT" = "${MENU_TAGS[9]}" ]; then
+    elif [ "$RESULT" = "${MENU_TAGS[8]}" ]; then
         doExit
     fi
 }
@@ -649,24 +619,18 @@ function doError() {
     fi
 }
 
-function doFirmwareUpdate() {
+function doActualUpdate() {
     RESULT=$(dialog \
             --backtitle "${WINDOW_TITLE}" \
-            --title "${FIRMWARE_TITLE}" \
+            --title "${UPDATE_TITLE}" \
             --yesno \
-            "${FIRMWARE_TEXT}" \
-            $FIRMWARE_HEIGHT \
-            $FIRMWARE_WIDTH \
+            "${UPDATE_TEXT}" \
+            $UPDATE_HEIGHT \
+            $UPDATE_WIDTH \
             3>&1 1>&2 2>&3 3>&-)
 
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
-
-        #FIRMWARE_FILE_NAME="${FIRMWARE_REMOTE_HEX_BASE_FILE}_\
-#${FIRMWARE_REMOTE_VERSION_NUMBER}.hex"
-        #FIRMWARE_REMOTE_HEX_FILE="${FIRMWARE_REMOTE_REPO}/Firmware/\
-#${FIRMWARE_FILE_NAME}"
-        #FIRMWARE_REMOTE_COPY_HEX_FILE="${SETTINGS_DIR}/${FIRMWARE_FILE_NAME}"
 
         cd "${SETTINGS_DIR}"
 
@@ -675,8 +639,9 @@ function doFirmwareUpdate() {
                 -H "Authorization: token ${GITHUB_TOKEN}" \
                 -H "Accept: application/vnd.github.v3.raw" \
                 -O \
+                -L \
                 -s \
-                "${FIRMWARE_URL}")
+                "${UPDATE_URL}")
 
         RES=$?
         if [ $RES -ne 0 ]; then
@@ -684,29 +649,62 @@ function doFirmwareUpdate() {
             return
         else
 
+            # time to get to work!
+
+            # first unzip the file
+            ZIP_NAME=$(basename "${UPDATE_URL}")
+            LONG_NAME=$(echo $(unzip -qql "${ZIP_NAME}" | head -n1 | tr -s ' ' \
+                    | cut -d ' ' -f5-))
+            unzip -qq "${ZIP_NAME}"
+            mv "${LONG_NAME}" "KillSwitch-${ZIP_NAME}"
+            rm "${ZIP_NAME}"
+            cd "KillSwitch-${ZIP_NAME}"
+
             # do avrdude update with hex file
+            cd "Firmware/"
+            FIRMWARE_FILE=$(find . -name "killswitch-firmware_*.hex")
             avrdude \
                     -p atmega328p \
                     -C "/etc/avrdude.conf" \
                     -c "killswitch" \
-                    -U flash:w:${FIRMWARE_REMOTE_COPY_HEX_FILE}:i
+                    -U flash:w:"${FIRMWARE_FILE}":i
+            cd ..
 
-            # remove hex file
-            #rm "$FIRMWARE_REMOTE_COPY_HEX_FILE"
+            RES=$?
+            if [ $RES -ne 0 ]; then
+                # TODO: show avrdude-specific error
+                doError
+                return
+            fi
+
+            # run installer for software
+            cd "Software/Bash/"
+            sudo ./killswitch-install.sh
+
+            RES=$?
+            if [ $RES -ne 0 ]; then
+                # TODO: showinstall-specific error
+                doError
+                return
+            fi
+
+            # remove unzipped folder
+            cd ../../..
+            rm -r "KillSwitch-${ZIP_NAME}"
         fi
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
     fi
 }
 
-function doFirmwareIsUpToDate() {
+function doIsUpToDate() {
     RESULT=$(dialog \
             --backtitle "$WINDOW_TITLE" \
-            --title "$FIRMWARE_TITLE" \
+            --title "$UPDATE_TITLE" \
             --msgbox \
-            "$FIRMWARE_TEXT" \
-            $FIRMWARE_HEIGHT \
-            $FIRMWARE_WIDTH \
+            "$UPDATE_TEXT" \
+            $UPDATE_HEIGHT \
+            $UPDATE_WIDTH \
             3>&1 1>&2 2>&3 3>&-)
 
     BTN=$?
@@ -715,27 +713,18 @@ function doFirmwareIsUpToDate() {
     fi
 }
 
-function doFirmware() {
+function doUpdate() {
 
     # fake it till you make it
-    FIRMWARE_LOCAL_VERSION_NUMBER="0.2.0" #${VERSION_NUMBER}
+    LOCAL_VERSION_NUMBER="0.2.0" #${VERSION_NUMBER}
 
-    FIRMWARE_LOCAL_VERSION_NUMBER_A=$(echo $FIRMWARE_LOCAL_VERSION_NUMBER | \
+    # break up current version number
+    LOCAL_VERSION_NUMBER_A=$(echo $LOCAL_VERSION_NUMBER | \
             cut -d "." -f1)
-    FIRMWARE_LOCAL_VERSION_NUMBER_B=$(echo $FIRMWARE_LOCAL_VERSION_NUMBER | \
+    LOCAL_VERSION_NUMBER_B=$(echo $LOCAL_VERSION_NUMBER | \
             cut -d "." -f2)
-    FIRMWARE_LOCAL_VERSION_NUMBER_C=$(echo $FIRMWARE_LOCAL_VERSION_NUMBER | \
+    LOCAL_VERSION_NUMBER_C=$(echo $LOCAL_VERSION_NUMBER | \
             cut -d "." -f3)
-
-    # get lastest firmware version from github
-    #RESULT=$(curl \
-    #-H "Authorization: token ${GITHUB_TOKEN}" \
-    #-H "Accept: application/vnd.github.v3.raw" \
-    #-H "ref: master" \
-    #-L "${FIRMWARE_REMOTE_VERSION_FILE}" \
-    #-o "${FIRMWARE_REMOTE_COPY_VERSION_FILE}" \
-    #-s \
-    #> /dev/null)
 
     # get lastest firmware version from github
     JSON=$(curl \
@@ -749,206 +738,195 @@ function doFirmware() {
         return
     fi
 
-    #FIRMWARE_REMOTE_VERSION_NUMBER=$(grep "VERSION_NUMBER=" \
-    #"${FIRMWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
+    UPDATE_URL=$(echo "${JSON}" | grep 'zipball_url' | cut -d '"' -f 4)
+    ZIP_NAME=$(basename "${UPDATE_URL}")
+    REMOTE_VERSION_NUMBER=$(echo "${ZIP_NAME}" | cut -d 'v' -f 2)
 
-    FIRMWARE_REMOTE_VERSION_NUMBER=$(echo "${JSON}" | grep tag_name \
-            | cut -d '"' -f 4)
-    FIRMWARE_REMOTE_VERSION_NUMBER=$(echo "${FIRMWARE_REMOTE_VERSION_NUMBER}" \
-            | cut -d "v" -f 2)
-
-    FIRMWARE_REMOTE_VERSION_NUMBER_A=$(echo \
-            $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f1)
-    FIRMWARE_REMOTE_VERSION_NUMBER_B=$(echo \
-            $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f2)
-    FIRMWARE_REMOTE_VERSION_NUMBER_C=$(echo \
-            $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f3)
+    # break up remote version number
+    REMOTE_VERSION_NUMBER_A=$(echo \
+            $REMOTE_VERSION_NUMBER | cut -d "." -f1)
+    REMOTE_VERSION_NUMBER_B=$(echo \
+            $REMOTE_VERSION_NUMBER | cut -d "." -f2)
+    REMOTE_VERSION_NUMBER_C=$(echo \
+            $REMOTE_VERSION_NUMBER | cut -d "." -f3)
 
     # do comparison
     IS_NEWER=0
 
-    if [ $FIRMWARE_LOCAL_VERSION_NUMBER_A -lt \
-            $FIRMWARE_REMOTE_VERSION_NUMBER_A ]; then
+    if [ $LOCAL_VERSION_NUMBER_A -lt \
+            $REMOTE_VERSION_NUMBER_A ]; then
         IS_NEWER=1
-    elif [ $FIRMWARE_LOCAL_VERSION_NUMBER_B -lt \
-            $FIRMWARE_REMOTE_VERSION_NUMBER_B ]; then
+    elif [ $LOCAL_VERSION_NUMBER_B -lt \
+            $REMOTE_VERSION_NUMBER_B ]; then
         IS_NEWER=1
-    elif [ $FIRMWARE_LOCAL_VERSION_NUMBER_C -lt \
-            $FIRMWARE_REMOTE_VERSION_NUMBER_C ]; then
+    elif [ $LOCAL_VERSION_NUMBER_C -lt \
+            $REMOTE_VERSION_NUMBER_C ]; then
         IS_NEWER=1
     fi
 
-    # remove local version file
-    #rm "${FIRMWARE_REMOTE_COPY_VERSION_FILE}"
-
-    # get url in case we need to download it
-    FIRMWARE_URL=$(echo "${JSON}" | sed -n -e '/browser_download_url/,$p' \
-    | head -n 1 | cut -d '"' -f 4)
-    echo "${FIRMWARE_URL}"
-
     # update text with version/build numbers
-    FIRMWARE_TEXT="${FIRMWARE_TEXT_CURRENT}"
-    FIRMWARE_TEXT+="${FIRMWARE_LOCAL_VERSION_NUMBER}\n"
-    FIRMWARE_TEXT+="${FIRMWARE_TEXT_NEW}"
-    FIRMWARE_TEXT+="${FIRMWARE_REMOTE_VERSION_NUMBER}\n"
-    FIRMWARE_TEXT+="\n"
+    UPDATE_TEXT="${UPDATE_TEXT_CURRENT}"
+    UPDATE_TEXT+="${LOCAL_VERSION_NUMBER}\n"
+    UPDATE_TEXT+="${UPDATE_TEXT_NEW}"
+    UPDATE_TEXT+="${REMOTE_VERSION_NUMBER}\n"
+    UPDATE_TEXT+="\n"
 
     #if newer, do yes/no
     if [ $IS_NEWER -eq 1 ]; then
-        FIRMWARE_TEXT+="$FIRMWARE_UPDATE_TEXT"
-        doFirmwareUpdate
+        UPDATE_TEXT+="$UPDATE_UPDATE_TEXT"
+        doActualUpdate
 
     # show message "up to date"
     else
-        FIRMWARE_TEXT+="$FIRMWARE_OK_TEXT"
-        doFirmwareIsUpToDate
+        UPDATE_TEXT+="$UPDATE_OK_TEXT"
+        doIsUpToDate
     fi
 }
 
-function doSoftwareUpdate() {
-    RESULT=$(dialog \
-    --backtitle "$WINDOW_TITLE" \
-    --title "$SOFTWARE_TITLE" \
-    --yesno \
-    "$SOFTWARE_TEXT" \
-    $SOFTWARE_HEIGHT \
-    $SOFTWARE_WIDTH \
-    3>&1 1>&2 2>&3 3>&-)
-
-    BTN=$?
-    if [ $BTN -eq $DIALOG_OK ]; then
-
-        SOFTWARE_FILE_NAME="${SOFTWARE_REMOTE_ZIP_BASE_FILE}_\
-${SOFTWARE_REMOTE_VERSION_NUMBER}.tar.gz"
-        SOFTWARE_REMOTE_ZIP_FILE="${SOFTWARE_REMOTE_REPO}/Software/\
-${SOFTWARE_FILE_NAME}"
-        SOFTWARE_REMOTE_COPY_ZIP_FILE="${SETTINGS_DIR}/${SOFTWARE_FILE_NAME}"
-
-        # get lastest firmware from github
-        RES=$(curl \
-        -H "Authorization: token ${SOFTWARE_TOKEN}" \
-        -H "Accept: application/vnd.github.v3.raw" \
-        -H "ref: release_${SOFTWARE_REMOTE_VERSION_NUMBER}" \
-        -L "${SOFTWARE_REMOTE_ZIP_FILE}" \
-        -o "${SOFTWARE_REMOTE_COPY_ZIP_FILE}" \
-        -s \
-        > /dev/null)
-
-        RES=$?
-        if [ $RES -ne 0 ]; then
-            doError
-            return
-        else
-
-            # extract tar.gz
-            cd "${SETTINGS_DIR}"
-            tar -zxvf "${SOFTWARE_REMOTE_COPY_ZIP_FILE}" > /dev/null
-
-            # remove tar.gz file
-            rm "${SOFTWARE_REMOTE_COPY_ZIP_FILE}"
-
-            # run installer
-            cd "KillSwitch/Bash"
-            sudo ./killswitch-install.sh
-
-            # remove download
-            cd ../..
-            rm -r "KillSwitch"
-        fi
-    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
-        MENU_DONE=1
-    fi
-}
-
-function doSoftwareIsUpToDate() {
-    RESULT=$(dialog \
-    --backtitle "$WINDOW_TITLE" \
-    --title "$SOFTWARE_TITLE" \
-    --msgbox \
-    "$SOFTWARE_TEXT" \
-    $SOFTWARE_HEIGHT \
-    $SOFTWARE_WIDTH \
-    3>&1 1>&2 2>&3 3>&-)
-
-    BTN=$?
-    if [ $BTN -eq $DIALOG_ESCAPE ]; then
-        MENU_DONE=1
-    fi
-}
-
-function doSoftware() {
-
-    # get current version from ???
-    SOFTWARE_LOCAL_VERSION_NUMBER=$VERSION_NUMBER
-
-    SOFTWARE_LOCAL_VERSION_NUMBER_A=$(echo $SOFTWARE_LOCAL_VERSION_NUMBER | \
-    cut -d "." -f1)
-    SOFTWARE_LOCAL_VERSION_NUMBER_B=$(echo $SOFTWARE_LOCAL_VERSION_NUMBER | \
-    cut -d "." -f2)
-    SOFTWARE_LOCAL_VERSION_NUMBER_C=$(echo $SOFTWARE_LOCAL_VERSION_NUMBER | \
-    cut -d "." -f3)
-
-    # get lastest software version from github
-    RESULT=$(curl \
-    -H "Authorization: token ${SOFTWARE_TOKEN}" \
-    -H "Accept: application/vnd.github.v3.raw" \
-    -H "ref: master" \
-    -L "${SOFTWARE_REMOTE_VERSION_FILE}" \
-    -o "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" \
-    -s \
-    > /dev/null)
-
-    RES=$?
-    if [ $RES -ne 0 ]; then
-        doError
-        return
-    fi
-
-    SOFTWARE_REMOTE_VERSION_NUMBER=$(grep "VERSION_NUMBER=" \
-    "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
-
-    SOFTWARE_REMOTE_VERSION_NUMBER_A=$(echo \
-    $SOFTWARE_REMOTE_VERSION_NUMBER | cut -d "." -f1)
-    SOFTWARE_REMOTE_VERSION_NUMBER_B=$(echo \
-    $SOFTWARE_REMOTE_VERSION_NUMBER | cut -d "." -f2)
-    SOFTWARE_REMOTE_VERSION_NUMBER_C=$(echo \
-    $SOFTWARE_REMOTE_VERSION_NUMBER | cut -d "." -f3)
-
-    # do comparison
-    IS_NEWER=0
-
-    if [ $SOFTWARE_LOCAL_VERSION_NUMBER_A -lt \
-    $SOFTWARE_REMOTE_VERSION_NUMBER_A ]; then
-        IS_NEWER=1
-    elif [ $SOFTWARE_LOCAL_VERSION_NUMBER_B -lt \
-    $SOFTWARE_REMOTE_VERSION_NUMBER_B ]; then
-        IS_NEWER=1
-    elif [ $SOFTWARE_LOCAL_VERSION_NUMBER_C -lt \
-    $SOFTWARE_REMOTE_VERSION_NUMBER_C ]; then
-        IS_NEWER=1
-    fi
-
-    # remove local version file
-    rm "${SOFTWARE_REMOTE_COPY_VERSION_FILE}"
-
-    # update text with version/build numbers
-    SOFTWARE_TEXT="${SOFTWARE_TEXT_CURRENT}"
-    SOFTWARE_TEXT+="${SOFTWARE_LOCAL_VERSION_NUMBER}\n"
-    SOFTWARE_TEXT+="${SOFTWARE_TEXT_NEW}"
-    SOFTWARE_TEXT+="${SOFTWARE_REMOTE_VERSION_NUMBER}"
-    SOFTWARE_TEXT+="\n"
-
-    #if newer, do yes/no
-    if [ $IS_NEWER -eq 1 ]; then
-        SOFTWARE_TEXT+="$SOFTWARE_UPDATE_TEXT"
-        doSoftwareUpdate
-
-    # show message "up to date"
-    else
-        SOFTWARE_TEXT+="$SOFTWARE_OK_TEXT"
-        doSoftwareIsUpToDate
-    fi
-}
+# function doSoftwareUpdate() {
+#     RESULT=$(dialog \
+#     --backtitle "$WINDOW_TITLE" \
+#     --title "$SOFTWARE_TITLE" \
+#     --yesno \
+#     "$SOFTWARE_TEXT" \
+#     $SOFTWARE_HEIGHT \
+#     $SOFTWARE_WIDTH \
+#     3>&1 1>&2 2>&3 3>&-)
+#
+#     BTN=$?
+#     if [ $BTN -eq $DIALOG_OK ]; then
+#
+#         SOFTWARE_FILE_NAME="${SOFTWARE_REMOTE_ZIP_BASE_FILE}_\
+# ${SOFTWARE_REMOTE_VERSION_NUMBER}.tar.gz"
+#         SOFTWARE_REMOTE_ZIP_FILE="${SOFTWARE_REMOTE_REPO}/Software/\
+# ${SOFTWARE_FILE_NAME}"
+#         SOFTWARE_REMOTE_COPY_ZIP_FILE="${SETTINGS_DIR}/${SOFTWARE_FILE_NAME}"
+#
+#         # get lastest firmware from github
+#         RES=$(curl \
+#         -H "Authorization: token ${SOFTWARE_TOKEN}" \
+#         -H "Accept: application/vnd.github.v3.raw" \
+#         -H "ref: release_${SOFTWARE_REMOTE_VERSION_NUMBER}" \
+#         -L "${SOFTWARE_REMOTE_ZIP_FILE}" \
+#         -o "${SOFTWARE_REMOTE_COPY_ZIP_FILE}" \
+#         -s \
+#         > /dev/null)
+#
+#         RES=$?
+#         if [ $RES -ne 0 ]; then
+#             doError
+#             return
+#         else
+#
+#             # extract tar.gz
+#             cd "${SETTINGS_DIR}"
+#             tar -zxvf "${SOFTWARE_REMOTE_COPY_ZIP_FILE}" > /dev/null
+#
+#             # remove tar.gz file
+#             rm "${SOFTWARE_REMOTE_COPY_ZIP_FILE}"
+#
+#             # run installer
+#             cd "KillSwitch/Bash"
+#             sudo ./killswitch-install.sh
+#
+#             # remove download
+#             cd ../..
+#             rm -r "KillSwitch"
+#         fi
+#     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
+#         MENU_DONE=1
+#     fi
+# }
+#
+# function doSoftwareIsUpToDate() {
+#     RESULT=$(dialog \
+#     --backtitle "$WINDOW_TITLE" \
+#     --title "$SOFTWARE_TITLE" \
+#     --msgbox \
+#     "$SOFTWARE_TEXT" \
+#     $SOFTWARE_HEIGHT \
+#     $SOFTWARE_WIDTH \
+#     3>&1 1>&2 2>&3 3>&-)
+#
+#     BTN=$?
+#     if [ $BTN -eq $DIALOG_ESCAPE ]; then
+#         MENU_DONE=1
+#     fi
+# }
+#
+# function doSoftware() {
+#
+#     # get current version from ???
+#     SOFTWARE_LOCAL_VERSION_NUMBER=$VERSION_NUMBER
+#
+#     SOFTWARE_LOCAL_VERSION_NUMBER_A=$(echo $SOFTWARE_LOCAL_VERSION_NUMBER | \
+#     cut -d "." -f1)
+#     SOFTWARE_LOCAL_VERSION_NUMBER_B=$(echo $SOFTWARE_LOCAL_VERSION_NUMBER | \
+#     cut -d "." -f2)
+#     SOFTWARE_LOCAL_VERSION_NUMBER_C=$(echo $SOFTWARE_LOCAL_VERSION_NUMBER | \
+#     cut -d "." -f3)
+#
+#     # get lastest software version from github
+#     RESULT=$(curl \
+#     -H "Authorization: token ${SOFTWARE_TOKEN}" \
+#     -H "Accept: application/vnd.github.v3.raw" \
+#     -H "ref: master" \
+#     -L "${SOFTWARE_REMOTE_VERSION_FILE}" \
+#     -o "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" \
+#     -s \
+#     > /dev/null)
+#
+#     RES=$?
+#     if [ $RES -ne 0 ]; then
+#         doError
+#         return
+#     fi
+#
+#     SOFTWARE_REMOTE_VERSION_NUMBER=$(grep "VERSION_NUMBER=" \
+#     "${SOFTWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
+#
+#     SOFTWARE_REMOTE_VERSION_NUMBER_A=$(echo \
+#     $SOFTWARE_REMOTE_VERSION_NUMBER | cut -d "." -f1)
+#     SOFTWARE_REMOTE_VERSION_NUMBER_B=$(echo \
+#     $SOFTWARE_REMOTE_VERSION_NUMBER | cut -d "." -f2)
+#     SOFTWARE_REMOTE_VERSION_NUMBER_C=$(echo \
+#     $SOFTWARE_REMOTE_VERSION_NUMBER | cut -d "." -f3)
+#
+#     # do comparison
+#     IS_NEWER=0
+#
+#     if [ $SOFTWARE_LOCAL_VERSION_NUMBER_A -lt \
+#     $SOFTWARE_REMOTE_VERSION_NUMBER_A ]; then
+#         IS_NEWER=1
+#     elif [ $SOFTWARE_LOCAL_VERSION_NUMBER_B -lt \
+#     $SOFTWARE_REMOTE_VERSION_NUMBER_B ]; then
+#         IS_NEWER=1
+#     elif [ $SOFTWARE_LOCAL_VERSION_NUMBER_C -lt \
+#     $SOFTWARE_REMOTE_VERSION_NUMBER_C ]; then
+#         IS_NEWER=1
+#     fi
+#
+#     # remove local version file
+#     rm "${SOFTWARE_REMOTE_COPY_VERSION_FILE}"
+#
+#     # update text with version/build numbers
+#     SOFTWARE_TEXT="${SOFTWARE_TEXT_CURRENT}"
+#     SOFTWARE_TEXT+="${SOFTWARE_LOCAL_VERSION_NUMBER}\n"
+#     SOFTWARE_TEXT+="${SOFTWARE_TEXT_NEW}"
+#     SOFTWARE_TEXT+="${SOFTWARE_REMOTE_VERSION_NUMBER}"
+#     SOFTWARE_TEXT+="\n"
+#
+#     #if newer, do yes/no
+#     if [ $IS_NEWER -eq 1 ]; then
+#         SOFTWARE_TEXT+="$SOFTWARE_UPDATE_TEXT"
+#         doSoftwareUpdate
+#
+#     # show message "up to date"
+#     else
+#         SOFTWARE_TEXT+="$SOFTWARE_OK_TEXT"
+#         doSoftwareIsUpToDate
+#     fi
+# }
 
 function doShutdown() {
     RESULT=$(dialog \
