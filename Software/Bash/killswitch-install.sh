@@ -45,10 +45,8 @@ echo ""
 
 echo "Installing dependencies..."
 echo ""
-RES=$(apt-get install dialog python python-gpiozero python-serial avrdude)
-if [ $RES -ne 0 ]; then
-    doError
-fi
+
+apt-get install dialog python python-gpiozero python-serial avrdude
 echo ""
 
 #-------------------------------------------------------------------------------
@@ -73,18 +71,10 @@ CMD_FILE_OLD="/boot/cmdline.txt"
 CMD_FILE_NEW="/boot/cmdline_tmp.txt"
 
 # move everything except login console to new file
-RES=$(echo cat < "${CMD_FILE_OLD}") | sed 's/ console=.*,[0-9]*//' > \
-"${CMD_FILE_NEW}")
-if [ $RES -ne 0 ]; then
-    doError
-fi
+echo cat < "${CMD_FILE_OLD}" | sed 's/ console=.*,[0-9]*//' > "${CMD_FILE_NEW}"
 
 # move new file to old file
-RES=$(mv "${CMD_FILE_NEW}" "${CMD_FILE_OLD}")
-if [ $RES -ne 0 ]; then
-    doError
-fi
-
+mv "${CMD_FILE_NEW}" "${CMD_FILE_OLD}"
 echo "Done"
 
 #-------------------------------------------------------------------------------
@@ -97,23 +87,13 @@ CFG_FILE_OLD="/boot/config.txt"
 CFG_FILE_NEW="/boot/config_tmp.txt"
 
 # move everything except old enable_uart (if present) to new file
-RES=$(grep -v "enable_uart=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}")
-if [ $RES -ne 0 ]; then
-    doError
-fi
+grep -v "enable_uart=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
 
 # add new enable_uart line
-RES=$(echo "enable_uart=1" >> "${CFG_FILE_NEW}")
-if [ $RES -ne 0 ]; then
-    doError
-fi
+echo "enable_uart=1" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
-RES=$(mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}")
-if [ $RES -ne 0 ]; then
-    doError
-fi
-
+mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
 echo "Done"
 echo ""
 
@@ -133,23 +113,13 @@ CFG_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
 CFG_FILE_NEW="/home/${SUDO_USER}/.bash_aliases_tmp"
 
 # move everything except old shutdown (if present) to new file
-RES=$(grep -v "alias shutdown=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}")
-if [ $RES -ne 0 ]; then
-    doError
-fi
+grep -v "alias shutdown=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
 
 # add new shutdown line
-RES=$(echo "alias shutdown='sudo shutdown -h now'" >> "${CFG_FILE_NEW}")
-if [ $RES -ne 0 ]; then
-    doError
-fi
+echo "alias shutdown='sudo shutdown -h now'" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
-RES=$(mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}")
-if [ $RES -ne 0 ]; then
-    doError
-fi
-
+mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
 echo "Done"
 
 #-------------------------------------------------------------------------------
@@ -162,24 +132,13 @@ CFG_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
 CFG_FILE_NEW="/home/${SUDO_USER}/.bash_aliases_tmp"
 
 # move everything except old reboot (if present) to new file
-RES=$(grep -v "alias reboot=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}")
-if [ $RES -ne 0 ]; then
-    doError
-fi
+grep -v "alias reboot=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
 
 # add new reboot line
-RES=$(echo "alias reboot='sudo shutdown -r now'" >> "${CFG_FILE_NEW}")
-if [ $RES -ne 0 ]; then
-    doError
-fi
+echo "alias reboot='sudo shutdown -r now'" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
-RES=$(mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}")
-if [ $RES -ne 0 ]; then
-    doError
-    exit 1
-fi
-
+mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
 echo "Done"
 
 #-------------------------------------------------------------------------------
@@ -201,86 +160,38 @@ echo ""
 
 # copy boot service script
 echo -n "Copying killswitch-boot.service to /lib/systemd/system/... "
-RES=$(cp ../Services/killswitch-boot.service /lib/systemd/system/)
-if [ $RES -ne 0 ]; then
-    doError
-    exit 1
-fi
-RES=$(systemctl enable killswitch-boot.service)
-if [ $RES -ne 0 ]; then
-    doError
-    exit 1
-fi
+cp ../Services/killswitch-boot.service /lib/systemd/system/
+systemctl enable killswitch-boot.service
 echo "Done"
 
 # copy boot script
 echo -n "Copying killswitch-boot.py to /usr/local/bin/... "
-RES=$(cp ../Python/killswitch-boot.py /usr/local/bin/)
-if [ $RES -ne 0 ]; then
-    doError
-    exit 1
-fi
-RES+$(chmod +x /usr/local/bin/killswitch-boot.py)
-if [ $RES -ne 0 ]; then
-    doError
-    exit 1
-fi
+cp ../Python/killswitch-boot.py /usr/local/bin/
+chmod +x /usr/local/bin/killswitch-boot.py
 echo "Done"
 
 # copy shutodwn service script
 echo -n "Copying killswitch-shutdown.service to /lib/systemd/system/... "
-RES=$(cp ../Services/killswitch-shutdown.service /lib/systemd/system/)
-if [ $RES -ne 0 ]; then
-    doError
-    exit 1
-fi
-RES=$(systemctl enable killswitch-shutdown.service)
-if [ $RES -ne 0 ]; then
-    doError
-    exit 1
-fi
+cp ../Services/killswitch-shutdown.service /lib/systemd/system/
+systemctl enable killswitch-shutdown.service
 echo "Done"
 
 # copy shutdown script
 echo -n "Copying killswitch-shutdown.py to /usr/local/bin/... "
-RES=$(cp ../Python/killswitch-shutdown.py /usr/local/bin/)
-if [ $RES -ne 0 ]; then
-    doError
-    exit 1
-fi
-RES=$(chmod +x /usr/local/bin/killswitch-shutdown.py)
-if [ $RES -ne 0 ]; then
-    doError
-    exit 1
-fi
+cp ../Python/killswitch-shutdown.py /usr/local/bin/
+chmod +x /usr/local/bin/killswitch-shutdown.py
 echo "Done"
 
 # copy settings gui script
 echo -n "Copying kilswitch-settings.sh to /usr/local/bin/... "
-RES=$(cp killswitch-settings.sh /usr/local/bin/)
-if [ $RES -ne 0 ]; then
-    doError
-    exit 1
-fi
-RES=$(chmod +x /usr/local/bin/killswitch-settings.sh)
-if [ $RES -ne 0 ]; then
-    doError
-    exit 1
-fi
+cp killswitch-settings.sh /usr/local/bin/
+chmod +x /usr/local/bin/killswitch-settings.sh
 echo "Done"
 
 # copy uninstaller script
 echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
-RES=$(cp killswitch-uninstall.sh /usr/local/bin)
-if [ $RES -ne 0 ]; then
-    doError
-    exit 1
-fi
-RES=$(chmod +x /usr/local/bin/killswitch-uninstall.sh)
-if [ $RES -ne 0 ]; then
-    doError
-    exit 1
-fi
+cp killswitch-uninstall.sh /usr/local/bin
+chmod +x /usr/local/bin/killswitch-uninstall.sh
 echo "Done"
 
 echo ""
@@ -307,6 +218,7 @@ if [ $IS_SETUP -ne 0 ]; then
     echo "  sck   = 2;" >> "${AVRDUDE_CONF}"
     echo "  mosi  = 14;" >> "${AVRDUDE_CONF}"
     echo "  miso  = 15;" >> "${AVRDUDE_CONF}"
+    echo ";" >> "${AVRDUDE_CONF}"
 fi
 
 echo "Done"
