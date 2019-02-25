@@ -24,11 +24,11 @@ SETTINGS_FILE="${SETTINGS_DIR}/killswitch-settings.conf"
 
 if [ $DEBUG -eq 1 ]; then
 
-    # laptop port
+    # laptop (test) serial port
     SERIAL_PORT=/dev/pts/4
 else
 
-    # pi port
+    # pi serial port
     SERIAL_PORT=/dev/ttyS0
     SERIAL_SPEED=9600
 fi
@@ -187,47 +187,44 @@ LPA_ITEMS=("Reboot" "Force quit")
 LPA_SETTING="LPA"
 LPA_ACTION="LPA"
 
+# TODO: hide this
+GITHUB_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
+GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
+
 FIRMWARE_TITLE="Firmware update"
 FIRMWARE_TEXT=""
-FIRMWARE_HEIGHT=12
+FIRMWARE_HEIGHT=8
 FIRMWARE_WIDTH=40
 FIRMWARE_TEXT_CURRENT="Current version: "
 FIRMWARE_TEXT_NEW="Latest version:  "
 FIRMWARE_UPDATE_TEXT="Are you sure you want to update?"
 FIRMWARE_OK_TEXT="Your firmware is up to date."
+FIRMWARE_URL=""
 
-# TODO: hide this
-FIRMWARE_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
-FIRMWARE_REMOTE_REPO=\
-"https://api.github.com/repos/danahynes/KillSwitch/contents/Firmware"
-FIRMWARE_REMOTE_FILE_NAME="firmware-version.txt"
-FIRMWARE_REMOTE_VERSION_FILE=\
-"${FIRMWARE_REMOTE_REPO}/${FIRMWARE_REMOTE_FILE_NAME}"
-FIRMWARE_REMOTE_COPY_VERSION_FILE=\
-"${SETTINGS_DIR}/${FIRMWARE_REMOTE_FILE_NAME}"
-FIRMWARE_REMOTE_VERSION_NUMBER=""
-FIRMWARE_REMOTE_HEX_BASE_FILE="killswitch-firmware"
+#FIRMWARE_REMOTE_FILE_NAME="firmware-version.txt"
+#FIRMWARE_REMOTE_VERSION_FILE=\
+#"${FIRMWARE_REMOTE_REPO}/${FIRMWARE_REMOTE_FILE_NAME}"
+#FIRMWARE_REMOTE_COPY_VERSION_FILE=\
+#"${SETTINGS_DIR}/${FIRMWARE_REMOTE_FILE_NAME}"
+#FIRMWARE_REMOTE_VERSION_NUMBER=""
+#FIRMWARE_REMOTE_HEX_BASE_FILE="killswitch-firmware"
 
 SOFTWARE_TITLE="Software update"
 SOFTWARE_TEXT=""
-SOFTWARE_HEIGHT=12
+SOFTWARE_HEIGHT=8
 SOFTWARE_WIDTH=40
 SOFTWARE_TEXT_CURRENT="Current version: "
 SOFTWARE_TEXT_NEW="Latest version:  "
 SOFTWARE_UPDATE_TEXT="Are you sure you want to update?"
 SOFTWARE_OK_TEXT="Your software is up to date."
 
-# TODO: hide this
-SOFTWARE_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
-SOFTWARE_REMOTE_REPO=\
-"https://api.github.com/repos/danahynes/KillSwitch/contents/Software"
-SOFTWARE_REMOTE_FILE_NAME="software-version.txt"
-SOFTWARE_REMOTE_VERSION_FILE=\
-"${SOFTWARE_REMOTE_REPO}/${SOFTWARE_REMOTE_FILE_NAME}"
-SOFTWARE_REMOTE_COPY_VERSION_FILE=\
-"${SETTINGS_DIR}/${SOFTWARE_REMOTE_FILE_NAME}"
-SOFTWARE_REMOTE_VERSION_NUMBER=""
-SOFTWARE_REMOTE_ZIP_BASE_FILE="killswitch-software"
+#SOFTWARE_REMOTE_FILE_NAME="software-version.txt"
+#SOFTWARE_REMOTE_VERSION_FILE=\
+#"${SOFTWARE_REMOTE_REPO}/${SOFTWARE_REMOTE_FILE_NAME}"
+#SOFTWARE_REMOTE_COPY_VERSION_FILE=\
+#"${SETTINGS_DIR}/${SOFTWARE_REMOTE_FILE_NAME}"
+#SOFTWARE_REMOTE_VERSION_NUMBER=""
+#SOFTWARE_REMOTE_ZIP_BASE_FILE="killswitch-software"
 
 ERROR_TITLE="Error"
 ERROR_TEXT="There was an error downloading. Please check your internet \
@@ -654,32 +651,32 @@ function doError() {
 
 function doFirmwareUpdate() {
     RESULT=$(dialog \
-    --backtitle "$WINDOW_TITLE" \
-    --title "$FIRMWARE_TITLE" \
-    --yesno \
-    "$FIRMWARE_TEXT" \
-    $FIRMWARE_HEIGHT \
-    $FIRMWARE_WIDTH \
-    3>&1 1>&2 2>&3 3>&-)
+            --backtitle "${WINDOW_TITLE}" \
+            --title "${FIRMWARE_TITLE}" \
+            --yesno \
+            "${FIRMWARE_TEXT}" \
+            $FIRMWARE_HEIGHT \
+            $FIRMWARE_WIDTH \
+            3>&1 1>&2 2>&3 3>&-)
 
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
 
-        FIRMWARE_FILE_NAME="${FIRMWARE_REMOTE_HEX_BASE_FILE}_\
-${FIRMWARE_REMOTE_VERSION_NUMBER}.hex"
-        FIRMWARE_REMOTE_HEX_FILE="${FIRMWARE_REMOTE_REPO}/\
-${FIRMWARE_FILE_NAME}"
-        FIRMWARE_REMOTE_COPY_HEX_FILE="${SETTINGS_DIR}/${FIRMWARE_FILE_NAME}"
+        #FIRMWARE_FILE_NAME="${FIRMWARE_REMOTE_HEX_BASE_FILE}_\
+#${FIRMWARE_REMOTE_VERSION_NUMBER}.hex"
+        #FIRMWARE_REMOTE_HEX_FILE="${FIRMWARE_REMOTE_REPO}/Firmware/\
+#${FIRMWARE_FILE_NAME}"
+        #FIRMWARE_REMOTE_COPY_HEX_FILE="${SETTINGS_DIR}/${FIRMWARE_FILE_NAME}"
 
-        # get lastest firmware from github
+        cd "${SETTINGS_DIR}"
+
+        # get lastest firmware from github and save to settings dir
         RES=$(curl \
-        -H "Authorization: token ${FIRMWARE_TOKEN}" \
-        -H "Accept: application/vnd.github.v3.raw" \
-        -H "ref: release_${FIRMWARE_REMOTE_VERSION_NUMBER}" \
-        -L "${FIRMWARE_REMOTE_HEX_FILE}" \
-        -o "${FIRMWARE_REMOTE_COPY_HEX_FILE}" \
-        -s \
-        > /dev/null)
+                -H "Authorization: token ${GITHUB_TOKEN}" \
+                -H "Accept: application/vnd.github.v3.raw" \
+                -O \
+                -s \
+                "${FIRMWARE_URL}")
 
         RES=$?
         if [ $RES -ne 0 ]; then
@@ -689,13 +686,13 @@ ${FIRMWARE_FILE_NAME}"
 
             # do avrdude update with hex file
             avrdude \
-            -p atmega328p \
-            -C "/etc/avrdude.conf" \
-            -c "killswitch" \
-            -U flash:w:${FIRMWARE_REMOTE_COPY_HEX_FILE}:i
+                    -p atmega328p \
+                    -C "/etc/avrdude.conf" \
+                    -c "killswitch" \
+                    -U flash:w:${FIRMWARE_REMOTE_COPY_HEX_FILE}:i
 
             # remove hex file
-            rm "$FIRMWARE_REMOTE_COPY_HEX_FILE"
+            #rm "$FIRMWARE_REMOTE_COPY_HEX_FILE"
         fi
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
@@ -704,13 +701,13 @@ ${FIRMWARE_FILE_NAME}"
 
 function doFirmwareIsUpToDate() {
     RESULT=$(dialog \
-    --backtitle "$WINDOW_TITLE" \
-    --title "$FIRMWARE_TITLE" \
-    --msgbox \
-    "$FIRMWARE_TEXT" \
-    $FIRMWARE_HEIGHT \
-    $FIRMWARE_WIDTH \
-    3>&1 1>&2 2>&3 3>&-)
+            --backtitle "$WINDOW_TITLE" \
+            --title "$FIRMWARE_TITLE" \
+            --msgbox \
+            "$FIRMWARE_TEXT" \
+            $FIRMWARE_HEIGHT \
+            $FIRMWARE_WIDTH \
+            3>&1 1>&2 2>&3 3>&-)
 
     BTN=$?
     if [ $BTN -eq $DIALOG_ESCAPE ]; then
@@ -720,72 +717,80 @@ function doFirmwareIsUpToDate() {
 
 function doFirmware() {
 
-    if [ $DEBUG -eq 1 ]; then
-
-        # fake it till you make it
-        FIRMWARE_LOCAL_VERSION_NUMBER="0.2.0" #${VERSION_NUMBER}
-    else
-
-        # get current version from firmware
-        writeSerial "VER" ""
-        FIRMWARE_LOCAL_VERSION_NUMBER=$(readSerial)
-    fi
+    # fake it till you make it
+    FIRMWARE_LOCAL_VERSION_NUMBER="0.2.0" #${VERSION_NUMBER}
 
     FIRMWARE_LOCAL_VERSION_NUMBER_A=$(echo $FIRMWARE_LOCAL_VERSION_NUMBER | \
-    cut -d "." -f1)
+            cut -d "." -f1)
     FIRMWARE_LOCAL_VERSION_NUMBER_B=$(echo $FIRMWARE_LOCAL_VERSION_NUMBER | \
-    cut -d "." -f2)
+            cut -d "." -f2)
     FIRMWARE_LOCAL_VERSION_NUMBER_C=$(echo $FIRMWARE_LOCAL_VERSION_NUMBER | \
-    cut -d "." -f3)
+            cut -d "." -f3)
 
     # get lastest firmware version from github
-    RESULT=$(curl \
-    -H "Authorization: token ${FIRMWARE_TOKEN}" \
-    -H "Accept: application/vnd.github.v3.raw" \
-    -H "ref: master" \
-    -L "${FIRMWARE_REMOTE_VERSION_FILE}" \
-    -o "${FIRMWARE_REMOTE_COPY_VERSION_FILE}" \
-    -s \
-    > /dev/null)
+    #RESULT=$(curl \
+    #-H "Authorization: token ${GITHUB_TOKEN}" \
+    #-H "Accept: application/vnd.github.v3.raw" \
+    #-H "ref: master" \
+    #-L "${FIRMWARE_REMOTE_VERSION_FILE}" \
+    #-o "${FIRMWARE_REMOTE_COPY_VERSION_FILE}" \
+    #-s \
+    #> /dev/null)
 
-    RES=$?
-    if [ $RES -ne 0 ]; then
+    # get lastest firmware version from github
+    JSON=$(curl \
+            -H "Authorization: token ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github.v3.raw" \
+            -s \
+            "${GITHUB_URL}")
+
+    if [ $? -ne 0 ]; then
         doError
         return
     fi
 
-    FIRMWARE_REMOTE_VERSION_NUMBER=$(grep "VERSION_NUMBER=" \
-    "${FIRMWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
+    #FIRMWARE_REMOTE_VERSION_NUMBER=$(grep "VERSION_NUMBER=" \
+    #"${FIRMWARE_REMOTE_COPY_VERSION_FILE}" | cut -d "=" -f2)
+
+    FIRMWARE_REMOTE_VERSION_NUMBER=$(echo "${JSON}" | grep tag_name \
+            | cut -d '"' -f 4)
+    FIRMWARE_REMOTE_VERSION_NUMBER=$(echo "${FIRMWARE_REMOTE_VERSION_NUMBER}" \
+            | cut -d "v" -f 2)
 
     FIRMWARE_REMOTE_VERSION_NUMBER_A=$(echo \
-    $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f1)
+            $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f1)
     FIRMWARE_REMOTE_VERSION_NUMBER_B=$(echo \
-    $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f2)
+            $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f2)
     FIRMWARE_REMOTE_VERSION_NUMBER_C=$(echo \
-    $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f3)
+            $FIRMWARE_REMOTE_VERSION_NUMBER | cut -d "." -f3)
 
     # do comparison
     IS_NEWER=0
 
     if [ $FIRMWARE_LOCAL_VERSION_NUMBER_A -lt \
-    $FIRMWARE_REMOTE_VERSION_NUMBER_A ]; then
+            $FIRMWARE_REMOTE_VERSION_NUMBER_A ]; then
         IS_NEWER=1
     elif [ $FIRMWARE_LOCAL_VERSION_NUMBER_B -lt \
-    $FIRMWARE_REMOTE_VERSION_NUMBER_B ]; then
+            $FIRMWARE_REMOTE_VERSION_NUMBER_B ]; then
         IS_NEWER=1
     elif [ $FIRMWARE_LOCAL_VERSION_NUMBER_C -lt \
-    $FIRMWARE_REMOTE_VERSION_NUMBER_C ]; then
+            $FIRMWARE_REMOTE_VERSION_NUMBER_C ]; then
         IS_NEWER=1
     fi
 
     # remove local version file
-    rm "${FIRMWARE_REMOTE_COPY_VERSION_FILE}"
+    #rm "${FIRMWARE_REMOTE_COPY_VERSION_FILE}"
+
+    # get url in case we need to download it
+    FIRMWARE_URL=$(echo "${JSON}" | sed -n -e '/browser_download_url/,$p' \
+    | head -n 1 | cut -d '"' -f 4)
+    echo "${FIRMWARE_URL}"
 
     # update text with version/build numbers
     FIRMWARE_TEXT="${FIRMWARE_TEXT_CURRENT}"
-    FIRMWARE_TEXT+="${FIRMWARE_LOCAL_VERSION_NUMBER}"
+    FIRMWARE_TEXT+="${FIRMWARE_LOCAL_VERSION_NUMBER}\n"
     FIRMWARE_TEXT+="${FIRMWARE_TEXT_NEW}"
-    FIRMWARE_TEXT+="${FIRMWARE_REMOTE_VERSION_NUMBER}"
+    FIRMWARE_TEXT+="${FIRMWARE_REMOTE_VERSION_NUMBER}\n"
     FIRMWARE_TEXT+="\n"
 
     #if newer, do yes/no
@@ -815,7 +820,7 @@ function doSoftwareUpdate() {
 
         SOFTWARE_FILE_NAME="${SOFTWARE_REMOTE_ZIP_BASE_FILE}_\
 ${SOFTWARE_REMOTE_VERSION_NUMBER}.tar.gz"
-        SOFTWARE_REMOTE_ZIP_FILE="${SOFTWARE_REMOTE_REPO}/\
+        SOFTWARE_REMOTE_ZIP_FILE="${SOFTWARE_REMOTE_REPO}/Software/\
 ${SOFTWARE_FILE_NAME}"
         SOFTWARE_REMOTE_COPY_ZIP_FILE="${SETTINGS_DIR}/${SOFTWARE_FILE_NAME}"
 
@@ -928,7 +933,7 @@ function doSoftware() {
 
     # update text with version/build numbers
     SOFTWARE_TEXT="${SOFTWARE_TEXT_CURRENT}"
-    SOFTWARE_TEXT+="${SOFTWARE_LOCAL_VERSION_NUMBER}"
+    SOFTWARE_TEXT+="${SOFTWARE_LOCAL_VERSION_NUMBER}\n"
     SOFTWARE_TEXT+="${SOFTWARE_TEXT_NEW}"
     SOFTWARE_TEXT+="${SOFTWARE_REMOTE_VERSION_NUMBER}"
     SOFTWARE_TEXT+="\n"

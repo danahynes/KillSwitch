@@ -6,8 +6,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "KillSwitch on ATTiny84"
-Date "2019-02-20"
-Rev "0.3.0"
+Date "2019-02-25"
+Rev "0.3.2"
 Comp "Dana Hynes"
 Comment1 "Copyright (c) 2019"
 Comment2 "All rights reserved"
