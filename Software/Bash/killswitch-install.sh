@@ -9,9 +9,11 @@
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-# version
+# constants
 
 VERSION_NUMBER="0.3.2"
+
+SETTINGS_DIR="${HOME}/.killswitch"
 
 #-------------------------------------------------------------------------------
 # something went wrong, report error and bail
@@ -197,12 +199,19 @@ echo "Done"
 echo ""
 
 #-------------------------------------------------------------------------------
+# make settings dir
+mkdir -p "${SETTINGS_DIR}"
+chown "${SUDO_USER}" "${SETTINGS_DIR}"
+
+#-------------------------------------------------------------------------------
 # configure avrdude
 
 echo -n "Setting up avrdude..."
 
 # avrdude conf file
-AVRDUDE_CONF="/etc/avrdude.conf"
+AVRDUDE_CONF="${SETTINGS_DIR}/killswitch-avrdude.conf"
+touch "${AVRDUDE_CONF}"
+chown "${SUDO_USER}" "${AVRDUDE_CONF}"
 
 # check if already set up
 grep -q "killswitch" "${AVRDUDE_CONF}"
