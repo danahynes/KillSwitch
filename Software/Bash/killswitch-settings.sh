@@ -665,7 +665,7 @@ function doActualUpdate() {
             FIRMWARE_FILE=$(find . -name "killswitch-firmware_*.hex")
             avrdude \
                     -p atmega328p \
-                    -C "/etc/avrdude.conf" \
+                    -C +"${SETTINGS_DIR}/killswitch-avrdude.conf" \
                     -c "killswitch" \
                     -U flash:w:"${FIRMWARE_FILE}":i
             cd ..
@@ -683,7 +683,7 @@ function doActualUpdate() {
 
             RES=$?
             if [ $RES -ne 0 ]; then
-                # TODO: showinstall-specific error
+                # TODO: show install-specific error
                 doError
                 return
             fi
