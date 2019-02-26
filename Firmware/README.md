@@ -7,7 +7,9 @@ the hardware may change in the future.
 
 It may also get rewritten in C to support microcontrollers not supported by Arduino.
 
-The killswitch-firmware_x.x.x.hex file is the compiled binary that is
+The killswitch-firmware_N.N.N.hex file is the compiled binary that is
 flashed onto the device.
+
+The source code is arranged as an <a href="https://ide.atom.io">Atom</a> project, and the firmware is built using the <a href="https://platformio.org">PlatformIO</a> plugin.
 
 # -)
