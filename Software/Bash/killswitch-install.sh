@@ -13,7 +13,7 @@
 
 VERSION_NUMBER="0.3.2"
 
-SETTINGS_DIR="${HOME}/.killswitch"
+SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
 # something went wrong, report error and bail
