@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------------------
 # constants
 
-VERSION_NUMBER="0.3.2"
+VERSION_NUMBER="0.3.3"
 
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
