@@ -1,0 +1,48 @@
+1. /home/pi/Downloads/KillSwitch/Bash/killswitch-install.sh
+    installs the rest of the scripts
+2. /usr/local/bin/killswitch-uninstall.sh
+    uninstalls all this crap
+    also called from killswitch-settings.sh
+3. /lib/systemd/system/killswitch-boot.service
+    runs killswitch-boot.py at boot
+4. /usr/local/bin/killswitch-boot.py
+    reads trigger inputs from hardware
+5. /lib/systemd/system/killswitch-shutdown.service
+    runs killswitch-shutdown.py at shutdown/reboot
+6. /usr/local/bin/killswitch-shutdown.py
+    writes to feedback - one pulse for shutdown, two pulses for reboot
+7. /usr/local/bin/killswitch-settings.sh
+    the pretty settings dialog script
+8. /home/pi/.killswitch/killswitch_settings.conf
+    storage for settings script
+    created on demand by killswitch-settings.sh
+
+to create new release of master:
+
+update number in Other/make-release.sh
+save
+run Other/make-release.sh
+
+open/close killswitch-firmware_X.X.X.hex to stage it
+
+commit/push
+
+log into github
+go to repo
+click on releases above color bar
+click draft new release
+tag version should be vX.X.X
+branch is master
+write title as vX.X.X
+write description
+publish release
+
+one-liner:
+
+???
+
+loopback serial for testing:
+
+./home/dana/Documents/Bash/terminaloop/terminaloop
+OR
+socat -d -d pty,raw,echo=0 pty,raw,echo=0

@@ -1,0 +1,33 @@
+
+States.ods - need to know initial state of gpio's on Pi and arduino
+    this will also determine if/where pullups or pulldowns are needed
+Arduino trigger pin starts as input but floating
+pi trigger pin starts as input floating or output high depending on tech source
+    this should be fine as the arduino will have settled into output mode and
+    the pi will become input and read arduino output when the script starts
+arduino feedback pin starts as input but floating
+pi feedback pin starts as input floating or output high depending on tech source
+    this should be fine as the arduino will have settled into input pullup mode
+    and is waiting for the pi to send a low at bootup
+
+when the pi is done shutting down, what is the state of the feedback pin?
+    the arduino has a pullup, but the pi may latch the pin to a low state
+
+kicad custom logo for sheet/silkscreen need to be included
+also default sheet? for logo in block
+
+use pulses for trigger in killswitch-boot.py? (instead of timing length of pulse)
+
+install/uninstall should check each command to see if it failed
+if anything fails, bail
+
+documentation on how the button/programming/led works
+documentation on how to use settings
+
+make work with toggle (but let ppl know they can't futz with the switch during
+    bootup/shutdown)
+    https://retropie.org.uk/forum/topic/15727/tutorial-onoff-shim-exposed-neat-powerswitch-from-pimoroni
+
+convert install to py (what if user doesn't have py?)
+convert settings to py
+convert uninstall to py
