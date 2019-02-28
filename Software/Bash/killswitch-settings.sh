@@ -11,9 +11,15 @@
 #-------------------------------------------------------------------------------
 # Constants
 
+VERSION_NUMBER="0.3.4"
+
 DEBUG=1
 
-VERSION_NUMBER="0.3.3"
+# TODO: hide this
+GITHUB_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
+GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
+
+CHIP_ID=atmega328p
 
 DIALOG_OK=0
 DIALOG_CANCEL=1
@@ -184,12 +190,7 @@ LPA_ITEMS=("Reboot" "Force quit")
 LPA_SETTING="LPA"
 LPA_ACTION="LPA"
 
-# TODO: hide this
-GITHUB_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
-GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
-
 UPDATE_TITLE="Update"
-UPDATE_TEXT=""
 UPDATE_HEIGHT=11
 UPDATE_WIDTH=40
 UPDATE_TEXT_CURRENT="Current version: "
@@ -197,11 +198,14 @@ UPDATE_TEXT_NEW="Latest version:  "
 UPDATE_UPDATE_TEXT="Are you sure you want to update?\n(Note that you will need \
 a keyboard attached to enter the root password when the installer starts.)"
 UPDATE_OK_TEXT="Your firmware and software are up to date."
-UPDATE_URL=""
 
 ERROR_TITLE="Error"
-ERROR_TEXT="There was an error downloading. Please check your internet \
-connection and try again."
+ERROR_TEXT_DOWNLOAD="There was an error downloading. Please check your \
+internet connection and try again."
+ERROR_TEXT_HARDWARE="There was an error updating the hardware. Please check \
+your device connection and try again."
+ERROR_TEXT_SOFTWARE="There was an error updating the software. Please check \
+your device connection and try again."
 ERROR_HEIGHT=10
 ERROR_WIDTH=40
 
@@ -234,6 +238,8 @@ LED_MENU_SEL=""
 LEDT_STATES=($STATE_ON $STATE_OFF $STATE_OFF)
 LEDS_STATES=($STATE_ON $STATE_OFF)
 LPA_STATES=($STATE_ON $STATE_OFF)
+UPDATE_TEXT=""
+UPDATE_URL=""
 
 #-------------------------------------------------------------------------------
 # Helpers
@@ -603,12 +609,44 @@ function doLongPressAction() {
     fi
 }
 
-function doError() {
+function doDownloadError() {
     RESULT=$(dialog \
     --backtitle "$WINDOW_TITLE" \
     --title "$ERROR_TITLE" \
     --msgbox \
-    "$ERROR_TEXT" \
+    "$ERROR_TEXT_DOWNLOAD" \
+    $ERROR_HEIGHT \
+    $ERROR_WIDTH \
+    3>&1 1>&2 2>&3 3>&-)
+
+    BTN=$?
+    if [ $BTN -eq $DIALOG_ESCAPE ]; then
+        MENU_DONE=1
+    fi
+}
+
+function doHardwareUpdateError() {
+    RESULT=$(dialog \
+    --backtitle "$WINDOW_TITLE" \
+    --title "$ERROR_TITLE" \
+    --msgbox \
+    "$ERROR_TEXT_HARDWARE" \
+    $ERROR_HEIGHT \
+    $ERROR_WIDTH \
+    3>&1 1>&2 2>&3 3>&-)
+
+    BTN=$?
+    if [ $BTN -eq $DIALOG_ESCAPE ]; then
+        MENU_DONE=1
+    fi
+}
+
+function doSoftwareUpdateError() {
+    RESULT=$(dialog \
+    --backtitle "$WINDOW_TITLE" \
+    --title "$ERROR_TITLE" \
+    --msgbox \
+    "$ERROR_TEXT_SOFTWARE" \
     $ERROR_HEIGHT \
     $ERROR_WIDTH \
     3>&1 1>&2 2>&3 3>&-)
@@ -634,7 +672,7 @@ function doActualUpdate() {
 
         cd "${SETTINGS_DIR}"
 
-        # get lastest firmware from github and save to settings dir
+        # get lastest release from github and save to settings dir
         RES=$(curl \
                 -H "Authorization: token ${GITHUB_TOKEN}" \
                 -H "Accept: application/vnd.github.v3.raw" \
@@ -645,7 +683,7 @@ function doActualUpdate() {
 
         RES=$?
         if [ $RES -ne 0 ]; then
-            doError
+            doDownloadError
             return
         else
 
@@ -661,30 +699,29 @@ function doActualUpdate() {
             cd "KillSwitch-${ZIP_NAME}"
 
             # do avrdude update with hex file
-            cd "Firmware/"
+            cd Firmware/
             FIRMWARE_FILE=$(find . -name "killswitch-firmware_*.hex")
             avrdude \
-                    -p atmega328p \
+                    -p "${CHP_ID}" \
                     -C +"${SETTINGS_DIR}/killswitch-avrdude.conf" \
                     -c "killswitch" \
                     -U flash:w:"${FIRMWARE_FILE}":i
+                    -U flash:v:"${FIRMWARE_FILE}":i
             cd ..
 
             RES=$?
             if [ $RES -ne 0 ]; then
-                # TODO: show avrdude-specific error
-                doError
+                doHardwareUpdateError
                 return
             fi
 
             # run installer for software
-            cd "Software/Bash/"
+            cd Software/Bash/
             sudo ./killswitch-install.sh
 
             RES=$?
             if [ $RES -ne 0 ]; then
-                # TODO: show install-specific error
-                doError
+                doSoftwareUpdateError
                 return
             fi
 
@@ -734,7 +771,7 @@ function doUpdate() {
             "${GITHUB_URL}")
 
     if [ $? -ne 0 ]; then
-        doError
+        doDownloadError
         return
     fi
 
