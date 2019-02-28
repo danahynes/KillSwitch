@@ -9,9 +9,10 @@
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-# version
+# constants
 
-VERSION_NUMBER="0.3.3"
+VERSION_NUMBER="0.3.4"
+SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
 # start
@@ -78,7 +79,6 @@ rm /usr/local/bin/killswitch-uninstall.sh
 echo "Done"
 
 # remove settings storage dir
-SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 if [ -d "$SETTINGS_DIR" ]; then
     echo -n "Removing ${SETTINGS_DIR}... "
     rm -r "${SETTINGS_DIR}"
@@ -106,8 +106,8 @@ echo "The following dependencies may have been installed with KillSwitch:"
 echo "dialog, python, python-gpiozero, python-serial, avrdude"
 echo "You can remove them if you wish using apt-get."
 echo ""
-echo -e "If you wish to turn the login console back on, you can use the \
-raspi-setup \nscript."
+echo "If you wish to turn the login console back on, you can use the "
+echo "raspi-setup script."
 
 #-------------------------------------------------------------------------------
 # ask for reboot
