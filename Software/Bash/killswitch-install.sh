@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------------------
 # constants
 
-VERSION_NUMBER="0.3.5"
+VERSION_NUMBER="0.3.4"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
@@ -212,7 +212,7 @@ echo -n "Setting up avrdude..."
 # avrdude conf file
 # rewrite no matter what in case pins change
 AVRDUDE_CONF="${SETTINGS_DIR}/killswitch-avrdude.conf"
-rm "${AVRDUDE_CONF}" 2>&1
+rm "${AVRDUDE_CONF}" &> /dev/null
 touch "${AVRDUDE_CONF}"
 chown "${SUDO_USER}" "${AVRDUDE_CONF}"
 AVRDUDE_TEXT="programmer\n"
