@@ -8,7 +8,7 @@
 # All rights reserved.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER = "0.3.4"
+VERSION_NUMBER = "0.3.5"
 
 # are we running on a pi?
 onPi = False
