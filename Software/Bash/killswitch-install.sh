@@ -11,16 +11,15 @@
 #-------------------------------------------------------------------------------
 # constants
 
-VERSION_NUMBER="0.3.3"
-
+VERSION_NUMBER="0.3.4"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
 # something went wrong, report error and bail
-function doError() {
-    echo "Error"
-    exit 1
-}
+# function doError() {
+#     echo "Error"
+#     exit 1
+# }
 
 #-------------------------------------------------------------------------------
 # start
@@ -101,6 +100,7 @@ echo ""
 
 #-------------------------------------------------------------------------------
 # set permissions
+# NB not sure if this is needed?
 
 echo "Setting up permissions..."
 echo ""
@@ -200,6 +200,7 @@ echo ""
 
 #-------------------------------------------------------------------------------
 # make settings dir
+
 mkdir -p "${SETTINGS_DIR}"
 chown "${SUDO_USER}" "${SETTINGS_DIR}"
 
@@ -209,26 +210,21 @@ chown "${SUDO_USER}" "${SETTINGS_DIR}"
 echo -n "Setting up avrdude..."
 
 # avrdude conf file
+# rewrite no matter what in case pins change
 AVRDUDE_CONF="${SETTINGS_DIR}/killswitch-avrdude.conf"
+rm "${AVRDUDE_CONF}" 2>&1
 touch "${AVRDUDE_CONF}"
 chown "${SUDO_USER}" "${AVRDUDE_CONF}"
-
-# check if already set up
-grep -q "killswitch" "${AVRDUDE_CONF}"
-IS_SETUP=$?
-
-if [ $IS_SETUP -ne 0 ]; then
-    echo "programmer" >> "${AVRDUDE_CONF}"
-    echo "  id    = \"killswitch\";" >> "${AVRDUDE_CONF}"
-    echo "  desc  = \"Update KillSwitch firmware using GPIO\";" >> \
-    "${AVRDUDE_CONF}"
-    echo "  type  = \"linuxgpio\";" >> "${AVRDUDE_CONF}"
-    echo "  reset = 4;" >> "${AVRDUDE_CONF}"
-    echo "  sck   = 2;" >> "${AVRDUDE_CONF}"
-    echo "  mosi  = 14;" >> "${AVRDUDE_CONF}"
-    echo "  miso  = 15;" >> "${AVRDUDE_CONF}"
-    echo ";" >> "${AVRDUDE_CONF}"
-fi
+AVRDUDE_TEXT="programmer\n"
+AVRDUDE_TEXT+="  id    = \"killswitch\";\n"
+AVRDUDE_TEXT+="  desc  = \"Update KillSwitch firmware using GPIO\";\n"
+AVRDUDE_TEXT+="  type  = \"linuxgpio\";\n"
+AVRDUDE_TEXT+="  reset = 4;\n"
+AVRDUDE_TEXT+="  sck   = 2;\n"
+AVRDUDE_TEXT+="  mosi  = 14;\n"
+AVRDUDE_TEXT+="  miso  = 15;\n"
+AVRDUDE_TEXT+= ";\n"
+echo "${AVRDUDE_TEXT}" > "${AVRDUDE_CONF}"
 
 echo "Done"
 echo ""
