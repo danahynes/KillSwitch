@@ -8,7 +8,9 @@
 # All rights reserved.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER = "0.3.3"
+VERSION_NUMBER = "0.3.4"
+
+DEBUG = 1
 
 # are we running on a pi?
 onPi = False
@@ -21,7 +23,6 @@ try :
     onPi = True
 except ImportError:
     onPi = False
-#import serial
 import signal
 import subprocess
 
@@ -32,12 +33,6 @@ pin_feedback = 2
 pin_trigger = 3
 time_hold = 0.5
 time_debounce = 0.05
-
-#if (onPi):
-#    serial_port = '/dev/ttyS0'
-#else:
-#    serial_port = '/dev/pts/5'
-#serial_speed = 9600
 
 #-------------------------------------------------------------------------------
 # variables
@@ -57,7 +52,8 @@ def held():
     subprocess.call(['shutdown', '-r', 'now'], shell = False)
 
     # debug
-    print("long press")
+    if (DEBUG == 1):
+        print("long press")
 
 #-------------------------------------------------------------------------------
 # Called when trigger pin goes high.
@@ -72,7 +68,8 @@ def released():
         subprocess.call(['shutdown', '-h', 'now'], shell = False)
 
         # debug
-        print("short press")
+        if (DEBUG == 1):
+            print("short press")
 
     # clear flag
     trg_held = False
@@ -96,9 +93,6 @@ if (onPi):
     # pullup to set this pin HIGH
     feedback = g0.OutputDevice(pin_feedback)
 
-# set up serial
-#ser = serial.Serial(serial_port, serial_speed, timeout = 1);
-
 #-------------------------------------------------------------------------------
 # initialize
 #-------------------------------------------------------------------------------
@@ -115,27 +109,6 @@ if (onPi):
 #-------------------------------------------------------------------------------
 # main loop
 #-------------------------------------------------------------------------------
-
-# watch serial
-# while (1):
-#     line = ser.readline()
-#     if (len(line) > 0):
-#
-#         # split by separator
-#         cmds = line.split("|")
-#         cmd = cmds[0]
-#         val = cmds[1]
-#
-#         # strip leading '?'
-#         cmd = cmd[1:]
-#
-#         # strip trailing '!' and add two for CR/LF
-#         val = val[:-3]
-#
-#         if (cmd == "SHT"):
-#             subprocess.call(['shutdown', '-h', 'now'], shell = False)
-#         elif (cmd == "RBT"):
-#             subprocess.call(['shutdown', '-r', 'now'], shell = False)
 
 signal.pause()
 
