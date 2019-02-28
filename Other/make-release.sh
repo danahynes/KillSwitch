@@ -29,13 +29,7 @@ echo "${REP}" > "${FILE}"
 FILE="killswitch_84.kicad_pcb"
 REP=$(cat "${FILE}" | sed 's/(date [0-9]*\+-[0-9]*\+-[0-9]*)/(date '${DATE}')/')
 REP=$(echo "${REP}" | sed 's/(rev [0-9]*\+.[0-9]*\+.[0-9]*)/(rev '${VERSION_NUMBER}')/')
-REP=$(echo "${REP}" | sed 's/(gr_text "KillSwitch\\nv [0-9]*\+.[0-9]*\+.[0-9]*"/(gr_text "KillSwitch\\nv '${VERSION_NUMBER}'"/')
-echo "${REP}" > "${FILE}"
-
-# change other
-cd ../Other/
-FILE="firmware-make.sh"
-REP=$(cat "${FILE}" | sed 's/VERSION_NUMBER="[0-9]*\+.[0-9]*\+.[0-9]*"/VERSION_NUMBER="'${VERSION_NUMBER}'"/')
+REP=$(echo "${REP}" | sed 's/(gr_text "KillSwitch\\nv[0-9]*\+.[0-9]*\+.[0-9]*"/(gr_text "KillSwitch\\nv'${VERSION_NUMBER}'"/')
 echo "${REP}" > "${FILE}"
 
 # change software
@@ -68,7 +62,7 @@ cd ../Services/
 
 FILE="killswitch-boot.service"
 REP=$(cat "${FILE}" | sed 's/VERSION_NUMBER = [0-9]*\+.[0-9]*\+.[0-9]*/VERSION_NUMBER = '${VERSION_NUMBER}'/')
-echo "${REP}" > "$FILE"
+echo "${REP}" > "${FILE}"
 
 FILE="killswitch-shutdown.service"
 REP=$(cat "${FILE}" | sed 's/VERSION_NUMBER = [0-9]*\+.[0-9]*\+.[0-9]*/VERSION_NUMBER = '${VERSION_NUMBER}'/')
