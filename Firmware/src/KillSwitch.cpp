@@ -26,7 +26,7 @@
 //-----------------------------------------------------------------------------
 // Constants
 
-const char VERSION_NUMBER[] PROGMEM = "0.3.3";
+const char VERSION_NUMBER[] PROGMEM = "0.3.4";
 
 const int STATE_OFF = 0;
 const int STATE_BOOTING = 1;
@@ -98,7 +98,6 @@ const char SERIAL_LPL[] PROGMEM = "LPL"; // led pulse
 const char SERIAL_REC[] PROGMEM = "REC";
 const char SERIAL_LPT[] PROGMEM = "LPT";
 const char SERIAL_LPA[] PROGMEM = "LPA";
-//const char SERIAL_VER[] PROGMEM = "VER";
 
 //-----------------------------------------------------------------------------
 // Variables
@@ -532,8 +531,6 @@ void setup() {
 #endif
 
 #if DH_DEBUG == 1
-	//EEPROM.write(EEPROM_ADDR_TYPE, STATUS_TYPE_OFF);
-	//EEPROM.write(EEPROM_ADDR_OFF_BRIGHTNESS, 1);
 	EEPROM.write(EEPROM_ADDR_PULSE, 1);
 #endif
 
@@ -877,19 +874,6 @@ void loop() {
 				// will take effect in next uopdate()
 				int lpa = atoi(serialValue);
 				EEPROM.update(EEPROM_ADDR_HOLD_ACTION, lpa);
-			// } else if (strcmp_P(serialCmd, SERIAL_VER) == 0) {
-			//
-			// 	/*
-			// 	N.B.
-			// 	retrieving raw strings from flash is a PITA.
-			// 	you need to read each byte and reassemble the string, so look
-			// 	for null terminators using strlen_P.
-			// 	 */
-			// 	for (unsigned int k = 0; k < strlen_P(VERSION_NUMBER); k++) {
-			// 		char myChar = pgm_read_byte(VERSION_NUMBER + k);
-			// 		Serial.print(myChar);
-			// 	}
-			// 	Serial.println("");
 			}
 
 		// build up command or value
