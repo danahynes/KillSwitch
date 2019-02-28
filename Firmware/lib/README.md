@@ -1,6 +1,6 @@
 # KillSwitch libraries
 
-KillSwitch makes use of the IRremote library by Ken Shirriff, et. al.
+KillSwitch makes use of the [IRremote library](https://github.com/z3t0/Arduino-IRremote) by Ken Shirriff, et al.
 See IRremote/README.md for more info.
 
 This is the original text of lib/README.md from PlatformIO:
