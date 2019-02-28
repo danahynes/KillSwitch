@@ -223,7 +223,7 @@ AVRDUDE_TEXT+="  reset = 4;\n"
 AVRDUDE_TEXT+="  sck   = 2;\n"
 AVRDUDE_TEXT+="  mosi  = 14;\n"
 AVRDUDE_TEXT+="  miso  = 15;\n"
-AVRDUDE_TEXT+= ";\n"
+AVRDUDE_TEXT+=";\n"
 echo "${AVRDUDE_TEXT}" > "${AVRDUDE_CONF}"
 
 echo "Done"
