@@ -1,8 +1,9 @@
 1. /home/pi/Downloads/KillSwitch/Bash/killswitch-install.sh
     installs the rest of the scripts
+    also called from killswitch-settings.sh when updating
 2. /usr/local/bin/killswitch-uninstall.sh
     uninstalls all this crap
-    also called from killswitch-settings.sh
+    also called from killswitch-settings.sh when uninstalling
 3. /lib/systemd/system/killswitch-boot.service
     runs killswitch-boot.py at boot
 4. /usr/local/bin/killswitch-boot.py
