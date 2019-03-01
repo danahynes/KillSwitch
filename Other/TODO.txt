@@ -23,6 +23,9 @@ also add open hardware logo to board
 change license from GPL to ??? and put that in the top level readme and as
     OSH_LICENSE instead of LICENSE
 
+update: pi may reboot after update, do we deal with this?
+update: show installer output in tailbox? (still need sudo password in terminal)
+
 use pulses for trigger in killswitch-boot.py? (instead of timing length of
     pulse)
 
