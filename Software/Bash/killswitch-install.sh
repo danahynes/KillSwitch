@@ -30,7 +30,7 @@ echo ""
 # check for root
 
 if [ $EUID -ne 0 ]; then
-    echo "This script must be run as root. Use 'sudo ./killswitch-install.sh'"
+    echo "This script must be run as root. Use 'sudo killswitch-install.sh'"
     echo ""
     exit 1
 fi
@@ -207,7 +207,7 @@ chown "${SUDO_USER}" "${SETTINGS_DIR}"
 #-------------------------------------------------------------------------------
 # configure avrdude
 
-echo -n "Setting up avrdude..."
+echo -n "Setting up avrdude... "
 
 # avrdude conf file
 # rewrite no matter what in case pins change
@@ -224,7 +224,7 @@ AVRDUDE_TEXT+="  sck   = 2;\n"
 AVRDUDE_TEXT+="  mosi  = 14;\n"
 AVRDUDE_TEXT+="  miso  = 15;\n"
 AVRDUDE_TEXT+=";\n"
-echo "${AVRDUDE_TEXT}" > "${AVRDUDE_CONF}"
+echo -e "${AVRDUDE_TEXT}" > "${AVRDUDE_CONF}"
 
 echo "Done"
 echo ""
@@ -244,7 +244,7 @@ fi
 
 #-------------------------------------------------------------------------------
 # ask for reboot
-echo ""
+
 echo "***************************************************"
 echo ""
 echo "You need to reboot the pi to complete installation."
