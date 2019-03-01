@@ -99,7 +99,7 @@ fi
 
 #-------------------------------------------------------------------------------
 # stuff we can't undo
-echo ""
+
 echo "***************************************************"
 echo ""
 echo "The following dependencies may have been installed with KillSwitch:"
