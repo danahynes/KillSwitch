@@ -14,9 +14,12 @@
     writes to feedback - one pulse for shutdown, two pulses for reboot
 7. /usr/local/bin/killswitch-settings.sh
     the pretty settings dialog script
-8. /home/pi/.killswitch/killswitch_settings.conf
+8. /home/pi/.killswitch/killswitch-settings.conf
     storage for settings script
     created on demand by killswitch-settings.sh
+9. /home/pi/.killswitch/killswitch-avrdude.conf
+    config file for programming avr over ICSP
+    created by killswitch-install.sh
 
 to create new release of master:
 
