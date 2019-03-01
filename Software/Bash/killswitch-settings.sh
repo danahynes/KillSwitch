@@ -57,9 +57,9 @@ CANCEL_LABEL="Cancel"
 
 MENU_TITLE="KillSwitch Settings"
 MENU_TEXT="Choose an item:"
-MENU_HEIGHT=17
+MENU_HEIGHT=13
 MENU_WIDTH=40
-MENU_ITEM_HEIGHT=9
+MENU_ITEM_HEIGHT=6
 MENU_TAGS=(\
     "1" \
     "2" \
@@ -67,31 +67,22 @@ MENU_TAGS=(\
     "4" \
     "5" \
     "6" \
-    "7" \
-    "8" \
-    "9" \
 )
 MENU_ITEMS=(\
-    "Status LED options" \
+    "LED options" \
     "Start recording" \
     "Long press time" \
     "Long press action" \
     "Update" \
-    "Shutdown" \
-    "Reboot" \
     "Uninstall" \
-    "Exit" \
 )
 MENU_HELP=(\
 	"Set the status LED options" \
 	"Start recording new remote codes" \
 	"Set how long to hold the button for a long press action" \
 	"Set the action to take when the button is held" \
-    "Update the files on the Pi and the code in the KillSwitch module" \
-	"Shut down the Raspberry Pi" \
-	"Reboot the Raspberry Pi" \
+    "Check for updates to the software on the Pi and the firmware in the KillSwitch module" \
 	"Uninstall all KillSwitch files" \
-	"Quit this program" \
 )
 
 LED_MENU_TITLE="LED Options"
@@ -135,7 +126,7 @@ LEDT_ACTION="LTP"
 
 LEDS_TITLE="LED style"
 LEDS_TEXT="Select the LED style:"
-LEDS_HEIGHT=10
+LEDS_HEIGHT=9
 LEDS_WIDTH=40
 LEDS_ITEM_HEIGHT=2
 LEDS_TAGS=("1" "2")
@@ -144,8 +135,8 @@ LEDS_SETTING="LPL"
 LEDS_ACTION="LPL"
 
 LEDN_TITLE="LED on brightness"
-LEDN_TEXT="Set the LED on brightness (0 - 255):"
-LEDN_HEIGHT=3
+LEDN_TEXT="Set the LED on brightness (0-255):"
+LEDN_HEIGHT=0
 LEDN_WIDTH=40
 LEDN_MIN=0
 LEDN_MAX=255
@@ -153,8 +144,8 @@ LEDN_SETTING="LBN"
 LEDN_ACTION="LBN"
 
 LEDF_TITLE="LED off brightness"
-LEDF_TEXT="Set the LED off brightness (0 - 255):"
-LEDF_HEIGHT=3
+LEDF_TEXT="Set the LED off brightness (0-255):"
+LEDF_HEIGHT=0
 LEDF_WIDTH=40
 LEDF_MIN=0
 LEDF_MAX=255
@@ -172,7 +163,7 @@ REC_WIDTH=40
 REC_ACTION="REC"
 
 LPT_TITLE="Long press time"
-LPT_TEXT="Set the long press time in seconds (1 - 10):"
+LPT_TEXT="Set the long press time in seconds (1-10):"
 LPT_HEIGHT=3
 LPT_WIDTH=40
 LPT_MIN=1
@@ -182,7 +173,7 @@ LPT_ACTION="LPT"
 
 LPA_TITLE="Long press action"
 LPA_TEXT="Set the long press action:"
-LPA_HEIGHT=10
+LPA_HEIGHT=9
 LPA_WIDTH=40
 LPA_ITEM_HEIGHT=2
 LPA_TAGS=("1" "2")
@@ -191,12 +182,13 @@ LPA_SETTING="LPA"
 LPA_ACTION="LPA"
 
 UPDATE_TITLE="Update"
-UPDATE_HEIGHT=11
+UPDATE_HEIGHT=13
 UPDATE_WIDTH=40
 UPDATE_TEXT_CURRENT="Current version: "
 UPDATE_TEXT_NEW="Latest version:  "
-UPDATE_UPDATE_TEXT="Are you sure you want to update?\n(Note that you will need \
-a keyboard attached to enter the root password when the installer starts.)"
+UPDATE_UPDATE_TEXT="Are you sure you want to update KillSwitch?\n\n(Note that \
+you will need a keyboard attached to enter the root password when the \
+installer starts)"
 UPDATE_OK_TEXT="Your firmware and software are up to date."
 
 ERROR_TITLE="Error"
@@ -209,19 +201,11 @@ your device connection and try again."
 ERROR_HEIGHT=10
 ERROR_WIDTH=40
 
-SHUTDOWN_TITLE="Shutdown"
-SHUTDOWN_TEXT="Are you sure you want to shut down?"
-SHUTDOWN_HEIGHT=7
-SHUTDOWN_WIDTH=40
-
-REBOOT_TITLE="Reboot"
-REBOOT_TEXT="Are you sure you want to reboot?"
-REBOOT_HEIGHT=7
-REBOOT_WIDTH=40
-
 UNINSTALL_TITLE="Uninstall"
-UNINSTALL_TEXT="Are you sure you want to uninstall KillSwitch?"
-UNINSTALL_HEIGHT=7
+UNINSTALL_TEXT="Are you sure you want to uninstall KillSwitch?\n\n(Note that \
+you will need a keyboard attached to enter the root password when the \
+uninstaller starts)"
+UNINSTALL_HEIGHT=10
 UNINSTALL_WIDTH=40
 UNINSTALL_COMMAND="/usr/local/bin/killswitch-uninstall.sh"
 
@@ -283,9 +267,6 @@ function doMain() {
     "${MENU_TAGS[3]}" "${MENU_ITEMS[3]}" "${MENU_HELP[3]}" \
     "${MENU_TAGS[4]}" "${MENU_ITEMS[4]}" "${MENU_HELP[4]}" \
     "${MENU_TAGS[5]}" "${MENU_ITEMS[5]}" "${MENU_HELP[5]}" \
-    "${MENU_TAGS[6]}" "${MENU_ITEMS[6]}" "${MENU_HELP[6]}" \
-    "${MENU_TAGS[7]}" "${MENU_ITEMS[7]}" "${MENU_HELP[7]}" \
-    "${MENU_TAGS[8]}" "${MENU_ITEMS[8]}" "${MENU_HELP[8]}" \
     3>&1 1>&2 2>&3 3>&-)
 
     BTN=$?
@@ -309,13 +290,7 @@ function doMain() {
     elif [ "$RESULT" = "${MENU_TAGS[4]}" ]; then
         doUpdate
     elif [ "$RESULT" = "${MENU_TAGS[5]}" ]; then
-        doShutdown
-    elif [ "$RESULT" = "${MENU_TAGS[6]}" ]; then
-        doReboot
-    elif [ "$RESULT" = "${MENU_TAGS[7]}" ]; then
-    	doUninstall
-    elif [ "$RESULT" = "${MENU_TAGS[8]}" ]; then
-        doExit
+        doUninstall
     fi
 }
 
@@ -695,28 +670,31 @@ function doActualUpdate() {
                     | cut -d ' ' -f5-))
             unzip -qq "${ZIP_NAME}"
             mv "${LONG_NAME}" "KillSwitch-${ZIP_NAME}"
-            rm "${ZIP_NAME}"
+            rm "${ZIP_NAME}" > /dev/null
             cd "KillSwitch-${ZIP_NAME}"
+
+            # NB: do hardware first because software may cause reboot
 
             # do avrdude update with hex file
             cd Firmware/
             FIRMWARE_FILE=$(find . -name "killswitch-firmware_*.hex")
             avrdude \
-                    -p "${CHP_ID}" \
+                    -p "${CHIP_ID}" \
                     -C +"${SETTINGS_DIR}/killswitch-avrdude.conf" \
                     -c "killswitch" \
-                    -U flash:w:"${FIRMWARE_FILE}":i
+                    -U flash:w:"${FIRMWARE_FILE}":i \
                     -U flash:v:"${FIRMWARE_FILE}":i
-            cd ..
 
             RES=$?
             if [ $RES -ne 0 ]; then
                 doHardwareUpdateError
+
+                # TODO: don't return here if we can still try software update
                 return
             fi
 
             # run installer for software
-            cd Software/Bash/
+            cd ../Software/Bash/
             sudo ./killswitch-install.sh
 
             RES=$?
@@ -728,6 +706,10 @@ function doActualUpdate() {
             # remove unzipped folder
             cd ../../..
             rm -r "KillSwitch-${ZIP_NAME}"
+
+            # run new settings and close this one
+            killswitch-settings.sh
+            exit
         fi
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
@@ -820,44 +802,6 @@ function doUpdate() {
     fi
 }
 
-function doShutdown() {
-    RESULT=$(dialog \
-    --backtitle "$WINDOW_TITLE" \
-    --title "$SHUTDOWN_TITLE" \
-    --yesno \
-    "$SHUTDOWN_TEXT" \
-    $SHUTDOWN_HEIGHT \
-    $SHUTDOWN_WIDTH \
-    3>&1 1>&2 2>&3 3>&-)
-
-    BTN=$?
-    if [ $BTN -eq $DIALOG_OK ]; then
-        sudo shutdown -h now
-        MENU_DONE=1
-    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
-        MENU_DONE=1
-    fi
-}
-
-function doReboot() {
-    RESULT=$(dialog \
-    --backtitle "$WINDOW_TITLE" \
-    --title "$REBOOT_TITLE" \
-    --yesno \
-    "$REBOOT_TEXT" \
-    $REBOOT_HEIGHT \
-    $REBOOT_WIDTH \
-    3>&1 1>&2 2>&3 3>&-)
-
-    BTN=$?
-    if [ $BTN -eq $DIALOG_OK ]; then
-        sudo shutdown -r now
-        MENU_DONE=1
-    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
-        MENU_DONE=1
-    fi
-}
-
 function doUninstall() {
     RESULT=$(dialog \
     --backtitle "$WINDOW_TITLE" \
@@ -877,10 +821,6 @@ function doUninstall() {
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
     fi
-}
-
-function doExit() {
-    MENU_DONE=1
 }
 
 #-------------------------------------------------------------------------------
