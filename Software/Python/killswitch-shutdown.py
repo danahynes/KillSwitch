@@ -10,6 +10,8 @@
 
 VERSION_NUMBER = "0.3.4"
 
+DEBUG = 1
+
 # are we running on a pi?
 onPi = False
 
@@ -44,6 +46,11 @@ if (onPi):
 # main code
 #-------------------------------------------------------------------------------
 
+#debug
+if (DEBUG == 1):
+    print(sys.argv[1])
+
+# get systemd parameter
 if (sys.argv[1] == "poweroff") or (sys.argv[1] == "halt"):
 
     if (onPi):
