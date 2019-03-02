@@ -34,8 +34,6 @@ You will also need to adjust the relative paths of the library file links in Fir
 
 ## Licensing
 
-The source code for the firmware and software are licensed under the GPL v3, and the hardware is licensed under << TODO: ADD OSH LICENSE >>
-
-NB: This part I'm still figuring out. The GPL v3 really only covers software. There doesn't seem to be an equivalent license for Open Source Hardware, or none that I can find. If someone could point me in the right direction, it would be greatly appreciated. For now, let me state that the hardware files are Open Source, and you may modify/redistribute them with proper attribution.
+The source code for the firmware, hardware, and software are licensed under the WTFPL v2. See the LICENSE file or http://www.wtfpl.net/ for more info.
 
 # -)
