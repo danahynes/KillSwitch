@@ -13,8 +13,6 @@ when the pi is done shutting down, what is the state of the feedback pin?
     the arduino has a pullup, but the pi may latch the pin to a low state
 
 
-when updating version, need to carry over old settings.conf
-
 write a script to do latest download/install and save it in top level to do
     one-liner
 
