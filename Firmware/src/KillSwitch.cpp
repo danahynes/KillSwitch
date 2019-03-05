@@ -28,7 +28,7 @@
 //-----------------------------------------------------------------------------
 // Constants
 
-const char VERSION_NUMBER[] PROGMEM = "0.3.4";
+const char VERSION_NUMBER[] PROGMEM = "0.4.0";
 
 const int STATE_OFF = 0;
 const int STATE_BOOTING = 1;
@@ -74,6 +74,8 @@ const int EEPROM_ADDR_TYPE = 11;
 const int EEPROM_ADDR_PULSE = 12;
 const int EEPROM_ADDR_HOLD_TIME = 13;
 const int EEPROM_ADDR_HOLD_ACTION = 17;
+const int EEPROM_ADDR_POWER_AFTER_FAIL = 18;
+const int EEPROM_ADDR_POWER_WAS_ON = 19;
 
 const int PULSE_CYCLE_SLOW = 500;
 const int PULSE_CYCLE_FAST = 125;
@@ -100,6 +102,7 @@ const char SERIAL_LPL[] PROGMEM = "LPL"; // led pulse
 const char SERIAL_REC[] PROGMEM = "REC";
 const char SERIAL_LPT[] PROGMEM = "LPT";
 const char SERIAL_LPA[] PROGMEM = "LPA";
+const char SERIAL_PWR[] PROGMEM = "PWR";
 
 //-----------------------------------------------------------------------------
 // Variables
@@ -343,6 +346,9 @@ void doLongPress(DHButton* button) {
 				// force shutdown
 				state = STATE_OFF;
 
+				// store state for auto boot after power fail
+				EEPROM.write(EEPROM_ADDR_POWER_WAS_ON, 0);
+
 #if DH_DEBUG == 1
 				Serial.println(F("state changed to STATE_OFF"));
 #endif
@@ -491,6 +497,9 @@ void doCounterDone(DHPulseCounter* counter) {
 		if (digitalRead(PIN_FEEDBACK) == LOW) {
 			state = STATE_ON;
 
+			// store state for auto boot after power fail
+			EEPROM.write(EEPROM_ADDR_POWER_WAS_ON, 1);
+
 #if DH_DEBUG == 1
 			Serial.println(F("state changed to STATE_ON"));
 #endif
@@ -501,6 +510,9 @@ void doCounterDone(DHPulseCounter* counter) {
 		// if feedback went HIGH, we are shut down
 		} else if (digitalRead(PIN_FEEDBACK) == HIGH) {
 			state = STATE_OFF;
+
+			// store state for auto boot after power fail
+			EEPROM.write(EEPROM_ADDR_POWER_WAS_ON, 0);
 
 #if DH_DEBUG == 1
 			Serial.println(F("state changed to STATE_OFF"));
@@ -530,6 +542,8 @@ void setup() {
 	EEPROM.write(EEPROM_ADDR_PULSE, 0);
 	EEPROMWriteLong(EEPROM_ADDR_HOLD_TIME, 0);
 	EEPROM.write(EEPROM_ADDR_HOLD_ACTION, 0);
+	EEPROM.write(EEPROM_ADDR_POWER_AFTER_FAIL, 0);
+	EEPROM.write(EEPROM_ADDR_POWER_WAS_ON, 0);
 #endif
 
 #if DH_DEBUG == 1
@@ -604,6 +618,15 @@ void setup() {
 	// set up pulse counter
 	feedbackCounter.setOnDone(doCounterDone);
 	feedbackCounter.setValue(LOW);
+
+	// check for auto boot after power failure
+	int bootAfterFail = EEPROM.read(EEPROM_ADDR_POWER_AFTER_FAIL);
+	if (bootAfterFail) {
+		int wasOn = EEPROM.read(EEPROM_ADDR_POWER_WAS_ON);
+		if (wasOn) {
+			doBootup();
+		}
+	}
 }
 
 /*-----------------------------------------------------------------------------
@@ -876,6 +899,13 @@ void loop() {
 				// will take effect in next uopdate()
 				int lpa = atoi(serialValue);
 				EEPROM.update(EEPROM_ADDR_HOLD_ACTION, lpa);
+			} else if (strcmp_P(serialCmd, SERIAL_PWR) == 0) {
+
+				// will take effect in next uopdate()
+				int pwr = atoi(serialValue);
+				EEPROM.update(EEPROM_ADDR_POWER_AFTER_FAIL, pwr);
+				Serial.print("power value is ");
+				Serial.println(serialValue);
 			}
 
 		// build up command or value
