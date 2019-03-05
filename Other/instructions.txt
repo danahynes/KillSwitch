@@ -21,6 +21,14 @@
     config file for programming avr over ICSP
     created by killswitch-install.sh
 
+if we add a new setting:
+
+add necessary EEPROM constants
+add default value to firmware EEPROM in setup() if not 0
+add serial code to firmware to read/write new setting in loop()
+add code to software settings init to see if new setting has a value
+if it's blank, write the default to the conf file
+
 to create new release of master:
 
 update number in Other/make-release.sh
