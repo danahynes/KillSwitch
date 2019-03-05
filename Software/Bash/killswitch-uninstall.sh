@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # constants
 
-VERSION_NUMBER="0.3.4"
+VERSION_NUMBER="0.4.0"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
@@ -117,8 +117,8 @@ echo ""
 echo "***************************************************"
 echo ""
 echo "You need to reboot the pi to complete uninstallation."
-read -p "Do you want to reboot now? (Y/n) [default=yes]" answer
-case $answer in
+read -p "Do you want to reboot now? (Y/n) [default=yes]" ANSWER
+case "${ANSWER}" in
     [Nn]* ) exit;;
         * ) shutdown -r now;;
 esac
