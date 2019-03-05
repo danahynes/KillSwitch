@@ -12,18 +12,18 @@ pi feedback pin starts as input floating or output high depending on tech source
 when the pi is done shutting down, what is the state of the feedback pin?
     the arduino has a pullup, but the pi may latch the pin to a low state
 
-add disclaimer (i.e. from onoffshim) to all software/firmware files
+
+when updating version, need to carry over old settings.conf
 
 write a script to do latest download/install and save it in top level to do
     one-liner
 
 kicad custom logo for sheet/silkscreen need to be included
 also default sheet? for logo in block
-also add open hardware logo to board
-change license from GPL to ??? and put that in the top level readme and as
-    OSH_LICENSE instead of LICENSE
+also include open hardware logo
 
 update: pi may reboot after update, do we deal with this?
+    if user DOESN'T reboot, settings re-runs itself and shows new version number
 update: show installer output in tailbox? (still need sudo password in terminal)
 
 use pulses for trigger in killswitch-boot.py? (instead of timing length of
@@ -35,12 +35,14 @@ if anything fails, bail
 documentation on how the button/programming/led works
 documentation on how to use settings
 man pages for all pi software scripts
-
 section headers (##) in main readme
 documentation in main readme for device, description and usage
 documentation in main readme for OSH license
 
 get arduino libs into firmware lib folder and remove symlinks
+when building, check github for latest version of each lib
+    if newer, donload to libs folder
+    then build
 
 make work with toggle (but let ppl know they can't futz with the switch during
     bootup/shutdown)
