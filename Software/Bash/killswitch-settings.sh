@@ -887,7 +887,6 @@ function doUninstall() {
 if [ ! -f "${SETTINGS_FILE}" ]; then
 
     # if not, write defaults
-    mkdir -p "${SETTINGS_DIR}"
     touch "${SETTINGS_FILE}"
     echo $LEDT_SETTING"=0" >> "${SETTINGS_FILE}"
     echo $LEDS_SETTING"=0" >> "${SETTINGS_FILE}"
@@ -896,7 +895,39 @@ if [ ! -f "${SETTINGS_FILE}" ]; then
     echo $LPT_SETTING"="$LPT_DEFAULT >> "${SETTINGS_FILE}"
     echo $LPA_SETTING"=0" >> "${SETTINGS_FILE}"
     echo $PWR_SETTING"=0" >> "${SETTINGS_FILE}"
+else
+
+    # write defaults for any missing settings
+    VALUE=$(readPropsFile $LEDT_SETTING)
+    if [ "$VALUE" == "" ]; then
+        echo $LEDT_SETTING"=0" >> "${SETTINGS_FILE}"
+    fi
+    VALUE=$(readPropsFile $LEDS_SETTING)
+    if [ "$VALUE" == "" ]; then
+        echo $LEDS_SETTING"=0" >> "${SETTINGS_FILE}"
+    fi
+    VALUE=$(readPropsFile $LEDN_SETTING)
+    if [ "$VALUE" == "" ]; then
+        echo $LEDN_SETTING"=0" >> "${SETTINGS_FILE}"
+    fi
+    VALUE=$(readPropsFile $LEDF_SETTING)
+    if [ "$VALUE" == "" ]; then
+        echo $LEDF_SETTING"=0" >> "${SETTINGS_FILE}"
+    fi
+    VALUE=$(readPropsFile $LPT_SETTING)
+    if [ "$VALUE" == "" ]; then
+        echo $LPT_SETTING"=0" >> "${SETTINGS_FILE}"
+    fi
+    VALUE=$(readPropsFile $LPA_SETTING)
+    if [ "$VALUE" == "" ]; then
+        echo $LPA_SETTING"=0" >> "${SETTINGS_FILE}"
+    fi
+    VALUE=$(readPropsFile $PWR_SETTING)
+    if [ "$VALUE" == "" ]; then
+        echo $PWR_SETTING"=0" >> "${SETTINGS_FILE}"
+    fi
 fi
+
 
 # map joystick to keyboard if running RetroPie
 if [ -d $scriptdir ]; then
