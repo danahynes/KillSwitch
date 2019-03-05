@@ -904,8 +904,6 @@ void loop() {
 				// will take effect in next uopdate()
 				int pwr = atoi(serialValue);
 				EEPROM.update(EEPROM_ADDR_POWER_AFTER_FAIL, pwr);
-				Serial.print("power value is ");
-				Serial.println(serialValue);
 			}
 
 		// build up command or value
