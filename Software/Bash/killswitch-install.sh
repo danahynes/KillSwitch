@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # constants
 
-VERSION_NUMBER="0.4.0"
+VERSION_NUMBER="0.3.4"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
@@ -78,6 +78,7 @@ echo cat < "${CMD_FILE_OLD}" | sed 's/ console=.*,[0-9]*//' > "${CMD_FILE_NEW}"
 
 # move new file to old file
 mv "${CMD_FILE_NEW}" "${CMD_FILE_OLD}"
+
 echo "Done"
 
 #-------------------------------------------------------------------------------
@@ -97,6 +98,7 @@ echo "enable_uart=1" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
 mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
+
 echo "Done"
 echo ""
 
@@ -124,6 +126,7 @@ echo "alias shutdown='sudo shutdown -h now'" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
 mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
+
 echo "Done"
 
 #-------------------------------------------------------------------------------
@@ -143,6 +146,7 @@ echo "alias reboot='sudo shutdown -r now'" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
 mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
+
 echo "Done"
 
 #-------------------------------------------------------------------------------
@@ -201,10 +205,17 @@ echo "Done"
 echo ""
 
 #-------------------------------------------------------------------------------
-# make settings dir
+# (re)create settings dir
 
-mkdir -p "${SETTINGS_DIR}"
-chown "${SUDO_USER}" "${SETTINGS_DIR}"
+echo -n "Creating settings directory... "
+
+if [ ! -d "${SETTINGS_DIR}" ]; then
+    mkdir -p "${SETTINGS_DIR}"
+    chown "${SUDO_USER}" "${SETTINGS_DIR}"
+fi
+
+echo "Done"
+echo ""
 
 #-------------------------------------------------------------------------------
 # configure avrdude
