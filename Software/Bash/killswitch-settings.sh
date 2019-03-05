@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER="0.3.4"
+VERSION_NUMBER="0.4.0"
 
 DEBUG=1
 
@@ -59,9 +59,9 @@ CANCEL_LABEL="Cancel"
 
 MENU_TITLE="KillSwitch Settings"
 MENU_TEXT="Choose an item:"
-MENU_HEIGHT=13
+MENU_HEIGHT=14
 MENU_WIDTH=40
-MENU_ITEM_HEIGHT=6
+MENU_ITEM_HEIGHT=7
 MENU_TAGS=(\
     "1" \
     "2" \
@@ -69,12 +69,14 @@ MENU_TAGS=(\
     "4" \
     "5" \
     "6" \
+    "7" \
 )
 MENU_ITEMS=(\
     "LED options" \
     "Start recording" \
     "Long press time" \
     "Long press action" \
+    "Restart after power failure" \
     "Update" \
     "Uninstall" \
 )
@@ -83,8 +85,9 @@ MENU_HELP=(\
 	"Start recording new remote codes" \
 	"Set how long to hold the button for a long press action" \
 	"Set the action to take when the button is held" \
+    "Automatically boot the Pi after a power failure if it was previously on"
     "Check for updates to the software on the Pi and the firmware in the KillSwitch module" \
-	"Uninstall all KillSwitch files" \
+	"Uninstall all KillSwitch software from the Pi" \
 )
 
 LED_MENU_TITLE="LED Options"
@@ -183,6 +186,16 @@ LPA_ITEMS=("Reboot" "Force quit")
 LPA_SETTING="LPA"
 LPA_ACTION="LPA"
 
+PWR_TITLE="Restart after power failure"
+PWR_TEXT="Check the setting to automatically boot after a power failure:"
+PWR_HEIGHT=10
+PWR_WIDTH=40
+PWR_ITEM_HEIGHT=1
+PWR_TAG="1"
+PWR_ITEM="Restart after power failure"
+PWR_SETTING="PWR"
+PWR_ACTION="PWR"
+
 UPDATE_TITLE="Update"
 UPDATE_HEIGHT=13
 UPDATE_WIDTH=40
@@ -211,7 +224,7 @@ UNINSTALL_HEIGHT=10
 UNINSTALL_WIDTH=40
 UNINSTALL_COMMAND="/usr/local/bin/killswitch-uninstall.sh"
 
-# N.B. don't change $scriptdir variable name (used by joy2keyStart)
+# NB don't change $scriptdir variable name (used by joy2keyStart)
 scriptdir="${HOME}/RetroPie-Setup"
 
 #-------------------------------------------------------------------------------
@@ -224,6 +237,7 @@ LED_MENU_SEL=""
 LEDT_STATES=($STATE_ON $STATE_OFF $STATE_OFF)
 LEDS_STATES=($STATE_ON $STATE_OFF)
 LPA_STATES=($STATE_ON $STATE_OFF)
+PWR_STATE=$STATE_OFF
 UPDATE_TEXT=""
 UPDATE_URL=""
 
@@ -269,6 +283,7 @@ function doMain() {
     "${MENU_TAGS[3]}" "${MENU_ITEMS[3]}" "${MENU_HELP[3]}" \
     "${MENU_TAGS[4]}" "${MENU_ITEMS[4]}" "${MENU_HELP[4]}" \
     "${MENU_TAGS[5]}" "${MENU_ITEMS[5]}" "${MENU_HELP[5]}" \
+    "${MENU_TAGS[6]}" "${MENU_ITEMS[6]}" "${MENU_HELP[6]}" \
     3>&1 1>&2 2>&3 3>&-)
 
     BTN=$?
@@ -290,8 +305,10 @@ function doMain() {
     elif [ "$RESULT" = "${MENU_TAGS[3]}" ]; then
         doLongPressAction
     elif [ "$RESULT" = "${MENU_TAGS[4]}" ]; then
-        doUpdate
+        doPower
     elif [ "$RESULT" = "${MENU_TAGS[5]}" ]; then
+        doUpdate
+    elif [ "$RESULT" = "${MENU_TAGS[6]}" ]; then
         doUninstall
     fi
 }
@@ -586,6 +603,44 @@ function doLongPressAction() {
     fi
 }
 
+function doPower() {
+    PWR_VALUE=$(readPropsFile $PWR_SETTING)
+
+    PWR_STATE=$STATE_OFF
+
+    # set checked state
+    if [ $PWR_VALUE -eq 1 ]; then
+        PWR_STATE=$STATE_ON
+    fi
+
+    RESULT=$(dialog \
+    --backtitle "$WINDOW_TITLE" \
+    --title "$PWR_TITLE" \
+    --cancel-label "$BACK_LABEL" \
+    --default-item "$PWR_HIGHLIGHT" \
+    --checklist \
+    "$PWR_TEXT" \
+    $PWR_HEIGHT \
+    $PWR_WIDTH \
+    $PWR_ITEM_HEIGHT\
+    "${PWR_TAG}" "${PWR_ITEM}" "${PWR_STATE}" \
+    3>&1 1>&2 2>&3 3>&-)
+
+    if [ ! "$RESULT" == "1" ]; then
+        RESULT="0"
+    fi
+
+    BTN=$?
+    if [ $BTN -eq $DIALOG_OK ]; then
+
+        # save highlighted/selected item
+        writePropsFile $PWR_SETTING $RESULT
+        writeSerial $PWR_ACTION $RESULT
+    elif [ $BTN -eq $DIALOG_ESCAPE ]; then
+        MENU_DONE=1
+    fi
+}
+
 function doDownloadError() {
     RESULT=$(dialog \
     --backtitle "$WINDOW_TITLE" \
@@ -840,6 +895,7 @@ if [ ! -f "${SETTINGS_FILE}" ]; then
     echo $LEDF_SETTING"=0" >> "${SETTINGS_FILE}"
     echo $LPT_SETTING"="$LPT_DEFAULT >> "${SETTINGS_FILE}"
     echo $LPA_SETTING"=0" >> "${SETTINGS_FILE}"
+    echo $PWR_SETTING"=0" >> "${SETTINGS_FILE}"
 fi
 
 # map joystick to keyboard if running RetroPie
