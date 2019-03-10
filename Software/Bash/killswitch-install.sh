@@ -196,6 +196,12 @@ cp killswitch-settings.sh /usr/local/bin/
 chmod +x /usr/local/bin/killswitch-settings.sh
 echo "Done"
 
+# copy settings gui script
+echo -n "Copying kilswitch-settings.py to /usr/local/bin/... "
+cp killswitch-settings.py /usr/local/bin/
+chmod +x /usr/local/bin/killswitch-settings.py
+echo "Done"
+
 # copy uninstaller script
 echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
 cp killswitch-uninstall.sh /usr/local/bin
