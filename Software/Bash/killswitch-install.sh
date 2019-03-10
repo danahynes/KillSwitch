@@ -49,7 +49,7 @@ echo ""
 echo "Installing dependencies..."
 echo ""
 
-apt-get install dialog python python-gpiozero python-serial avrdude
+apt-get install dialog python3 python3-gpiozero python3-serial avrdude
 echo ""
 
 #-------------------------------------------------------------------------------
