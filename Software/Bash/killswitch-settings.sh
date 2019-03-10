@@ -85,7 +85,7 @@ MENU_HELP=(\
 	"Start recording new remote codes" \
 	"Set how long to hold the button for a long press action" \
 	"Set the action to take when the button is held" \
-    "Automatically boot the Pi after a power failure if it was previously on"
+    "Automatically boot the Pi after a power failure if it was previously on" \
     "Check for updates to the software on the Pi and the firmware in the KillSwitch module" \
 	"Uninstall all KillSwitch software from the Pi" \
 )
@@ -522,7 +522,7 @@ function doStartRecording() {
 
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
-         $REC_ACTION ""
+         writeSerial $REC_ACTION ""
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
     fi
@@ -908,7 +908,7 @@ else
     fi
     VALUE=$(readPropsFile $LEDN_SETTING)
     if [ "$VALUE" == "" ]; then
-        echo $LEDN_SETTING"=0" >> "${SETTINGS_FILE}"
+        echo $LEDN_SETTING"="$LEDN_DEFAULT >> "${SETTINGS_FILE}"
     fi
     VALUE=$(readPropsFile $LEDF_SETTING)
     if [ "$VALUE" == "" ]; then
@@ -916,7 +916,7 @@ else
     fi
     VALUE=$(readPropsFile $LPT_SETTING)
     if [ "$VALUE" == "" ]; then
-        echo $LPT_SETTING"=0" >> "${SETTINGS_FILE}"
+        echo $LPT_SETTING"="$LPT_DEFAULT >> "${SETTINGS_FILE}"
     fi
     VALUE=$(readPropsFile $LPA_SETTING)
     if [ "$VALUE" == "" ]; then
