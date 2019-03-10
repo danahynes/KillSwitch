@@ -16,6 +16,8 @@ when the pi is done shutting down, what is the state of the feedback pin?
 write a script to do latest download/install and save it in top level to do
     one-liner
 
+push external pin header to the right to avoid heatsink on cpu
+line up with 3rd or 4th row from left
 kicad custom logo for sheet/silkscreen need to be included
 also default sheet? for logo in block
 also include open hardware logo
