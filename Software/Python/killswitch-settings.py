@@ -783,8 +783,8 @@ def doActualUpdate():
             "/usr/local/bin/killswitch-settings.py"
         ])
 
-        #FIRMWARE_FILE =
-
+        # done with this shell
+        sys.exit(0)
 
     return CODE
 
