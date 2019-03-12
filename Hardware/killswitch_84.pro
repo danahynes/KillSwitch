@@ -1,4 +1,4 @@
-update=Sat 16 Feb 2019 02:20:26 AM EST
+update=Tue 12 Mar 2019 08:20:27 AM EDT
 version=1
 last_client=kicad
 [cvpcb]
@@ -11,7 +11,7 @@ version=1
 LibDir=
 [schematic_editor]
 version=1
-PageLayoutDescrFile=/home/dana/Documents/KiCad/Logo/Default_Sheet.kicad_wks
+PageLayoutDescrFile=Default_Sheet.kicad_wks
 PlotDirectoryName=
 SubpartIdSeparator=0
 SubpartFirstId=65
@@ -21,7 +21,7 @@ LabSize=50
 ERC_TestSimilarLabels=1
 [pcbnew]
 version=1
-PageLayoutDescrFile=/home/dana/Documents/KiCad/Logo/Default_Sheet.kicad_wks
+PageLayoutDescrFile=Default_Sheet.kicad_wks
 LastNetListRead=
 PadDrill=0
 PadDrillOvalY=0
