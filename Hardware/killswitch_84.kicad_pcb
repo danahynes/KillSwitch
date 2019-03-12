@@ -12,7 +12,7 @@
   (page A4)
   (title_block
     (title "KillSwitch on ATTiny84")
-    (date 2019-03-05)
+    (date 2019-03-11)
     (rev 0.4.1)
     (company "Dana Hynes")
     (comment 1 "Copyright (c) 2019 ")
