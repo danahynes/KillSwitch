@@ -47,7 +47,9 @@ GITHUB_URL = "https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 
 CHIP_ID = "atmega328p"
 
-SETTINGS_DIR = os.path.expanduser("~") + "/.killswitch"
+HOME_DIR = os.path.expanduser("~")
+
+SETTINGS_DIR = HOME_DIR + "/.killswitch"
 SETTINGS_FILE = SETTINGS_DIR + "/killswitch-settings.json"
 SETTINGS_DICT = {}
 
@@ -256,8 +258,10 @@ UNINSTALL_HEIGHT = 10
 UNINSTALL_WIDTH = 40
 UNINSTALL_COMMAND = "/usr/local/bin/killswitch-uninstall.sh"
 
-# NB don't change $scriptdir variable name (used by joy2keyStart)
-scriptdir = os.path.expanduser("~") + "/RetroPie-Setup"
+JOY_2_KEY_DIR = HOME_DIR + "/scriptmodules/supplementary/runcommand/"
+JOY_2_KEY_CMD = "joy2key.py"
+JOY_2_KEY_DEVICE = "/dev/input/jsX"
+JOY_2_KEY_PARAMS = ["kcub1", "kcuf1", "kcuu1", "kcud1", "0x0a", "0x20"]
 
 #-------------------------------------------------------------------------------
 # Variables
@@ -867,7 +871,7 @@ def doUninstall():
     )
 
     if CODE == dlg.OK:
-        subprocess.call([ "sudo", UNINSTALL_COMMAND])
+        subprocess.call(["sudo", UNINSTALL_COMMAND])
 
     return CODE
 
@@ -882,9 +886,6 @@ locale.setlocale(locale.LC_ALL, '')
 dlg = dialog.Dialog()
 dlg.set_background_title(WINDOW_TITLE)
 
-# TODO: what if we upgrade with new setting that didn't exist before?
-# what will the default be? blank or 0 ? need further testing
-
 # if no settings file, create with defaults
 if os.path.isfile(SETTINGS_FILE) == False:
     SETTINGS_DICT = {
@@ -895,6 +896,7 @@ if os.path.isfile(SETTINGS_FILE) == False:
         LPT_SETTING : LPT_DEFAULT,
         LPA_SETTING : 0,
         PWR_SETTING : 0
+        # add new settings here with their defaults
     }
     with open(SETTINGS_FILE, "w+") as file:
         json.dump(SETTINGS_DICT, file)
@@ -904,16 +906,23 @@ else:
     with open(SETTINGS_FILE, "rt") as file:
         SETTINGS_DICT = json.load(file)
 
-# TODO fix this
-# file name is scriptdir/scriptmodules/supplementary/runcommand/joy2key.py
-# need params, see here:
-# https://github.com/RetroPie/RetroPie-Setup/blob/master/scriptmodules/helpers.sh
+    # add new settings here with their default
+
+    # write new settings (if any) back to file
+    with open(SETTINGS_FILE, "wt") as file:
+        json.dump(SETTINGS_DICT, file)
 
 # map joystick to keyboard if running RetroPie
-if os.path.isdir(scriptdir):
-    #source "$scriptdir/scriptmodules/helpers.sh"
-	#joy2keyStart
-    pass
+if os.path.isdir(JOY_2_KEY_DIR):
+
+    # NB stolen from https://github.com/RetroPie/RetroPie-Setup/blob/master/scriptmodules/helpers.sh
+    PID = subprocess.check_output(["pidof", "joy2key.py"])
+    if PID == "":
+        subprocess.call([
+            JOY_2_KEY_DIR + JOY_2_KEY_CMD,
+            JOY_2_KEY_DEVICE,
+            JOY_2_KEY_PARAMS
+        ])
 
 # set up serial port
 ser = serial.Serial(SERIAL_PORT, SERIAL_SPEED)
