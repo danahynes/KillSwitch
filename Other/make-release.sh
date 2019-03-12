@@ -56,6 +56,10 @@ FILE="killswitch-boot.py"
 REP=$(cat "${FILE}" | sed 's/VERSION_NUMBER = "[0-9]*\+.[0-9]*\+.[0-9]*"/VERSION_NUMBER = "'${VERSION_NUMBER}'"/')
 echo "${REP}" > "${FILE}"
 
+FILE="killswitch-settings.py"
+REP=$(cat "${FILE}" | sed 's/VERSION_NUMBER = "[0-9]*\+.[0-9]*\+.[0-9]*"/VERSION_NUMBER = "'${VERSION_NUMBER}'"/')
+echo "${REP}" > "${FILE}"
+
 FILE="killswitch-shutdown.py"
 REP=$(cat "${FILE}" | sed 's/VERSION_NUMBER = "[0-9]*\+.[0-9]*\+.[0-9]*"/VERSION_NUMBER = "'${VERSION_NUMBER}'"/')
 echo "${REP}" > "${FILE}"
