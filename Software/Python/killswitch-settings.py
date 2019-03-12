@@ -27,7 +27,7 @@ import zipfile
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.4.0"
+VERSION_NUMBER = "0.4.1"
 
 DEBUG = 1
 
