@@ -16,10 +16,10 @@ when the pi is done shutting down, what is the state of the feedback pin?
 write a script to do latest download/install and save it in top level to do
     one-liner
 
-push external pin header to the right to avoid heatsink on cpu
-line up with 3rd or 4th row from left
-kicad custom logo for sheet/silkscreen need to be included
-also default sheet? for logo in block
+DONE:push external pin header to the right to avoid heatsink on cpu
+DONE: line up with 3rd or 4th row from left
+TEST: kicad custom logo for sheet/silkscreen need to be included
+TEST: also default sheet? for logo in block
 also include open hardware logo
 
 update: pi may reboot after update, do we deal with this?
@@ -35,13 +35,13 @@ if anything fails, bail
 documentation on how the button/programming/led works
 documentation on how to use settings
 man pages for all pi software scripts
-section headers (##) in main readme
+DONE: section headers (##) in main readme
 documentation in main readme for device, description and usage
-documentation in main readme for OSH license
+DONE: documentation in main readme for OSH license
 
 get arduino libs into firmware lib folder and remove symlinks
 when building, check github for latest version of each lib
-    if newer, donload to libs folder
+    if newer, download to libs folder
     then build
 
 make work with toggle (but let ppl know they can't futz with the switch during
@@ -49,5 +49,5 @@ make work with toggle (but let ppl know they can't futz with the switch during
     https://retropie.org.uk/forum/topic/15727/tutorial-onoff-shim-exposed-neat-powerswitch-from-pimoroni
 
 convert install to py (what if user doesn't have py?)
-convert settings to py
+DONE: convert settings to py
 convert uninstall to py
