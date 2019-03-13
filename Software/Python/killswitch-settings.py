@@ -29,9 +29,9 @@ import zipfile
 
 VERSION_NUMBER = "0.4.2"
 
-DEBUG = 1
+DEBUG = os.uname()[4].startswith("arm")
 
-if DEBUG == 1:
+if DEBUG == 0:
 
     # laptop (test) serial port
     SERIAL_PORT = "/dev/pts/4"
