@@ -74,10 +74,11 @@ CMD_FILE_OLD="/boot/cmdline.txt"
 CMD_FILE_NEW="/boot/cmdline_tmp.txt"
 
 # move everything except login console to new file
-echo cat < "${CMD_FILE_OLD}" | sed 's/ console=.*,[0-9]*//' > "${CMD_FILE_NEW}"
+echo $(cat < "${CMD_FILE_OLD}" | sed 's/ console=.*,[0-9]*//' > \
+    "${CMD_FILE_NEW}")
 
 # move new file to old file
-mv "${CMD_FILE_NEW}" "${CMD_FILE_OLD}"
+#mv "${CMD_FILE_NEW}" "${CMD_FILE_OLD}"
 
 echo "Done"
 
@@ -97,7 +98,7 @@ grep -v "enable_uart=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
 echo "enable_uart=1" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
-mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
+#mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
 
 echo "Done"
 echo ""
