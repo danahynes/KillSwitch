@@ -11,7 +11,7 @@ Rev "0.4.2"
 Comp "Dana Hynes"
 Comment1 "Copyright (c) 2019"
 Comment2 "All rights reserved"
-Comment3 ""
+Comment3 "Licensed under the WTFPL v2"
 Comment4 ""
 $EndDescr
 $Comp
