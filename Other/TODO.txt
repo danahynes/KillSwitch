@@ -13,6 +13,10 @@ when the pi is done shutting down, what is the state of the feedback pin?
     the arduino has a pullup, but the pi may latch the pin to a low state
 
 
+FIX RELATIVE PATHS!!! installer, uninstaller, ???
+    need base dir of script otherwise only works when run from Bash dir
+    no stupid, run it from where I told you!!!
+
 write a script to do latest download/install and save it in top level to do
     one-liner
 
@@ -20,8 +24,14 @@ DONE:push external pin header to the right to avoid heatsink on cpu
 DONE: line up with 3rd or 4th row from left
 TEST: kicad custom logo for sheet/silkscreen need to be included
 TEST: also default sheet? for logo in block
-also include open hardware logo
+DONE: also include open hardware logo in blocks
+DONE: place default text (name, copyright, all rights, WTFPL) in default sheet
 
+if install retropie after killswitch, need to re-run installer to get shortcut
+    this wont' work, the installer and folder are long gone
+    make an option in settings to add shortcut - just run that code copied
+    from install script
+    
 update: pi may reboot after update, do we deal with this?
     if user DOESN'T reboot, settings re-runs itself and shows new version number
 update: show installer output in tailbox? (still need sudo password in terminal)
@@ -31,6 +41,14 @@ use pulses for trigger in killswitch-boot.py? (instead of timing length of
 
 install/uninstall should check each command to see if it failed
 if anything fails, bail
+
+run file after reboot -
+    in cmdline.txt, add init=/usr/local/bin/killswitch-run-once.py
+    on run, remove that part from cmdline.txt
+    show dialog that says "KillSwitch installed successfully"
+    do you want to run settings now? YES/NO
+    you can run settings by opening a terminal and typing "killswitch-settings.py"
+    or use retropie port "Settings"
 
 documentation on how the button/programming/led works
 documentation on how to use settings
