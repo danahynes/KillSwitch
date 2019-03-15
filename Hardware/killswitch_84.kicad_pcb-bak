@@ -17,6 +17,7 @@
     (company "Dana Hynes")
     (comment 1 "Copyright (c) 2019 ")
     (comment 2 "All rights reserved")
+    (comment 3 "Licensed under the WTFPL v2")
   )
 
   (layers
