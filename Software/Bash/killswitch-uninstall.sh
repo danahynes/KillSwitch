@@ -75,6 +75,11 @@ echo -n "Removing kilswitch-settings.sh from /usr/local/bin/... "
 rm /usr/local/bin/killswitch-settings.sh
 echo "Done"
 
+# remove settings gui script
+echo -n "Removing kilswitch-settings.py from /usr/local/bin/... "
+rm /usr/local/bin/killswitch-settings.py
+echo "Done"
+
 # remove uninstaller script
 echo -n "Removing kilswitch-uninstaller.sh from /usr/local/bin/... "
 rm /usr/local/bin/killswitch-uninstall.sh
