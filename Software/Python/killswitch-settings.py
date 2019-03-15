@@ -723,8 +723,8 @@ def doActualUpdate():
         shutil.rmtree("KillSwitch-" + ZIP_NAME, ignore_errors = True)
 
         headers = {
-            "Authorization" : " token " + GITHUB_TOKEN,
-            "Accept" : " application/vnd.github.v3.raw"
+            "Authorization" : "token " + GITHUB_TOKEN,
+            "Accept" : "application/vnd.github.v3.raw"
         }
 
         # download zip file
