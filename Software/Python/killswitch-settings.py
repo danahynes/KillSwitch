@@ -31,7 +31,7 @@ VERSION_NUMBER = "0.4.3"
 
 DEBUG = os.uname()[4].startswith("arm")
 
-if DEBUG == 0:
+if DEBUG == False:
 
     # laptop (test) serial port
     SERIAL_PORT = "/dev/pts/4"
@@ -100,7 +100,7 @@ MENU_HELP = [
 	"Set the action to take when the button is held",
     "Automatically boot the Pi after a power failure if it was previously on",
     "Check for updates to the software on the Pi and the firmware in the " \
-    "KillSwitch module",
+    "device",
 	"Uninstall all KillSwitch software from the Pi"
 ]
 
@@ -816,8 +816,8 @@ def doUpdate():
     LOCAL_VERSION_NUMBER_C = int(LOCAL_VERSION_NUMBERS[2])
 
     headers = {
-        "Authorization" : " token " + GITHUB_TOKEN,
-        "Accept" : " application/vnd.github.v3.raw"
+        "Authorization" : "token " + GITHUB_TOKEN,
+        "Accept" : "application/vnd.github.v3.raw"
     }
 
     try:
