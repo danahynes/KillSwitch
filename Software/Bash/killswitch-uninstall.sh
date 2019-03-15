@@ -25,7 +25,7 @@ echo ""
 # check for root
 
 if [ $EUID -ne 0 ]; then
-    echo "This script must be run as root. Use 'sudo killswitch-uninstall.sh'"
+    echo "This script must be run as root. Try 'sudo killswitch-uninstall.sh'"
     echo ""
     exit 1
 fi

@@ -1,6 +1,6 @@
 1. /home/pi/Downloads/KillSwitch/Bash/killswitch-install.sh
     installs the rest of the scripts
-    also called from killswitch-settings.sh when updating
+    also called from killswitch-settings.sh when updating if not rebooted
 2. /usr/local/bin/killswitch-uninstall.sh
     uninstalls all this crap
     also called from killswitch-settings.sh when uninstalling
@@ -12,11 +12,13 @@
     runs killswitch-shutdown.py at shutdown/reboot
 6. /usr/local/bin/killswitch-shutdown.py
     writes to feedback - one pulse for shutdown, two pulses for reboot
-7. /usr/local/bin/killswitch-settings.sh
-    the pretty settings dialog script
+7a. /usr/local/bin/killswitch-settings.sh
+    the pretty settings dialog script, but in bash
+7b. /usr/local/bin/killswitch-settings.py
+    the pretty settings dialog script, but in python
 8. /home/pi/.killswitch/killswitch-settings.conf
     storage for settings script
-    created on demand by killswitch-settings.sh
+    created on demand by killswitch-settings.sh/py
 9. /home/pi/.killswitch/killswitch-avrdude.conf
     config file for programming avr over ICSP
     created by killswitch-install.sh
