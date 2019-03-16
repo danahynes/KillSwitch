@@ -191,10 +191,10 @@ chmod +x /usr/local/bin/killswitch-shutdown.py
 echo "Done"
 
 # copy settings gui script
-echo -n "Copying kilswitch-settings.sh to /usr/local/bin/... "
-cp killswitch-settings.sh /usr/local/bin/
-chmod +x /usr/local/bin/killswitch-settings.sh
-echo "Done"
+#echo -n "Copying kilswitch-settings.sh to /usr/local/bin/... "
+#cp killswitch-settings.sh /usr/local/bin/
+#chmod +x /usr/local/bin/killswitch-settings.sh
+#echo "Done"
 
 # copy settings gui script
 echo -n "Copying kilswitch-settings.py to /usr/local/bin/... "
