@@ -72,9 +72,9 @@ CANCEL_LABEL = "Cancel"
 
 MENU_TITLE = "KillSwitch Settings"
 MENU_TEXT = "Choose an item:"
-MENU_HEIGHT = 14
+MENU_HEIGHT = 15
 MENU_WIDTH = 40
-MENU_ITEM_HEIGHT = 7
+MENU_ITEM_HEIGHT = 8
 MENU_TAGS = [
     "1",
     "2",
@@ -82,7 +82,8 @@ MENU_TAGS = [
     "4",
     "5",
     "6",
-    "7"
+    "7",
+    "8"
 ]
 MENU_ITEMS = [
     "LED options",
@@ -90,6 +91,7 @@ MENU_ITEMS = [
     "Long press time",
     "Long press action",
     "Restart after power failure",
+    "Install RetroPie shortcut",
     "Update",
     "Uninstall"
 ]
@@ -99,6 +101,7 @@ MENU_HELP = [
 	"Set how long to hold the button for a long press action",
 	"Set the action to take when the button is held",
     "Automatically boot the Pi after a power failure if it was previously on",
+    "Install RetroPie shortcut in Ports",
     "Check for updates to the software on the Pi and the firmware in the " \
     "device",
 	"Uninstall all KillSwitch software from the Pi"
@@ -325,7 +328,8 @@ def doMain():
             (MENU_TAGS[3], MENU_ITEMS[3], MENU_HELP[3]),
             (MENU_TAGS[4], MENU_ITEMS[4], MENU_HELP[4]),
             (MENU_TAGS[5], MENU_ITEMS[5], MENU_HELP[5]),
-            (MENU_TAGS[6], MENU_ITEMS[6], MENU_HELP[6])
+            (MENU_TAGS[6], MENU_ITEMS[6], MENU_HELP[6]),
+            (MENU_TAGS[7], MENU_ITEMS[7], MENU_HELP[7])
         ]
     )
 
@@ -349,8 +353,10 @@ def doMain():
         elif TAG == MENU_TAGS[4]:
             RES = doPower()
         elif TAG == MENU_TAGS[5]:
-            RES = doUpdate()
+            RES = doRetroPie()
         elif TAG == MENU_TAGS[6]:
+            RES = doUpdate()
+        elif TAG == MENU_TAGS[7]:
             RES = doUninstall()
 
     # quit app
@@ -659,6 +665,14 @@ def doPower():
         writeSerial(PWR_ACTION, i)
 
     return CODE_TAGS[0]
+
+def doRetroPie():
+    if os.path.isdir(HOME_DIR + "/RetroPie"):
+        if not os.path.isdir(HOME_DIR + "/RetroPie/roms/ports"):
+            os.makedirs(HOME_DIR + "/RetroPie/roms/ports")
+        if not os.path.exists(HOME_DIR + "/RetroPie/roms/ports/KillSwitch"):
+            os.symlink("/usr/local/bin/killswitch-settings.py", \
+            HOME_DIR + "/RetroPie/roms/ports/KillSwitch")
 
 def doDownloadError():
     CODE = dlg.msgbox(
