@@ -31,9 +31,10 @@ if install retropie after killswitch, need to re-run installer to get shortcut
     this wont' work, the installer and folder are long gone
     make an option in settings to add shortcut - just run that code copied
     from install script
-    
+
 update: pi may reboot after update, do we deal with this?
     if user DOESN'T reboot, settings re-runs itself and shows new version number
+    escaping from new version goes back to old? should we just bail?
 update: show installer output in tailbox? (still need sudo password in terminal)
 
 use pulses for trigger in killswitch-boot.py? (instead of timing length of
