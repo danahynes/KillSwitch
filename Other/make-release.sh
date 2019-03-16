@@ -10,7 +10,7 @@
 # by Sam Hocevar. See the LICENSE file for more details.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER="0.4.9"
+VERSION_NUMBER="0.4.10"
 
 # change firmware
 cd ../Firmware/
