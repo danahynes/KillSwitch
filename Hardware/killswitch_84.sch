@@ -7,7 +7,7 @@ encoding utf-8
 Sheet 1 1
 Title "KillSwitch on ATTiny84"
 Date "2019-03-16"
-Rev "0.4.9"
+Rev "0.4.10"
 Comp "Dana Hynes"
 Comment1 "Copyright (c) 2019"
 Comment2 "All rights reserved"
