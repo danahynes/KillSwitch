@@ -255,8 +255,8 @@ echo ""
 if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
     echo -n "Creating RetroPie port... "
 	mkdir -p "/home/${SUDO_USER}/RetroPie/roms/ports"
-	ln -s  "/usr/local/bin/killswitch-settings.sh" \
-	    "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch.sh" &> /dev/null
+	ln -s  "/usr/local/bin/killswitch-settings.py" \
+	    "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch" &> /dev/null
 	echo "Done"
     echo ""
 fi
