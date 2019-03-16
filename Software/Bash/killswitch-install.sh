@@ -49,7 +49,8 @@ echo ""
 echo "Installing dependencies..."
 echo ""
 
-apt-get install python3 python3-dialog python3-gpiozero python3-serial avrdude
+apt-get install python3 python3-dialog python3-gpiozero python3-serial avrdude \
+python3-requests
 echo ""
 
 #-------------------------------------------------------------------------------

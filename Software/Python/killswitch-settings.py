@@ -38,7 +38,7 @@ if DEBUG == False:
 else:
 
     # pi serial port
-    SERIAL_PORT = "/dev/ttyS0"
+    SERIAL_PORT = "/dev/serial1"
 SERIAL_SPEED = 9600
 
 # TODO: hide this
