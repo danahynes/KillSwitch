@@ -71,9 +71,9 @@ rm /usr/local/bin/killswitch-shutdown.py
 echo "Done"
 
 # remove settings gui script
-echo -n "Removing kilswitch-settings.sh from /usr/local/bin/... "
-rm /usr/local/bin/killswitch-settings.sh
-echo "Done"
+#echo -n "Removing kilswitch-settings.sh from /usr/local/bin/... "
+#rm /usr/local/bin/killswitch-settings.sh
+#echo "Done"
 
 # remove settings gui script
 echo -n "Removing kilswitch-settings.py from /usr/local/bin/... "
