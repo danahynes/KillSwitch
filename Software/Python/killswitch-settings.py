@@ -872,6 +872,7 @@ def doUninstall():
 
     if CODE == dlg.OK:
         subprocess.call(["sudo", UNINSTALL_COMMAND])
+        CODE = dlg.ESC
 
     return CODE
 
