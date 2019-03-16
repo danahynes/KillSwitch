@@ -23,6 +23,14 @@
     config file for programming avr over ICSP
     created by killswitch-install.sh
 
+if installing in RetroPie (no home folder/browser):
+    curl \
+    -H "Authorization: token <GITHUB_TOKEN>" \
+    -H "Accept: "application/vnd.github.v3.raw" \
+    -L \
+    -o KillSwitch.tar.gz \
+    https://api.github.com/repos/danahynes/KillSwitch/zipball/latest
+    
 if we add a new setting:
 
 add necessary EEPROM constants
