@@ -27,7 +27,7 @@ TEST: also default sheet? for logo in block
 DONE: also include open hardware logo in blocks
 DONE: place default text (name, copyright, all rights, WTFPL) in default sheet
 
-if install retropie after killswitch, need to re-run installer to get shortcut
+DONE: if install retropie after killswitch, need to re-run installer to get shortcut
     this wont' work, the installer and folder are long gone
     make an option in settings to add shortcut - just run that code copied
     from install script
