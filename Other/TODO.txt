@@ -16,7 +16,7 @@ when the pi is done shutting down, what is the state of the feedback pin?
 DONE: PYTHON SETTINGS ON RETRTOPIE: OK does not go back???
 
 SERIAL PORTS!!!
-    retropie standalone: /dev/serial0 -> /dev/ttyS0
+    retropie standalone: /dev/ttyS0
     raspian standalone: ???
     both: ???
 
@@ -38,7 +38,7 @@ if install retropie after killswitch, need to re-run installer to get shortcut
     this wont' work, the installer and folder are long gone
     make an option in settings to add shortcut - just run that code copied
     from install script
-    !!! this needs sudo to make symlink b/c /usr/loca/bin is owned by root
+    !!! this needs sudo to make symlink b/c /usr/local/bin is owned by root
 
 update: pi may reboot after update, do we deal with this?
     if user DOESN'T reboot, settings re-runs itself and shows new version number
