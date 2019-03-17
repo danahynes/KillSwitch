@@ -16,7 +16,7 @@ when the pi is done shutting down, what is the state of the feedback pin?
 DONE: PYTHON SETTINGS ON RETRTOPIE: OK does not go back???
 
 SERIAL PORTS!!!
-    retropie standalone: /dev/ttyS0
+    retropie standalone: /dev/ttyS0 (must reboot to get this)
     raspian standalone: ???
     both: ???
 
