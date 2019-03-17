@@ -734,6 +734,9 @@ def doActualUpdate():
         # get version number for zip/folder name
         ZIP_NAME = os.path.basename(UPDATE_URL)
         ZIP_FILE_NAME = "KillSwitch-" + ZIP_NAME + ".zip"
+
+        # TODO: this doesn't wqork, only looks for current version, not old
+        # versions. Need to use KillSwitch-*.zip but that's hard...
         shutil.rmtree("KillSwitch-" + ZIP_NAME, ignore_errors = True)
 
         headers = {
@@ -773,7 +776,7 @@ def doActualUpdate():
             "-c", "killswitch",
             "-U", "flash:w:" + FIRMWARE_FILE + ":i",
             "-U", "flash:v:" + FIRMWARE_FILE + ":i"
-        ])
+        ], shell = True)
 
         print("avrdude:" + str(RET))
         if RET != 0:
@@ -785,8 +788,8 @@ def doActualUpdate():
         os.chdir("../Software/Bash")
         os.chmod("killswitch-install.sh", 0o755)
         RET = subprocess.call([
-            "sudo", "./killswitch-install.sh", shell = True
-        ])
+            "sudo", "./killswitch-install.sh"
+        ], shell = True)
 
         if RET != 0:
             doSoftwareUpdateError()
@@ -798,8 +801,8 @@ def doActualUpdate():
 
         # run new settings file
         subprocess.call([
-            "/usr/local/bin/killswitch-settings.py", "&", shell = True
-        ])
+            "/usr/local/bin/killswitch-settings.py", "&"
+        ], shell = True)
 
         # done with this shell
         sys.exit(0)
@@ -885,7 +888,7 @@ def doUninstall():
     )
 
     if CODE == dlg.OK:
-        subprocess.call(["sudo", UNINSTALL_COMMAND])
+        subprocess.call(["sudo", UNINSTALL_COMMAND], shell = True)
         CODE = dlg.ESC
 
     return CODE
@@ -931,13 +934,13 @@ else:
 if os.path.isdir(JOY_2_KEY_DIR):
 
     # NB stolen from https://github.com/RetroPie/RetroPie-Setup/blob/master/scriptmodules/helpers.sh
-    PID = subprocess.check_output(["pidof", "joy2key.py"])
+    PID = subprocess.check_output(["pidof", "joy2key.py"], shell = True)
     if PID == "":
         subprocess.call([
             JOY_2_KEY_DIR + JOY_2_KEY_CMD,
             JOY_2_KEY_DEVICE,
             JOY_2_KEY_PARAMS
-        ])
+        ], shell = True)
 
 # set up serial port
 ser = serial.Serial(SERIAL_PORT, SERIAL_SPEED)
