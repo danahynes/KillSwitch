@@ -28,19 +28,17 @@ if installing in RetroPie (no Downloads folder or browser):
     cd to Downloads folder
     run:
 
-    curl \
-    -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" \
-    -H "Accept: "application/vnd.github.v3.raw" \
-    https://api.github.com/repos/danahynes/KillSwitch/latest
+    curl -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" -H "Accept: application/vnd.github.v3.raw" https://api.github.com/repos/danahynes/KillSwitch/releases/latest
 
     get tarball url from JSON
 
-    curl \
-    -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" \
-    -H "Accept: "application/vnd.github.v3.raw" \
-    -L \
-    -o KillSwitch.tar.gz \
-    <TARBALL URL>
+    curl -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" -H "Accept: application/vnd.github.v3.raw" -L -o KillSwitch.tar.gz <TARBALL URL>
+
+    extract file
+    cd to LONG name
+    cd to Software/Bash
+    sudo ./killswitch-install.sh
+    reboot
 
 if we add a new setting:
 
