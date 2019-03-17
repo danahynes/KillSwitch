@@ -13,6 +13,13 @@ when the pi is done shutting down, what is the state of the feedback pin?
     the arduino has a pullup, but the pi may latch the pin to a low state
 
 
+DONE: PYTHON SETTINGS ON RETRTOPIE: OK does not go back???
+
+SERIAL PORTS!!!
+    retropie standalone: /dev/serial0 -> /dev/ttyS0
+    raspian standalone: ???
+    both: ???
+
 FIX RELATIVE PATHS!!! installer, uninstaller, ???
     need base dir of script otherwise only works when run from Bash dir
     no stupid, run it from where I told you!!!
@@ -27,14 +34,15 @@ TEST: also default sheet? for logo in block
 DONE: also include open hardware logo in blocks
 DONE: place default text (name, copyright, all rights, WTFPL) in default sheet
 
-DONE: if install retropie after killswitch, need to re-run installer to get shortcut
+if install retropie after killswitch, need to re-run installer to get shortcut
     this wont' work, the installer and folder are long gone
     make an option in settings to add shortcut - just run that code copied
     from install script
+    !!! this needs sudo to make symlink b/c /usr/loca/bin is owned by root
 
 update: pi may reboot after update, do we deal with this?
     if user DOESN'T reboot, settings re-runs itself and shows new version number
-    escaping from new version goes back to old? should we just bail?
+    DONE: escaping from new version goes back to old? should we just bail? FORK!!!
 update: show installer output in tailbox? (still need sudo password in terminal)
 
 use pulses for trigger in killswitch-boot.py? (instead of timing length of
