@@ -785,7 +785,7 @@ def doActualUpdate():
         os.chdir("../Software/Bash")
         os.chmod("killswitch-install.sh", 0o755)
         RET = subprocess.call([
-            "sudo", "./killswitch-install.sh"
+            "sudo", "./killswitch-install.sh", shell = True
         ])
 
         if RET != 0:
@@ -798,7 +798,7 @@ def doActualUpdate():
 
         # run new settings file
         subprocess.call([
-            "/usr/local/bin/killswitch-settings.py"
+            "/usr/local/bin/killswitch-settings.py", "&", shell = True
         ])
 
         # done with this shell
