@@ -99,7 +99,7 @@ echo ""
 
 if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
 	echo -n "Removing RetroPie port... "
-	rm "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch.sh"
+	rm "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch"
 	echo "Done"
     echo ""
 fi
