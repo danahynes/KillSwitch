@@ -776,7 +776,7 @@ def doActualUpdate():
             "-c", "killswitch",
             "-U", "flash:w:" + FIRMWARE_FILE + ":i",
             "-U", "flash:v:" + FIRMWARE_FILE + ":i"
-        ], shell = True)
+        ])
 
         print("avrdude:" + str(RET))
         if RET != 0:
@@ -789,7 +789,7 @@ def doActualUpdate():
         os.chmod("killswitch-install.sh", 0o755)
         RET = subprocess.call([
             "sudo", "./killswitch-install.sh"
-        ], shell = True)
+        ])
 
         if RET != 0:
             doSoftwareUpdateError()
@@ -802,7 +802,7 @@ def doActualUpdate():
         # run new settings file
         subprocess.call([
             "/usr/local/bin/killswitch-settings.py", "&"
-        ], shell = True)
+        ])
 
         # done with this shell
         sys.exit(0)
@@ -888,7 +888,7 @@ def doUninstall():
     )
 
     if CODE == dlg.OK:
-        subprocess.call(["sudo", UNINSTALL_COMMAND], shell = True)
+        subprocess.call(["sudo", UNINSTALL_COMMAND])
         CODE = dlg.ESC
 
     return CODE
@@ -934,13 +934,13 @@ else:
 if os.path.isdir(JOY_2_KEY_DIR):
 
     # NB stolen from https://github.com/RetroPie/RetroPie-Setup/blob/master/scriptmodules/helpers.sh
-    PID = subprocess.check_output(["pidof", "joy2key.py"], shell = True)
+    PID = subprocess.check_output(["pidof", "joy2key.py"])
     if PID == "":
         subprocess.call([
             JOY_2_KEY_DIR + JOY_2_KEY_CMD,
             JOY_2_KEY_DEVICE,
             JOY_2_KEY_PARAMS
-        ], shell = True)
+        ])
 
 # set up serial port
 ser = serial.Serial(SERIAL_PORT, SERIAL_SPEED)
