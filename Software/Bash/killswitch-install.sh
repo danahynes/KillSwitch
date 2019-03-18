@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # constants
 
-VERSION_NUMBER="0.4.19"
+VERSION_NUMBER="0.4.20"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
@@ -256,9 +256,11 @@ echo ""
 if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
     echo -n "Creating RetroPie port... "
 	mkdir -p "/home/${SUDO_USER}/RetroPie/roms/ports"
-    chown "${SUDO_USER}" "/home/${SUDO_USER}/RetroPie/roms/ports"
+    chown "${SUDO_USER}":"${SUDO_USER}" "/home/${SUDO_USER}/RetroPie/roms/ports"
 	ln -s  "/usr/local/bin/killswitch-settings.py" \
 	    "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch" &> /dev/null
+    chown -h "${SUDO_USER}":"${SUDO_USER}" \
+        "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch"
 	echo "Done"
     echo ""
 fi
