@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # constants
 
-VERSION_NUMBER="0.4.18"
+VERSION_NUMBER="0.4.19"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
@@ -201,7 +201,6 @@ echo "Done"
 echo -n "Copying kilswitch-settings.py to /usr/local/bin/... "
 cp ../Python/killswitch-settings.py /usr/local/bin/
 chmod +x /usr/local/bin/killswitch-settings.py
-chmod u+s /usr/local/bin/killswitch-settings.py
 echo "Done"
 
 # copy uninstaller script
@@ -257,6 +256,7 @@ echo ""
 if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
     echo -n "Creating RetroPie port... "
 	mkdir -p "/home/${SUDO_USER}/RetroPie/roms/ports"
+    chown "${SUDO_USER}" "/home/${SUDO_USER}/RetroPie/roms/ports"
 	ln -s  "/usr/local/bin/killswitch-settings.py" \
 	    "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch" &> /dev/null
 	echo "Done"

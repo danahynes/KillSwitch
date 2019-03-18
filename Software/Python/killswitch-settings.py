@@ -14,9 +14,11 @@
 # Imports
 
 import dialog
+import getpass
 import json
 import locale
 import os
+import pwd
 import requests
 import serial
 import shutil
@@ -27,7 +29,7 @@ import zipfile
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.4.18"
+VERSION_NUMBER = "0.4.19"
 
 DEBUG = os.uname()[4].startswith("arm")
 
@@ -669,7 +671,10 @@ def doPower():
 def doRetroPie():
     if os.path.isdir(HOME_DIR + "/RetroPie"):
         if not os.path.isdir(HOME_DIR + "/RetroPie/roms/ports"):
+            USER_NAME = getpass.getuser()
+            USER_ID = pwd.getpwnam(USER_NAME).pw_uid
             os.makedirs(HOME_DIR + "/RetroPie/roms/ports")
+            os.chown(HOME_DIR + "/RetroPie/roms/ports", USER_ID, -1)
         if not os.path.exists(HOME_DIR + "/RetroPie/roms/ports/KillSwitch"):
             os.symlink("/usr/local/bin/killswitch-settings.py", \
             HOME_DIR + "/RetroPie/roms/ports/KillSwitch")

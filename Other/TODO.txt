@@ -31,9 +31,9 @@ update: pi may reboot after update, do we deal with this?
     if user DOESN'T reboot, settings re-runs itself and shows new version number
     DONE: escaping from new version goes back to old? should we just bail? FORK!!!
 update: show installer output in tailbox? (still need sudo password in terminal)
-update: retropie shortcut needs sudo to make symlink b/c /usr/local/bin is
-    owned by root
-    
+DONE: update: retropie shortcut needs sudo to make symlink b/c /usr/local/bin is
+    owned by root (wrong owner on ports folder)
+
 use pulses for trigger in killswitch-boot.py? (instead of timing length of
     pulse)
 
