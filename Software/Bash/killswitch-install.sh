@@ -207,6 +207,7 @@ echo "Done"
 echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
 cp killswitch-uninstall.sh /usr/local/bin
 chmod +x /usr/local/bin/killswitch-uninstall.sh
+chmod u+s /usr/local/bin/killswitch-uninstall.sh
 echo "Done"
 
 echo ""
