@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # constants
 
-VERSION_NUMBER="0.4.17"
+VERSION_NUMBER="0.4.18"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
@@ -201,13 +201,13 @@ echo "Done"
 echo -n "Copying kilswitch-settings.py to /usr/local/bin/... "
 cp ../Python/killswitch-settings.py /usr/local/bin/
 chmod +x /usr/local/bin/killswitch-settings.py
+chmod u+s /usr/local/bin/killswitch-settings.py
 echo "Done"
 
 # copy uninstaller script
 echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
 cp killswitch-uninstall.sh /usr/local/bin
 chmod +x /usr/local/bin/killswitch-uninstall.sh
-chmod u+s /usr/local/bin/killswitch-uninstall.sh
 echo "Done"
 
 echo ""

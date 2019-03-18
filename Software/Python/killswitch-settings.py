@@ -27,7 +27,7 @@ import zipfile
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.4.17"
+VERSION_NUMBER = "0.4.18"
 
 DEBUG = os.uname()[4].startswith("arm")
 
