@@ -739,7 +739,7 @@ def doActualUpdate():
         ZIP_NAME = os.path.basename(UPDATE_URL)
         ZIP_FILE_NAME = "KillSwitch-" + ZIP_NAME + ".zip"
 
-        # TODO: this doesn't wqork, only looks for current version, not old
+        # TODO: this doesn't work, only looks for current version, not old
         # versions. Need to use KillSwitch-*.zip but that's hard...
         shutil.rmtree("KillSwitch-" + ZIP_NAME, ignore_errors = True)
 
