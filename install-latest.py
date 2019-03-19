@@ -23,7 +23,7 @@ import zipfile
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.4.22"
+VERSION_NUMBER = "0.4.23"
 
 # TODO: hide this
 GITHUB_TOKEN = "3868839158c75239f3ed89a4aedfe620e72156b4"
@@ -69,7 +69,6 @@ ZIP_FILE_NAME = SHORT_NAME + ".zip"
 # versions. Need to use KillSwitch-*.zip but that's hard...
 shutil.rmtree(SHORT_NAME, ignore_errors = True)
 
-
 # get actual source
 headers = {
     "Authorization" : "token " + GITHUB_TOKEN,
@@ -94,7 +93,7 @@ os.remove(ZIP_FILE_NAME)
 os.chdir(SHORT_NAME)
 
 # run installer
-os.chdir("/Software/Bash")
+os.chdir("Software/Bash")
 os.chmod("killswitch-install.sh", 0o0755)
 subprocess.call([
     "sudo",
