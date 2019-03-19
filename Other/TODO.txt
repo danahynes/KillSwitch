@@ -17,8 +17,9 @@ FIX RELATIVE PATHS!!! installer, uninstaller, ???
     need base dir of script otherwise only works when run from Bash dir
     no stupid, run it from where I told you!!!
 
-write a script to do latest download/install and save it in top level to do
+DONE: write a script to do latest download/install and save it in top level to do
     one-liner
+what to do with one-liner script after install???
 
 DONE:push external pin header to the right to avoid heatsink on cpu
 DONE: line up with 3rd or 4th row from left

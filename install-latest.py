@@ -23,7 +23,7 @@ import zipfile
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.4.23"
+VERSION_NUMBER = "0.4.24"
 
 # TODO: hide this
 GITHUB_TOKEN = "3868839158c75239f3ed89a4aedfe620e72156b4"
@@ -100,8 +100,9 @@ subprocess.call([
     "./killswitch-install.sh"
 ])
 
-# remove unzipped folder
+# remove unzipped folder and one-liner
 os.chdir("../../../")
 shutil.rmtree(SHORT_NAME)
+os.remove("install-latest.py")
 
 # -)
