@@ -62,20 +62,20 @@ except:
 # unzip
 ZIP_FILE = zipfile.ZipFile(ZIP_FILE_NAME)
 LONG_NAME = ZIP_FILE.namelist()[0]
+SHORT_NAME = "KillSwitch-" + ZIP_NAME
 ZIP_FILE.extractall()
-os.rename(LONG_NAME, "KillSwitch-" + ZIP_NAME)
+os.rename(LONG_NAME, SHORT_NAME)
 os.remove(ZIP_FILE_NAME)
 
 # run installer
-os.chdir("KillSwitch-" + ZIP_NAME + "/Software/Bash")
+os.chdir(SHORT_NAME + "/Software/Bash")
 os.chmod("killswitch-install.sh", 0o0744)
 subprocess.call([
     "sudo",
-    "./killswitch-install.sh"
+    "./killswitch-install.sh",
+    "&"
 ])
 
+os.remove(SHORT_NAME)
 
-
-
-
-#print()
+# -)
