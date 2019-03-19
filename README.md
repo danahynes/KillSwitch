@@ -16,7 +16,7 @@ Step 2: \
 Open a terminal to the KillSwitch-N.N.N/Software/Bash folder \
 sudo ./killswitch-install.sh
 
-Here is a one-line command that will do it for you:
+Here is a one-line command that will do it for you: \
 sudo apt-get update && sudo apt-get upgrade && curl -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" -H "Accept: application/vnd.github.v3.raw" -O https://api.github.com/repos/danahynes/KillSwitch/contents/install-latest.py && chmod +x install-latest.py && python3 install-latest.py
 
 The software requires an OS of Raspbian Jessie or higher, or any other OS that
