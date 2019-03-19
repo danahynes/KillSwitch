@@ -23,23 +23,6 @@
     config file for programming avr over ICSP
     created by killswitch-install.sh
 
-if installing in RetroPie (no Downloads folder or browser):
-    create a Downloads folder in home folder
-    cd to Downloads folder
-    run:
-
-    curl -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" -H "Accept: application/vnd.github.v3.raw" https://api.github.com/repos/danahynes/KillSwitch/releases/latest
-
-    get tarball url from JSON
-
-    curl -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" -H "Accept: application/vnd.github.v3.raw" -L -o KillSwitch.tar.gz <TARBALL URL>
-
-    extract file
-    cd to LONG name
-    cd to Software/Bash
-    sudo ./killswitch-install.sh
-    reboot
-
 if we add a new setting:
 
 add necessary EEPROM constants
@@ -70,7 +53,7 @@ publish release
 
 one-liner:
 
-curl -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" -H "Accept: application/vnd.github.v3.raw" -O https://api.github.com/repos/danahynes/KillSwitch/contents/install-latest.py && chmod +x install-latest.py && python3 install-latest.py
+sudo apt-get update && sudo apt-get upgrade && curl -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" -H "Accept: application/vnd.github.v3.raw" -O https://api.github.com/repos/danahynes/KillSwitch/contents/install-latest.py && chmod +x install-latest.py && python3 install-latest.py
 
 loopback serial for testing:
 
