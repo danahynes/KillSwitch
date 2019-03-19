@@ -76,6 +76,7 @@ subprocess.call([
     "&"
 ])
 
+os.chdir("../../../")
 os.remove(SHORT_NAME)
 
 # -)
