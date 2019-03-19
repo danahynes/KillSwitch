@@ -10,7 +10,7 @@
 # by Sam Hocevar. See the LICENSE file for more details.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER="0.4.21"
+VERSION_NUMBER="0.4.22"
 
 # change install-latest
 cd ..

@@ -13,6 +13,7 @@
 #-------------------------------------------------------------------------------
 # Imports
 
+import locale
 import os
 import requests
 import shutil
@@ -22,7 +23,7 @@ import zipfile
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.4.21"
+VERSION_NUMBER = "0.4.22"
 
 # TODO: hide this
 GITHUB_TOKEN = "3868839158c75239f3ed89a4aedfe620e72156b4"
