@@ -29,7 +29,7 @@ import zipfile
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.4.20"
+VERSION_NUMBER = "0.4.21"
 
 DEBUG = os.uname()[4].startswith("arm")
 
@@ -733,22 +733,24 @@ def doActualUpdate():
 
     if CODE == dlg.OK:
 
+        # change to download location
         os.chdir(SETTINGS_DIR)
 
         # get version number for zip/folder name
         ZIP_NAME = os.path.basename(UPDATE_URL)
-        ZIP_FILE_NAME = "KillSwitch-" + ZIP_NAME + ".zip"
+        SHORT_NAME = "KillSwitch-" + ZIP_NAME
+        ZIP_FILE_NAME = SHORT_NAME + ".zip"
 
         # TODO: this doesn't work, only looks for current version, not old
         # versions. Need to use KillSwitch-*.zip but that's hard...
-        shutil.rmtree("KillSwitch-" + ZIP_NAME, ignore_errors = True)
+        shutil.rmtree(SHORT_NAME, ignore_errors = True)
 
+        # get actual source
         headers = {
             "Authorization" : "token " + GITHUB_TOKEN,
             "Accept" : "application/vnd.github.v3.raw"
         }
 
-        # download zip file
         try:
             response = requests.get(UPDATE_URL, headers = headers)
             with open(ZIP_FILE_NAME, "wb") as file:
@@ -761,9 +763,9 @@ def doActualUpdate():
         ZIP_FILE = zipfile.ZipFile(ZIP_FILE_NAME)
         LONG_NAME = ZIP_FILE.namelist()[0]
         ZIP_FILE.extractall()
-        os.rename(LONG_NAME, "KillSwitch-" + ZIP_NAME)
+        os.rename(LONG_NAME, SHORT_NAME)
         os.remove(ZIP_FILE_NAME)
-        os.chdir("KillSwitch-" + ZIP_NAME)
+        os.chdir(SHORT_NAME)
 
         # NB: do hardware first because software may cause reboot
 
@@ -789,10 +791,12 @@ def doActualUpdate():
             # TODO: don't return here if we can still try software update
             #return
 
+        # run installer
         os.chdir("../Software/Bash")
-        os.chmod("killswitch-install.sh", 0o755)
+        os.chmod("killswitch-install.sh", 0o0755)
         RET = subprocess.call([
-            "sudo", "./killswitch-install.sh"
+            "sudo",
+            "./killswitch-install.sh"
         ])
 
         if RET != 0:
@@ -801,11 +805,12 @@ def doActualUpdate():
 
         # remove unzipped folder
         os.chdir("../../..")
-        shutil.rmtree("KillSwitch-" + ZIP_NAME)
+        shutil.rmtree(SHORT_NAME)
 
         # run new settings file
         subprocess.call([
-            "/usr/local/bin/killswitch-settings.py", "&"
+            "/usr/local/bin/killswitch-settings.py",
+            "&"
         ])
 
         # done with this shell

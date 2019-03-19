@@ -67,3 +67,4 @@ make work with toggle (but let ppl know they can't futz with the switch during
 convert install to py (what if user doesn't have py?)
 DONE: convert settings to py
 convert uninstall to py
+convert make-release to py

@@ -10,10 +10,17 @@
 # by Sam Hocevar. See the LICENSE file for more details.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER="0.4.20"
+VERSION_NUMBER="0.4.21"
+
+# change install-latest
+cd ..
+
+FILE="install-latest.py"
+REP=$(cat "${FILE}" | sed 's/VERSION_NUMBER = "[0-9]*\+.[0-9]*\+.[0-9]*"/VERSION_NUMBER = "'${VERSION_NUMBER}'"/')
+echo "${REP}" > "${FILE}"
 
 # change firmware
-cd ../Firmware/
+cd Firmware/
 
 FILE="src/KillSwitch.cpp"
 REP=$(cat "${FILE}" | sed 's/VERSION_NUMBER\[] PROGMEM = "[0-9]*\+.[0-9]*\+.[0-9]*"/VERSION_NUMBER\[] PROGMEM = "'${VERSION_NUMBER}'"/')

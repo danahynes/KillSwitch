@@ -10,16 +10,34 @@
 # by Sam Hocevar. See the LICENSE file for more details.
 #-------------------------------------------------------------------------------
 
+#-------------------------------------------------------------------------------
+# Imports
+
 import os
 import requests
+import shutil
 import subprocess
 import zipfile
 
-HOME_DIR = os.path.expanduser("~")
+#-------------------------------------------------------------------------------
+# Constants
+
+VERSION_NUMBER = "0.4.21"
 
 # TODO: hide this
 GITHUB_TOKEN = "3868839158c75239f3ed89a4aedfe620e72156b4"
 GITHUB_URL = "https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
+
+HOME_DIR = os.path.expanduser("~")
+
+#-------------------------------------------------------------------------------
+# Init
+
+# set locale
+locale.setlocale(locale.LC_ALL, '')
+
+#-------------------------------------------------------------------------------
+# Main code
 
 # get latest JSON
 headers = {
@@ -37,12 +55,19 @@ except:
 
 # get path to actual source
 UPDATE_URL = JSON["zipball_url"]
-ZIP_NAME = os.path.basename(UPDATE_URL)
 
+# change to download location
 os.chdir(HOME_DIR)
 
-# get version number for zip/folder name
-ZIP_FILE_NAME = "KillSwitch-" + ZIP_NAME + ".zip"
+# fudge some names
+ZIP_NAME = os.path.basename(UPDATE_URL)
+SHORT_NAME = "KillSwitch-" + ZIP_NAME
+ZIP_FILE_NAME = SHORT_NAME + ".zip"
+
+# TODO: this doesn't work, only looks for current version, not old
+# versions. Need to use KillSwitch-*.zip but that's hard...
+shutil.rmtree(SHORT_NAME, ignore_errors = True)
+
 
 # get actual source
 headers = {
@@ -62,21 +87,21 @@ except:
 # unzip
 ZIP_FILE = zipfile.ZipFile(ZIP_FILE_NAME)
 LONG_NAME = ZIP_FILE.namelist()[0]
-SHORT_NAME = "KillSwitch-" + ZIP_NAME
 ZIP_FILE.extractall()
 os.rename(LONG_NAME, SHORT_NAME)
 os.remove(ZIP_FILE_NAME)
+os.chdir(SHORT_NAME)
 
 # run installer
-os.chdir(SHORT_NAME + "/Software/Bash")
-os.chmod("killswitch-install.sh", 0o0744)
+os.chdir("/Software/Bash")
+os.chmod("killswitch-install.sh", 0o0755)
 subprocess.call([
     "sudo",
-    "./killswitch-install.sh",
-    "&"
+    "./killswitch-install.sh"
 ])
 
+# remove unzipped folder
 os.chdir("../../../")
-os.remove(SHORT_NAME)
+shutil.rmtree(SHORT_NAME)
 
 # -)
