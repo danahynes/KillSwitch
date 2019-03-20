@@ -19,7 +19,7 @@ FIX RELATIVE PATHS!!! installer, uninstaller, ???
 
 DONE: write a script to do latest download/install and save it in top level to do
     one-liner
-DOME: what to do with one-liner script after install???
+DONE: what to do with one-liner script after install???
 
 DONE:push external pin header to the right to avoid heatsink on cpu
 DONE: line up with 3rd or 4th row from left

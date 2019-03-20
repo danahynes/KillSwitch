@@ -16,7 +16,7 @@ Step 2: \
 Open a terminal to the KillSwitch-vN.N.N/Software/Bash folder and type: \
 sudo ./killswitch-install.sh
 
-Here is a one-line command that will do everything for you:
+Here is a one-line command that will do everything for you (requires python 3):
 ~~~~
 sudo apt-get update && sudo apt-get upgrade && curl -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" -H "Accept: application/vnd.github.v3.raw" -O https://api.github.com/repos/danahynes/KillSwitch/contents/install-latest.py && chmod +x install-latest.py && python3 install-latest.py
 ~~~~
@@ -28,7 +28,7 @@ Note that installing the software will turn off your ability to log in to the Pi
 
 ## Updating
 
-To update the software and firmware, use the settings menu on the Pi. Open a terminal and type "killswitch-settings.sh". Then use the "Update" menu item. This will update the firmware on your device and the software on your Pi, if necessary.
+To update the software and firmware, use the settings menu on the Pi. Open a terminal and type "killswitch-settings.py". Then use the "Update" menu item. This will update the firmware on your device and the software on your Pi, if necessary.
 
 ## Source code
 
