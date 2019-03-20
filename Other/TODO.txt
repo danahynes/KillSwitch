@@ -27,11 +27,10 @@ TEST: kicad custom logo for sheet/silkscreen need to be included
 TEST: also default sheet? for logo in block
 DONE: also include open hardware logo in blocks
 DONE: place default text (name, copyright, all rights, WTFPL) in default sheet
-
 finish pi zero pcb
-kicad add dh_logo_silk.pretty to common folder (for my silkscreen footprint)
-kicad add default sheet to common folder (for default sheet)
-kicad add my logo/osh logo to common folder for new sheets
+DONE: kicad add dh_logo_silk.pretty to common folder (for my silkscreen footprint)
+DONE: kicad add default sheet to common folder (for default sheet)
+DONE: kicad add my logo/osh logo to common folder for new sheets
 "designed with kicad" logo in block? (same as silkscreen)
 
 DONE: update: pi may reboot after update, do we deal with this?
