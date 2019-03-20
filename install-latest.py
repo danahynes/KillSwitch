@@ -23,7 +23,7 @@ import zipfile
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.5.1"
+VERSION_NUMBER = "0.5.2"
 
 # TODO: hide this
 GITHUB_TOKEN = "3868839158c75239f3ed89a4aedfe620e72156b4"
