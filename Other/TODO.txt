@@ -31,7 +31,7 @@ finish pi zero pcb
 DONE: kicad add dh_logo_silk.pretty to common folder (for my silkscreen footprint)
 DONE: kicad add default sheet to common folder (for default sheet)
 DONE: kicad add my logo/osh logo to common folder for new sheets
-"designed with kicad" logo in block? (same as silkscreen)
+DONE: "designed with kicad" logo in block? (same as silkscreen)
 
 DONE: update: pi may reboot after update, do we deal with this?
     if user DOESN'T reboot, settings re-runs itself and shows new version number
