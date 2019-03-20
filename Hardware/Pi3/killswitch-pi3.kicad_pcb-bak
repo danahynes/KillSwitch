@@ -71,7 +71,7 @@
     (solder_mask_min_width 0.25)
     (aux_axis_origin 0 0)
     (grid_origin 160 125)
-    (visible_elements FFFD7FFF)
+    (visible_elements FFFDFFFF)
     (pcbplotparams
       (layerselection 0x00030_80000001)
       (usegerberextensions false)
@@ -2240,8 +2240,8 @@
       (xy -2.549664 -1.91989) (xy -2.469928 -1.911165) (xy -2.400256 -1.919918)) (layer B.SilkS) (width 0.01))
   )
 
-  (module DH_Logo:DH_Logo (layer B.Cu) (tedit 5C684820) (tstamp 5C91401B)
-    (at 152.634 77.502 180)
+  (module dh-logo-silk:dh-logo-silk (layer B.Cu) (tedit 5C684820) (tstamp 5CA58F49)
+    (at 152.38 77.375 180)
     (fp_text reference "" (at -0.254 -4.826 180) (layer B.SilkS) hide
       (effects (font (size 1.524 1.524) (thickness 0.3)) (justify mirror))
     )

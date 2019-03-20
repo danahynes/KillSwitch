@@ -28,9 +28,15 @@ TEST: also default sheet? for logo in block
 DONE: also include open hardware logo in blocks
 DONE: place default text (name, copyright, all rights, WTFPL) in default sheet
 
-update: pi may reboot after update, do we deal with this?
+finish pi zero pcb
+kicad add dh_logo_silk.pretty to common folder (for my silkscreen footprint)
+kicad add default sheet to common folder (for default sheet)
+kicad add my logo/osh logo to common folder for new sheets
+"designed with kicad" logo in block? (same as silkscreen)
+
+DONE: update: pi may reboot after update, do we deal with this?
     if user DOESN'T reboot, settings re-runs itself and shows new version number
-    DONE: escaping from new version goes back to old? should we just bail? FORK!!!
+    escaping from new version goes back to old? should we just bail? FORK!!!
 update: show installer output in tailbox? (still need sudo password in terminal)
 DONE: update: retropie shortcut needs sudo to make symlink b/c /usr/local/bin is
     owned by root (wrong owner on ports folder)

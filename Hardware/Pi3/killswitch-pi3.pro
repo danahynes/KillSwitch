@@ -1,4 +1,4 @@
-update=Tue 12 Mar 2019 08:20:27 AM EDT
+update=Wed 20 Mar 2019 11:38:46 AM EDT
 version=1
 last_client=kicad
 [cvpcb]
@@ -11,7 +11,7 @@ version=1
 LibDir=
 [schematic_editor]
 version=1
-PageLayoutDescrFile=Default_Sheet.kicad_wks
+PageLayoutDescrFile=default-sheet.kicad_wks
 PlotDirectoryName=
 SubpartIdSeparator=0
 SubpartFirstId=65
@@ -21,7 +21,7 @@ LabSize=50
 ERC_TestSimilarLabels=1
 [pcbnew]
 version=1
-PageLayoutDescrFile=Default_Sheet.kicad_wks
+PageLayoutDescrFile=default-sheet.kicad_wks
 LastNetListRead=
 PadDrill=0
 PadDrillOvalY=0

@@ -1,17 +1,17 @@
 EESchema Schematic File Version 4
-LIBS:killswitch_84-cache
+LIBS:killswitch-pi3-cache
 EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "KillSwitch on ATTiny84"
-Date "2019-03-11"
-Rev "0.4.2"
+Date "2019-03-19"
+Rev "0.5.0"
 Comp "Dana Hynes"
 Comment1 "Copyright (c) 2019"
 Comment2 "All rights reserved"
-Comment3 ""
+Comment3 "Licensed under the WTFPL v2"
 Comment4 ""
 $EndDescr
 $Comp
