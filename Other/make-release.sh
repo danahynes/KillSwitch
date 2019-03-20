@@ -10,7 +10,7 @@
 # by Sam Hocevar. See the LICENSE file for more details.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER="0.5.0"
+VERSION_NUMBER="0.5.1"
 
 # change install-latest
 cd ..
