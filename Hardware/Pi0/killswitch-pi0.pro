@@ -1,14 +1,17 @@
-update=Thu 21 Mar 2019 02:41:20 PM EDT
+update=Thu 21 Mar 2019 02:28:24 PM EDT
 version=1
 last_client=kicad
+[general]
+version=1
+RootSch=
+BoardNm=
 [cvpcb]
 version=1
 NetIExt=net
-[general]
-version=1
 [eeschema]
 version=1
 LibDir=
+[eeschema/libraries]
 [schematic_editor]
 version=1
 PageLayoutDescrFile=../Common/default-sheet.kicad_wks
@@ -23,17 +26,17 @@ ERC_TestSimilarLabels=1
 version=1
 PageLayoutDescrFile=../Common/default-sheet.kicad_wks
 LastNetListRead=
-PadDrill=0
-PadDrillOvalY=0
-PadSizeH=1.55
-PadSizeV=1.3
+PadDrill=0.762
+PadDrillOvalY=0.762
+PadSizeH=1.524
+PadSizeV=1.524
 PcbTextSizeV=1.5
 PcbTextSizeH=1.5
 PcbTextThickness=0.3
 ModuleTextSizeV=1
 ModuleTextSizeH=1
 ModuleTextSizeThickness=0.15
-SolderMaskClearance=0.2
+SolderMaskClearance=0.051
 SolderMaskMinWidth=0.25
 DrawSegmentWidth=0.2
 BoardOutlineThickness=0.15

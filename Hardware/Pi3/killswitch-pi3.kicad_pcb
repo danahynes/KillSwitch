@@ -11,13 +11,9 @@
 
   (page A4)
   (title_block
-    (title "KillSwitch on ATTiny84")
+    (title "KillSwitch for Pi 3")
     (date 2019-03-20)
     (rev 0.5.2)
-    (company "Dana Hynes")
-    (comment 1 "Copyright (c) 2019 ")
-    (comment 2 "All rights reserved")
-    (comment 3 "Licensed under the WTFPL v2")
   )
 
   (layers
@@ -71,7 +67,7 @@
     (solder_mask_min_width 0.25)
     (aux_axis_origin 0 0)
     (grid_origin 160 125)
-    (visible_elements FFFD7FFF)
+    (visible_elements FFFDFFFF)
     (pcbplotparams
       (layerselection 0x00030_80000001)
       (usegerberextensions false)

@@ -41,6 +41,19 @@ REP=$(echo "${REP}" | sed 's/(rev [0-9]*\+.[0-9]*\+.[0-9]*)/(rev '${VERSION_NUMB
 REP=$(echo "${REP}" | sed 's/(gr_text "KillSwitch\\nv[0-9]*\+.[0-9]*\+.[0-9]*"/(gr_text "KillSwitch\\nv'${VERSION_NUMBER}'"/')
 echo "${REP}" > "${FILE}"
 
+cd ../Pi0/
+
+FILE="killswitch-pi0.sch"
+REP=$(cat "${FILE}" | sed 's/Date "[0-9]*\+-[0-9]*\+-[0-9]*"/Date "'${DATE}'"/')
+REP=$(echo "${REP}" | sed 's/Rev "[0-9]*\+.[0-9]*\+.[0-9]*"/Rev "'${VERSION_NUMBER}'"/')
+echo "${REP}" > "${FILE}"
+
+FILE="killswitch-pi0.kicad_pcb"
+REP=$(cat "${FILE}" | sed 's/(date [0-9]*\+-[0-9]*\+-[0-9]*)/(date '${DATE}')/')
+REP=$(echo "${REP}" | sed 's/(rev [0-9]*\+.[0-9]*\+.[0-9]*)/(rev '${VERSION_NUMBER}')/')
+REP=$(echo "${REP}" | sed 's/(gr_text "KillSwitch\\nv[0-9]*\+.[0-9]*\+.[0-9]*"/(gr_text "KillSwitch\\nv'${VERSION_NUMBER}'"/')
+echo "${REP}" > "${FILE}"
+
 # change software
 cd ../../Software/
 cd Bash/
