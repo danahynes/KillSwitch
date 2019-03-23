@@ -13,8 +13,11 @@
 #-------------------------------------------------------------------------------
 # Imports
 
+import fnmatch
 import os
 import re
+import shutil
+import subprocess
 import time
 
 #-------------------------------------------------------------------------------
@@ -167,5 +170,19 @@ FILE_TEXT = re.sub(REGEX, "VERSION_NUMBER = \"" + VERSION_NUMBER + "\"",
     FILE_TEXT)
 with open(FILE, "w") as file:
     file.write(FILE_TEXT)
+
+# build firmware
+os.chdir("../../Firmware")
+subprocess.call(["pio", "run"])
+
+# remove old hex file
+for file in os.listdir("."):
+    if fnmatch.fnmatch(file, "killswitch-firmware_*"):
+        os.remove(file)
+
+# bring up new hex file
+os.chdir(".pioenvs/uno")
+shutil.copyfile("firmware.hex", "../../killswitch-firmware_" + VERSION_NUMBER +
+    ".hex")
 
 # -)
