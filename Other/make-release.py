@@ -23,7 +23,7 @@ import time
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.5.2-b1"
+VERSION_NUMBER = "0.5.3-b1"
 
 # change install-latest
 os.chdir("..")
@@ -66,12 +66,12 @@ with open(FILE, "w") as file:
 FILE = "killswitch-pi3.kicad_pcb"
 REGEX_DATE = re.compile("date \".*\"")
 REGEX_VERSION = re.compile("rev \".*\"")
-REGEX_TEXT = re.compile("gr_text \"KillSwitch\\nv.*\"")
+REGEX_TEXT = re.compile("gr_text \"KillSwitch.*\"")
 with open(FILE, "r") as file:
     FILE_TEXT = file.read()
 FILE_TEXT = re.sub(REGEX_DATE, "date \"" + DATE + "\"", FILE_TEXT)
 FILE_TEXT = re.sub(REGEX_VERSION, "rev \"" + VERSION_NUMBER + "\"", FILE_TEXT)
-FILE_TEXT = re.sub(REGEX_TEXT, "gr_text \"KillSwitch\\nv" + VERSION_NUMBER +
+FILE_TEXT = re.sub(REGEX_TEXT, "gr_text \"KillSwitch\\\\nv" + VERSION_NUMBER +
     "\"", FILE_TEXT)
 with open(FILE, "w") as file:
     file.write(FILE_TEXT)
@@ -91,12 +91,12 @@ with open(FILE, "w") as file:
 FILE = "killswitch-pi0.kicad_pcb"
 REGEX_DATE = re.compile("date \".*\"")
 REGEX_VERSION = re.compile("rev \".*\"")
-REGEX_TEXT = re.compile("gr_text \"KillSwitch\\nv.*\"")
+REGEX_TEXT = re.compile("gr_text \"KillSwitch.*\"")
 with open(FILE, "r") as file:
     FILE_TEXT = file.read()
 FILE_TEXT = re.sub(REGEX_DATE, "date \"" + DATE + "\"", FILE_TEXT)
 FILE_TEXT = re.sub(REGEX_VERSION, "rev \"" + VERSION_NUMBER + "\"", FILE_TEXT)
-FILE_TEXT = re.sub(REGEX_TEXT, "gr_text \"KillSwitch\\nv" + VERSION_NUMBER +
+FILE_TEXT = re.sub(REGEX_TEXT, "gr_text \"KillSwitch\\\\nv" + VERSION_NUMBER +
     "\"", FILE_TEXT)
 with open(FILE, "w") as file:
     file.write(FILE_TEXT)

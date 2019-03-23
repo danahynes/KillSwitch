@@ -10,7 +10,7 @@
 # by Sam Hocevar. See the LICENSE file for more details.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER = "0.5.2-b1"
+VERSION_NUMBER = "0.5.3-b1"
 
 DEBUG = 1
 
