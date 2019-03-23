@@ -13,6 +13,7 @@
 #-------------------------------------------------------------------------------
 # Imports
 
+import fnmatch
 import locale
 import os
 import requests
@@ -65,9 +66,10 @@ ZIP_NAME = os.path.basename(UPDATE_URL)
 SHORT_NAME = "KillSwitch-" + ZIP_NAME
 ZIP_FILE_NAME = SHORT_NAME + ".zip"
 
-# TODO: this doesn't work, only looks for current version, not old
-# versions. Need to use KillSwitch-*.zip but that's hard...
-shutil.rmtree(SHORT_NAME, ignore_errors = True)
+# remove old dir if necessary
+for file in os.listdir("."):
+    if fnmatch.fnmatch(file, "KillSwitch-*"):
+        shutil.rmtree(file, ignore_errors = True)
 
 # get actual source
 headers = {
