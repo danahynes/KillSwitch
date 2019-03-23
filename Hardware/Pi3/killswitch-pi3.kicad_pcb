@@ -12,8 +12,8 @@
   (page A4)
   (title_block
     (title "KillSwitch for Pi 3")
-    (date 2019-03-20)
-    (rev 0.5.2)
+    (date "2019-03-22")
+    (rev "0.5.2-b1")K
   )
 
   (layers

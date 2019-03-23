@@ -28,7 +28,7 @@
 //-----------------------------------------------------------------------------
 // Constants
 
-const char VERSION_NUMBER[] PROGMEM = "0.5.2";
+const char VERSION_NUMBER[] PROGMEM = "0.5.2-b1";
 
 const int STATE_OFF = 0;
 const int STATE_BOOTING = 1;
@@ -444,7 +444,6 @@ void doCounterDone(DHPulseCounter* counter) {
 	the pin changes. (This  actually makes it an edge detector, but that's
 	really just semantics... and also this class includes the counter part,
 	which an edge detector would not)
-
 	For pulses, the parameter to doShutdown/doReboot determines whether we
 	toggle the trigger pin, by testing for state.
 	If the state is ON, then we weren't expecting this event and thus got here
@@ -456,7 +455,6 @@ void doCounterDone(DHPulseCounter* counter) {
 	Ir is shutdown only. Button is shutdown, and reboot if set to reboot and not
 	force shutdown, otherwise it kills the power using the arduino's output and
 	there is no need for scripting (see the killswitch-settings script).
-
 	If it's a solid change (i.e. no pulses for longer than the default of 1
 	second), the pi has changed state. So we set the new state based on the old
 	state and the new feedback reading. We also invert the line level we are
