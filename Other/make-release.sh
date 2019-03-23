@@ -112,3 +112,5 @@ cd .pioenvs/uno/
 
 # copy the file and add the numbers
 cp firmware.hex "../../killswitch-firmware_${VERSION_NUMBER}.hex"
+
+# -)
