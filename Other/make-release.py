@@ -14,16 +14,21 @@
 # Imports
 
 import fnmatch
+import locale
 import os
 import re
 import shutil
 import subprocess
+import sys
 import time
 
 #-------------------------------------------------------------------------------
 # Constants
 
 VERSION_NUMBER = "0.5.3-b1"
+
+# set locale
+locale.setlocale(locale.LC_ALL, '')
 
 # change install-latest
 os.chdir("..")
@@ -184,5 +189,8 @@ for file in os.listdir("."):
 os.chdir(".pioenvs/uno")
 shutil.copyfile("firmware.hex", "../../killswitch-firmware_" + VERSION_NUMBER +
     ".hex")
+
+# cleanup
+sys.exit(0)
 
 # -)

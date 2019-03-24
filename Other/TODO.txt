@@ -38,18 +38,8 @@ DONE: update: pi may reboot after update, do we deal with this?
     escaping from new version goes back to old? should we just bail? FORK!!!
 DONE: update: retropie shortcut needs sudo to make symlink b/c /usr/local/bin is
     owned by root (wrong owner on ports folder)
-update: show installer output in tailbox? (still need sudo password in terminal)
-
-install/uninstall should check each command to see if it failed
-if anything fails, bail
-
-run file after reboot -
-    in cmdline.txt, add init=/usr/local/bin/killswitch-run-once.py
-    on run, remove that part from cmdline.txt
-    show dialog that says "KillSwitch installed successfully"
-    do you want to run settings now? YES/NO
-    you can run settings by opening a terminal and typing "killswitch-settings.py"
-    or use retropie port "Settings"
+NO: update: show installer output in tailbox? (still need sudo password in terminal)
+    should really leave this as a terminal thing - works better
 
 documentation on how the button/programming/led works
 documentation on how to use settings
@@ -57,6 +47,17 @@ man pages for all pi software scripts
 DONE: section headers (##) in main readme
 documentation in main readme for device, description and usage
 DONE: documentation in main readme for OSH license
+
+install/uninstall/install-latest should check each command to see if it failed
+if anything fails, bail
+
+run file after reboot -
+    in cmdline.txt, add init=/usr/local/bin/killswitch-run-once.py
+    on run, remove that part from cmdline.txt
+    show dialog that says "KillSwitch installed successfully"
+    "do you want to run settings now? YES/NO"
+    "you can run settings by opening a terminal and typing "killswitch-settings.py""
+    "or use retropie port "KillSwitch""
 
 get arduino libs into firmware lib folder and remove symlinks
 when building, check github for latest version of each lib

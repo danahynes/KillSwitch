@@ -698,7 +698,7 @@ void loop() {
 	// get current values of type and pulse from properties
 	int statusType = EEPROM.read(EEPROM_ADDR_TYPE);
 	bool statusOff = (statusType == STATUS_TYPE_OFF);
-	bool statusInvert = (statusType == STATUS_TYPE_INVERT);
+	//bool statusInvert = (statusType == STATUS_TYPE_INVERT);
 	bool statusPulse = EEPROM.read(EEPROM_ADDR_PULSE);
 
 	// normal
@@ -732,13 +732,13 @@ void loop() {
 			if (statusOff) {
 				ledStatus.off();
 			} else {
-				if (statusInvert) {
-					byte br = EEPROM.read(EEPROM_ADDR_OFF_BRIGHTNESS);
-					ledStatus.setLevel(br);
-				} else {
+				// if (statusInvert) {
+				// 	byte br = EEPROM.read(EEPROM_ADDR_OFF_BRIGHTNESS);
+				// 	ledStatus.setLevel(br);
+				// } else {
 					byte br = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
 					ledStatus.setLevel(br);
-				}
+				// }
 				ledStatus.on();
 			}
 
@@ -747,13 +747,13 @@ void loop() {
 			if (statusOff) {
 				ledStatus.off();
 			} else {
-				if (statusInvert) {
-					byte br = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
-					ledStatus.setLevel(br);
-				} else {
+				// if (statusInvert) {
+				// 	byte br = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
+				// 	ledStatus.setLevel(br);
+				// } else {
 					byte br = EEPROM.read(EEPROM_ADDR_OFF_BRIGHTNESS);
 					ledStatus.setLevel(br);
-				}
+				// }
 				ledStatus.on();
 			}
 		}

@@ -25,8 +25,12 @@ try :
     onPi = True
 except ImportError:
     onPi = False
+import locale
 import sys
 import time
+
+# set locale
+locale.setlocale(locale.LC_ALL, '')
 
 #-------------------------------------------------------------------------------
 # constants
@@ -74,5 +78,8 @@ elif (sys.argv[1] == "reboot"):
         feedback.on()
         time.sleep(0.02)
         feedback.off()
+
+# cleanup
+sys.exit(0)
 
 # -)

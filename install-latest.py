@@ -107,4 +107,7 @@ os.chdir("../../../")
 shutil.rmtree(SHORT_NAME)
 os.remove("install-latest.py")
 
+# cleanup
+sys.exit(0)
+
 # -)

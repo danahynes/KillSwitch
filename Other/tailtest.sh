@@ -13,13 +13,12 @@ BTN=$?
 
 if [ $BTN -eq 0 ]; then
     echo "OK"
-    RESULT=$(dialog \
+    RESULT=$(sudo ../Software/Bash/killswitch-install.sh | dialog \
     --backtitle "test" \
     --title "title" \
-    --prgbox \
+    --progressbox \
     "this is some text" \
-    "echo foo" \
-    40 \
-    40 \
+    30 \
+    60 \
     3>&1 1>&2 2>&3 3>&-)
 fi

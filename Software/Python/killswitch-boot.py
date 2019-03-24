@@ -25,8 +25,13 @@ try :
     onPi = True
 except ImportError:
     onPi = False
+import locale
 import signal
 import subprocess
+import sys
+
+# set locale
+locale.setlocale(locale.LC_ALL, '')
 
 #-------------------------------------------------------------------------------
 # constants
@@ -113,5 +118,8 @@ if (onPi):
 #-------------------------------------------------------------------------------
 
 signal.pause()
+
+# cleanup
+sys.exit(0)
 
 # -)

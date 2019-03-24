@@ -36,7 +36,7 @@ DEBUG = os.uname()[4].startswith("arm")
 if DEBUG == False:
 
     # laptop (test) serial port
-    SERIAL_PORT = "/dev/pts/4"
+    SERIAL_PORT = "/dev/pts/5"
 else:
 
     # pi serial port
@@ -127,7 +127,7 @@ LED_MENU_ITEMS = [
     "LED off brightness"
 ]
 LED_MENU_HELP = [
-    "Set the LED type to normal, inverted, or off",
+    "Set the LED type to on or off",
     "Set the LED style to flash or pulse",
     "Set the brightness when the LED is on",
     "Set the brightness when the LED is off"
@@ -137,20 +137,17 @@ LEDT_TITLE = "LED type"
 LEDT_TEXT = "Set the LED type:"
 LEDT_HEIGHT = 10
 LEDT_WIDTH = 40
-LEDT_ITEM_HEIGHT = 3
+LEDT_ITEM_HEIGHT = 2
 LEDT_TAGS = [
     "1",
-    "2",
-    "3"
+    "2"
 ]
 LEDT_ITEMS = [
-    "Normal",
-    "Inverted",
+    "On",
     "Off"
 ]
 LEDT_HELP = [
-    "The LED is on when the Pi is on, and off when the Pi is off",
-    "The LED is off when the Pi is on, and on when the Pi is off",
+    "LED at \"On\" brightness when Pi is on, and \"Off\" brightness when Pi is off",
     "The LED is always off, except when programming"
 ]
 LEDT_SETTING = "LTP"
@@ -275,7 +272,6 @@ MENU_SEL = ""
 LED_MENU_SEL = ""
 LEDT_STATES = [
     STATE_ON,
-    STATE_OFF,
     STATE_OFF
 ]
 LEDS_STATES = [
@@ -434,8 +430,7 @@ def doLEDType():
         list_height = LEDT_ITEM_HEIGHT,
         choices = [
             (LEDT_TAGS[0], LEDT_ITEMS[0], LEDT_STATES[0], LEDT_HELP[0]),
-            (LEDT_TAGS[1], LEDT_ITEMS[1], LEDT_STATES[1], LEDT_HELP[1]),
-            (LEDT_TAGS[2], LEDT_ITEMS[2], LEDT_STATES[2], LEDT_HELP[2])
+            (LEDT_TAGS[1], LEDT_ITEMS[1], LEDT_STATES[1], LEDT_HELP[1])
         ]
     )
 
