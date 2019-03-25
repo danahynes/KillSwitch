@@ -13,15 +13,8 @@
 #-------------------------------------------------------------------------------
 # constants
 
-VERSION_NUMBER="0.5.3-b1"
+VERSION_NUMBER="0.5.3-b2"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
-
-#-------------------------------------------------------------------------------
-# something went wrong, report error and bail
-# function doError() {
-#     echo "Error"
-#     exit 1
-# }
 
 #-------------------------------------------------------------------------------
 # start
@@ -46,11 +39,50 @@ echo ""
 #-------------------------------------------------------------------------------
 # dependencies
 
+DEPS=(\
+    avrdude \
+    python3 \
+    python3-dialog \
+    python3-gpiozero \
+    python3-requests \
+    python3-serial \
+)
+
+echo "Checking dependencies..."
+echo ""
+
+for i in ${DEPS[@]}; do
+    echo -n "Searching for ${i}... "
+    RES=$(apt-cache search "^${i}$")
+    if [ "$RES" != "" ]; then
+        echo "Found"
+    else
+        echo "Not found"
+        echo "Aborting install"
+        exit 1
+    fi
+done
+
+echo ""
+
 echo "Installing dependencies..."
 echo ""
 
-apt-get install python3 python3-dialog python3-gpiozero python3-serial avrdude \
-python3-requests
+INSTALL_STR=""
+for i in ${DEPS[@]}; do
+    INSTALL_STR="${INSTALL_STR} ${i}"
+done
+
+# TODO: what are the implications of trying to install all found deps at once?
+# what if one or more fail to install?
+
+apt-get install $INSTALL_STR
+if [ "$?" != "0" ]; then
+    echo "Error installing dependencies"
+    echo "Aborting install"
+    exit 1
+fi
+
 echo ""
 
 #-------------------------------------------------------------------------------
@@ -74,11 +106,17 @@ echo -n "Turning off login console... "
 CMD_FILE_OLD="/boot/cmdline.txt"
 CMD_FILE_NEW="/boot/cmdline_tmp.txt"
 
+# TODO: get result & test
 # move everything except login console to new file
 cat < "${CMD_FILE_OLD}" | sed 's/ console=.*,[0-9]*//' > "${CMD_FILE_NEW}"
 
 # move new file to old file
 mv "${CMD_FILE_NEW}" "${CMD_FILE_OLD}"
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 
 echo "Done"
 
@@ -91,6 +129,7 @@ echo -n "Turning on serial hardware... "
 CFG_FILE_OLD="/boot/config.txt"
 CFG_FILE_NEW="/boot/config_tmp.txt"
 
+# TODO: get result & test
 # move everything except old enable_uart (if present) to new file
 grep -v "enable_uart=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
 
@@ -99,6 +138,11 @@ echo "enable_uart=1" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
 mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 
 echo "Done"
 echo ""
@@ -170,25 +214,65 @@ echo ""
 # copy boot service script
 echo -n "Copying killswitch-boot.service to /lib/systemd/system/... "
 cp ../Services/killswitch-boot.service /lib/systemd/system/
-systemctl enable killswitch-boot.service
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
+systemctl enable killswitch-boot.service > /dev/null 2>&1
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 echo "Done"
 
 # copy boot script
 echo -n "Copying killswitch-boot.py to /usr/local/bin/... "
 cp ../Python/killswitch-boot.py /usr/local/bin/
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 chmod +x /usr/local/bin/killswitch-boot.py
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 echo "Done"
 
 # copy shutodwn service script
 echo -n "Copying killswitch-shutdown.service to /lib/systemd/system/... "
 cp ../Services/killswitch-shutdown.service /lib/systemd/system/
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 systemctl enable killswitch-shutdown.service
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 echo "Done"
 
 # copy shutdown script
 echo -n "Copying killswitch-shutdown.py to /usr/local/bin/... "
 cp ../Python/killswitch-shutdown.py /usr/local/bin/
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 chmod +x /usr/local/bin/killswitch-shutdown.py
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 echo "Done"
 
 # copy settings gui script
@@ -200,13 +284,33 @@ echo "Done"
 # copy settings gui script
 echo -n "Copying kilswitch-settings.py to /usr/local/bin/... "
 cp ../Python/killswitch-settings.py /usr/local/bin/
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 chmod +x /usr/local/bin/killswitch-settings.py
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 echo "Done"
 
 # copy uninstaller script
 echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
 cp killswitch-uninstall.sh /usr/local/bin
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 chmod +x /usr/local/bin/killswitch-uninstall.sh
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 echo "Done"
 
 echo ""
@@ -218,7 +322,17 @@ echo -n "Creating settings directory... "
 
 if [ ! -d "${SETTINGS_DIR}" ]; then
     mkdir -p "${SETTINGS_DIR}"
+    if [ "$?" != "0" ]; then
+        echo "Failed"
+        echo "Aborting install"
+        exit 1
+    fi
     chown "${SUDO_USER}" "${SETTINGS_DIR}"
+    if [ "$?" != "0" ]; then
+        echo "Failed"
+        echo "Aborting install"
+        exit 1
+    fi
 fi
 
 echo "Done"
@@ -234,7 +348,17 @@ echo -n "Setting up avrdude... "
 AVRDUDE_CONF="${SETTINGS_DIR}/killswitch-avrdude.conf"
 rm "${AVRDUDE_CONF}" &> /dev/null
 touch "${AVRDUDE_CONF}"
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 chown "${SUDO_USER}" "${AVRDUDE_CONF}"
+if [ "$?" != "0" ]; then
+    echo "Failed"
+    echo "Aborting install"
+    exit 1
+fi
 AVRDUDE_TEXT="programmer\n"
 AVRDUDE_TEXT+="  id    = \"killswitch\";\n"
 AVRDUDE_TEXT+="  desc  = \"Update KillSwitch firmware using GPIO\";\n"
@@ -256,11 +380,31 @@ echo ""
 if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
     echo -n "Creating RetroPie port... "
 	mkdir -p "/home/${SUDO_USER}/RetroPie/roms/ports"
+    if [ "$?" != "0" ]; then
+        echo "Failed"
+        echo "Aborting install"
+        exit 1
+    fi
     chown "${SUDO_USER}":"${SUDO_USER}" "/home/${SUDO_USER}/RetroPie/roms/ports"
+    if [ "$?" != "0" ]; then
+        echo "Failed"
+        echo "Aborting install"
+        exit 1
+    fi
 	ln -s  "/usr/local/bin/killswitch-settings.py" \
 	    "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch" &> /dev/null
+    if [ "$?" != "0" ]; then
+        echo "Failed"
+        echo "Aborting install"
+        exit 1
+    fi
     chown -h "${SUDO_USER}":"${SUDO_USER}" \
         "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch"
+    if [ "$?" != "0" ]; then
+        echo "Failed"
+        echo "Aborting install"
+        exit 1
+    fi
 	echo "Done"
     echo ""
 fi

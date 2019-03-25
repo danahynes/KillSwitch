@@ -19,12 +19,13 @@ import os
 import requests
 import shutil
 import subprocess
+import sys
 import zipfile
 
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.5.3-b1"
+VERSION_NUMBER = "0.5.3-b2"
 
 # TODO: hide this
 GITHUB_TOKEN = "3868839158c75239f3ed89a4aedfe620e72156b4"
@@ -39,6 +40,13 @@ HOME_DIR = os.path.expanduser("~")
 locale.setlocale(locale.LC_ALL, '')
 
 #-------------------------------------------------------------------------------
+# Functions
+
+def doError(error):
+    print("Installation failed: " + error)
+    sys.exit(1)
+
+#-------------------------------------------------------------------------------
 # Main code
 
 # get latest JSON
@@ -51,25 +59,32 @@ try:
     response = requests.get(GITHUB_URL, headers = headers)
     JSON = response.json()
 except:
-    #doDownloadError()
-    #return
-    pass
+    doError(sys.exc_info()[0])
 
 # get path to actual source
 UPDATE_URL = JSON["zipball_url"]
 
 # change to download location
-os.chdir(HOME_DIR)
+try:
+    os.chdir(HOME_DIR)
+except:
+    doError(sys.exc_info()[0])
 
 # fudge some names
-ZIP_NAME = os.path.basename(UPDATE_URL)
-SHORT_NAME = "KillSwitch-" + ZIP_NAME
-ZIP_FILE_NAME = SHORT_NAME + ".zip"
+try:
+    ZIP_NAME = os.path.basename(UPDATE_URL)
+    SHORT_NAME = "KillSwitch-" + ZIP_NAME
+    ZIP_FILE_NAME = SHORT_NAME + ".zip"
+except:
+    doError(sys.exc_info()[0])
 
 # remove old dir if necessary
-for file in os.listdir("."):
-    if fnmatch.fnmatch(file, "KillSwitch-*"):
-        shutil.rmtree(file, ignore_errors = True)
+try:
+    for file in os.listdir("."):
+        if fnmatch.fnmatch(file, "KillSwitch-*"):
+            shutil.rmtree(file, ignore_errors = True)
+except:
+    doError(sys.exc_info()[0])
 
 # get actual source
 headers = {
@@ -82,32 +97,40 @@ try:
     with open(ZIP_FILE_NAME, "wb") as file:
         file.write(response.content)
 except:
-    #doDownloadError()
-    #return
-    pass
+    doError(sys.exc_info()[0])
 
 # unzip
-ZIP_FILE = zipfile.ZipFile(ZIP_FILE_NAME)
-LONG_NAME = ZIP_FILE.namelist()[0]
-ZIP_FILE.extractall()
-os.rename(LONG_NAME, SHORT_NAME)
-os.remove(ZIP_FILE_NAME)
-os.chdir(SHORT_NAME)
+try:
+    ZIP_FILE = zipfile.ZipFile(ZIP_FILE_NAME)
+    LONG_NAME = ZIP_FILE.namelist()[0]
+    ZIP_FILE.extractall()
+    os.rename(LONG_NAME, SHORT_NAME)
+    os.remove(ZIP_FILE_NAME)
+    os.chdir(SHORT_NAME)
+except
+    doError(sys.exc_info()[0])
 
 # run installer
-os.chdir("Software/Bash")
-os.chmod("killswitch-install.sh", 0o0755)
-subprocess.call([
-    "sudo",
-    "./killswitch-install.sh"
-])
-
-# remove unzipped folder and one-liner
-os.chdir("../../../")
-shutil.rmtree(SHORT_NAME)
-os.remove("install-latest.py")
+try:
+    os.chdir("Software/Bash")
+    os.chmod("killswitch-install.sh", 0o0755)
+    subprocess.call([
+        "sudo",
+        "./killswitch-install.sh"
+    ])
+except:
+    doError(sys.exc_info()[0])
 
 # cleanup
+# remove unzipped folder and one-liner
+try:
+    os.chdir("../../../")
+    shutil.rmtree(SHORT_NAME)
+    os.remove("install-latest.py")
+except:
+    doError(sys.exc_info()[0])
+
+# exit cleanly
 sys.exit(0)
 
 # -)

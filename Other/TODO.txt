@@ -41,15 +41,19 @@ DONE: update: retropie shortcut needs sudo to make symlink b/c /usr/local/bin is
 NO: update: show installer output in tailbox? (still need sudo password in terminal)
     should really leave this as a terminal thing - works better
 
-documentation on how the button/programming/led works
-documentation on how to use settings
+DONE: documentation on how the button/programming/led works
+DONE: documentation on how to use settings
 man pages for all pi software scripts
 DONE: section headers (##) in main readme
-documentation in main readme for device, description and usage
+DONE: documentation in main readme for device, description and usage
 DONE: documentation in main readme for OSH license
 
-install/uninstall/install-latest should check each command to see if it failed
-if anything fails, bail
+error checking:
+    DONE: killswitch-install.sh
+    DONE: killswitch-uninstall.sh
+    DONE: install-latest.py
+
+strip IRRemote to remove all decoding stuff - only need raw codes
 
 run file after reboot -
     in cmdline.txt, add init=/usr/local/bin/killswitch-run-once.py
@@ -70,6 +74,10 @@ fix relative paths? installer, uninstaller, ???
 
 use pulses for trigger in killswitch-boot.py? (instead of timing length of
     pulse)
+    first high - set everything up
+    first low - start timer
+    next high -
+    next low - add to number of pulses, look at time elapsed
 
 make work with toggle (but let ppl know they can't futz with the switch during
     bootup/shutdown)
