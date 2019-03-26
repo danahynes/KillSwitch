@@ -57,11 +57,11 @@ DONE: error checking:
     DONE: killswitch-uninstall.sh
     DONE: install-latest.py
 
-test on retropie - what is A/B? A is enter.. B is ??? escape? 
-
 Firmware needs LED at 100% during programming, reset to On level afterwards
 
 strip IRRemote to remove all decoding stuff - only need raw codes
+
+test on retropie - what is A/B? A is enter.. B is ??? escape?
 
 run file after reboot -
     in cmdline.txt, add init=/usr/local/bin/killswitch-run-once.py
