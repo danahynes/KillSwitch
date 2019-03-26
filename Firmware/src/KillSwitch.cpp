@@ -693,6 +693,9 @@ void loop() {
 //-----------------------------------------------------------------------------
 // status
 
+// TODO: programming should always use LED at 100% brightness
+// in case user sets on level to 0
+
 	ledStatus.update();
 
 	// get current values of type and pulse from properties

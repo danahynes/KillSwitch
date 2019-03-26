@@ -47,11 +47,19 @@ man pages for all pi software scripts
 DONE: section headers (##) in main readme
 DONE: documentation in main readme for device, description and usage
 DONE: documentation in main readme for OSH license
+DONE: documentation on button during programming:
+    DONE: long press exits all
+    DONE: short while recording on: skip, keep on code
+    DONE: short while recording off: skip, off is same as on
 
-error checking:
+DONE: error checking:
     DONE: killswitch-install.sh
     DONE: killswitch-uninstall.sh
     DONE: install-latest.py
+
+test on retropie - what is A/B? A is enter.. B is ??? escape? 
+
+Firmware needs LED at 100% during programming, reset to On level afterwards
 
 strip IRRemote to remove all decoding stuff - only need raw codes
 
