@@ -95,14 +95,14 @@ const int SERIAL_STATE_NONE = 0;
 const int SERIAL_STATE_CMD = 1;
 const int SERIAL_STATE_VALUE = 2;
 
-const char SERIAL_LBN[] PROGMEM = "LBN"; // led on brightness
-const char SERIAL_LBF[] PROGMEM = "LBF"; // led off brightness
 const char SERIAL_LTP[] PROGMEM = "LTP"; // led type
 const char SERIAL_LPL[] PROGMEM = "LPL"; // led pulse
-const char SERIAL_REC[] PROGMEM = "REC";
-const char SERIAL_LPT[] PROGMEM = "LPT";
-const char SERIAL_LPA[] PROGMEM = "LPA";
-const char SERIAL_PWR[] PROGMEM = "PWR";
+const char SERIAL_LBN[] PROGMEM = "LBN"; // led on brightness
+const char SERIAL_LBF[] PROGMEM = "LBF"; // led off brightness
+const char SERIAL_REC[] PROGMEM = "REC"; // start recording
+const char SERIAL_LPT[] PROGMEM = "LPT"; // long press time
+const char SERIAL_LPA[] PROGMEM = "LPA"; // long press action
+const char SERIAL_PWR[] PROGMEM = "PWR"; // reboot after power outage
 
 //-----------------------------------------------------------------------------
 // Variables
@@ -261,8 +261,8 @@ void doReboot(bool changeTrigger = true) {
  ----------------------------------------------------------------------------*/
 void startProgramming() {
 
-	// reset brightness
-	int statusOnBrightness = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
+	// set brightness
+	int statusOnBrightness = 255;//EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
 	ledStatus.setLevel(statusOnBrightness);
 
 	// change prog state
@@ -284,6 +284,10 @@ void stopProgramming() {
 
 	// change prog state
 	progState = PROG_STATE_NONE;
+
+	// reset brightness
+	int statusOnBrightness = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
+	ledStatus.setLevel(statusOnBrightness);
 
 #if DH_DEBUG == 1
 	Serial.println(F("progState changed to PROG_STATE_NONE"));
@@ -411,6 +415,10 @@ void doLEDDoneFlashing(DHLED* led) {
 	// stop counting flashes
 	progFlashStart = false;
 	progChanging = false;
+
+	// reset brightness
+	int statusOnBrightness = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
+	ledStatus.setLevel(statusOnBrightness);
 
 	// switch from on code to off code
 	if (progState == PROG_STATE_CODE_ON) {
@@ -868,7 +876,17 @@ void loop() {
 #endif
 
 			// check which command we got
-			if (strcmp_P(serialCmd, SERIAL_LBN) == 0) {
+			if (strcmp_P(serialCmd, SERIAL_LTP) == 0) {
+				int ltp = atoi(serialValue);
+
+				// will take effect in next update()
+				EEPROM.update(EEPROM_ADDR_TYPE, ltp);
+			} else if (strcmp_P(serialCmd, SERIAL_LPL) == 0) {
+				int lpl = atoi(serialValue);
+
+				// will take effect in next update()
+				EEPROM.update(EEPROM_ADDR_PULSE, lpl);
+			} else if (strcmp_P(serialCmd, SERIAL_LBN) == 0) {
 				int lbn = atoi(serialValue);
 
 				// will take effect in next update()
@@ -878,32 +896,22 @@ void loop() {
 
 				// will take effect in next update()
 				EEPROM.update(EEPROM_ADDR_OFF_BRIGHTNESS, lbf);
-			} else if (strcmp_P(serialCmd, SERIAL_LTP) == 0) {
-				int ltp = atoi(serialValue);
-
-				// will take effect in next update()
-				EEPROM.update(EEPROM_ADDR_TYPE, ltp);
-			} else if (strcmp_P(serialCmd, SERIAL_LPL) == 0) {
-
-				// will take effect in next update()
-				int lpl = atoi(serialValue);
-				EEPROM.update(EEPROM_ADDR_PULSE, lpl);
 			} else if (strcmp_P(serialCmd, SERIAL_REC) == 0) {
 				startProgramming();
 			} else if (strcmp_P(serialCmd, SERIAL_LPT) == 0) {
+				unsigned long lpt = atol(serialValue);
 
 				// will take effect in next uopdate()
-				unsigned long lpt = atol(serialValue);
 				EEPROMWriteLong(EEPROM_ADDR_HOLD_TIME, lpt);
 			} else if (strcmp_P(serialCmd, SERIAL_LPA) == 0) {
-
-				// will take effect in next uopdate()
 				int lpa = atoi(serialValue);
+
+				// will take effect in next update()
 				EEPROM.update(EEPROM_ADDR_HOLD_ACTION, lpa);
 			} else if (strcmp_P(serialCmd, SERIAL_PWR) == 0) {
-
-				// will take effect in next uopdate()
 				int pwr = atoi(serialValue);
+
+				// will take effect in next update()
 				EEPROM.update(EEPROM_ADDR_POWER_AFTER_FAIL, pwr);
 			}
 
