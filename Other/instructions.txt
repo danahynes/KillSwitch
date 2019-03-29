@@ -60,3 +60,6 @@ loopback serial for testing:
 ./home/dana/Documents/Bash/terminaloop/terminaloop
 OR
 socat -d -d pty,raw,echo=0 pty,raw,echo=0
+
+Arduino on laptop will be /dev/ttyAMX
+close cutecom between programming

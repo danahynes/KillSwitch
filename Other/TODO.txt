@@ -57,7 +57,7 @@ DONE: error checking:
     DONE: killswitch-uninstall.sh
     DONE: install-latest.py
 
-TEST: firmware needs LED at 100% during programming, reset to On level afterwards
+DONE: firmware needs LED at 100% during programming, reset to On level afterwards
 
 DONE: strip IRRemote to remove all decoding stuff - only need raw codes
 

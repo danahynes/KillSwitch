@@ -938,7 +938,7 @@ else:
 # map joystick to keyboard if running RetroPie
 if os.path.isdir(JOY_2_KEY_DIR):
 
-    # NB stolen from https://github.com/RetroPie/RetroPie-Setup/blob/master/scriptmodules/helpers.sh
+    # stolen from https://github.com/RetroPie/RetroPie-Setup/blob/master/scriptmodules/helpers.sh
     PID = subprocess.check_output(["pidof", "joy2key.py"])
     if PID == "":
         subprocess.call([
