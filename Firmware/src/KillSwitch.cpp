@@ -28,7 +28,7 @@
 //-----------------------------------------------------------------------------
 // Constants
 
-const char VERSION_NUMBER[] PROGMEM = "0.5.4";
+const char VERSION_NUMBER[] PROGMEM = "0.5.5";
 
 const int STATE_OFF = 0;
 const int STATE_BOOTING = 1;
@@ -610,7 +610,7 @@ void setup() {
 #endif
 
 	// read all LED settings
-	statusType = EEPROM.read(EEPROM_READ_ADDR_TYPE);
+	statusType = EEPROM.read(EEPROM_ADDR_TYPE);
 	statusPulse = EEPROM.read(EEPROM_ADDR_PULSE);
 	onBright = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
 	offBright = EEPROM.read(EEPROM_ADDR_OFF_BRIGHTNESS);
