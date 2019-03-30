@@ -78,13 +78,19 @@ try:
 except:
     doError(sys.exc_info()[0])
 
+# NB: we really shouldn't delete directories if we aren't 100% sure they're
+# ours. this dir would be in the user's home folder, so they could have another
+# folder that starts with "KillSwitch-" and deleting it would be bad. better to
+# let the user worry about deleting when done, or the installer could delete
+# its ../.. owner folder, or overwrite when unzipping, etc.
+
 # remove old dir if necessary
-try:
-    for file in os.listdir("."):
-        if fnmatch.fnmatch(file, "KillSwitch-*"):
-            shutil.rmtree(file, ignore_errors = True)
-except:
-    doError(sys.exc_info()[0])
+# try:
+#     for file in os.listdir("."):
+#         if fnmatch.fnmatch(file, "KillSwitch-*"):
+#             shutil.rmtree(file, ignore_errors = True)
+# except:
+#     doError(sys.exc_info()[0])
 
 # get actual source
 headers = {
