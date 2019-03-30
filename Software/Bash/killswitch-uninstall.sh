@@ -17,6 +17,17 @@ VERSION_NUMBER="0.5.5"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
+# helpers
+
+check_error() {
+    if [ "$?" != "0" ]; then
+        echo "${1}"
+        echo "Aborting uninstall"
+        exit 1
+    fi
+}
+
+#-------------------------------------------------------------------------------
 # start
 
 echo ""
@@ -51,89 +62,48 @@ echo ""
 # remove boot service script
 echo -n "Removing killswitch-boot.service from /lib/systemd/system/... "
 systemctl disable killswitch-boot.service
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting uninstall"
-    exit 1
-fi
+check_error "Failed"
 rm /lib/systemd/system/killswitch-boot.service
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting uninstall"
-    exit 1
-fi
+check_error "Failed"
 echo "Done"
 
 # remove monitor script
 echo -n "Removing killswitch-boot.py from /usr/local/bin/... "
 rm /usr/local/bin/killswitch-boot.py
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting uninstall"
-    exit 1
-fi
+check_error "Failed"
 echo "Done"
 
 # remove shutodwn service script
 echo -n "Removing killswitch-shutdown.service from /lib/systemd/system/... "
 systemctl disable killswitch-shutdown.service
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting uninstall"
-    exit 1
-fi
+check_error "Failed"
 rm /lib/systemd/system/killswitch-shutdown.service
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting uninstall"
-    exit 1
-fi
+check_error "Failed"
 echo "Done"
 
 # remove shutdown script
 echo -n "Removing killswitch-shutdown.py from /usr/local/bin... "
 rm /usr/local/bin/killswitch-shutdown.py
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting uninstall"
-    exit 1
-fi
+check_error "Failed"
 echo "Done"
-
-# remove settings gui script
-#echo -n "Removing kilswitch-settings.sh from /usr/local/bin/... "
-#rm /usr/local/bin/killswitch-settings.sh
-#echo "Done"
 
 # remove settings gui script
 echo -n "Removing kilswitch-settings.py from /usr/local/bin/... "
 rm /usr/local/bin/killswitch-settings.py
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting uninstall"
-    exit 1
-fi
+check_error "Failed"
 echo "Done"
 
 # remove uninstaller script
 echo -n "Removing kilswitch-uninstaller.sh from /usr/local/bin/... "
 rm /usr/local/bin/killswitch-uninstall.sh
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting uninstall"
-    exit 1
-fi
+check_error "Failed"
 echo "Done"
 
 # remove settings storage dir
 if [ -d "$SETTINGS_DIR" ]; then
     echo -n "Removing ${SETTINGS_DIR}... "
     rm -r "${SETTINGS_DIR}"
-    if [ "$?" != "0" ]; then
-        echo "Failed"
-        echo "Aborting uninstall"
-        exit 1
-    fi
+    check_error "Failed"
     echo "Done"
 fi
 
@@ -145,11 +115,7 @@ echo ""
 if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
 	echo -n "Removing RetroPie port... "
 	rm "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch"
-    if [ "$?" != "0" ]; then
-        echo "Failed"
-        echo "Aborting uninstall"
-        exit 1
-    fi
+    check_error "Failed"
 	echo "Done"
     echo ""
 fi
