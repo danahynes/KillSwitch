@@ -736,10 +736,17 @@ def doActualUpdate():
         SHORT_NAME = "KillSwitch-" + ZIP_NAME
         ZIP_FILE_NAME = SHORT_NAME + ".zip"
 
+        # NB: we really shouldn't delete directories if we aren't 100% sure
+        # they're ours. this dir would be in our settings folder, but the user
+        # could have another folder that starts with "KillSwitch-" and deleting
+        # it would be bad. better to let the user worry about deleting when
+        # done, or the installer could delete its ../.. owner folder, or
+        # overwrite when unzipping, etc.
+
         # delete old dir if present
-        for file in os.listdir("."):
-            if fnmatch.fnmatch(file, "KillSwitch-*"):
-                shutil.rmtree(file, ignore_errors = True)
+        # for file in os.listdir("."):
+        #     if fnmatch.fnmatch(file, "KillSwitch-*"):
+        #         shutil.rmtree(file, ignore_errors = True)
 
         # get actual source
         headers = {
@@ -939,6 +946,7 @@ else:
 if os.path.isdir(JOY_2_KEY_DIR):
 
     # stolen from https://github.com/RetroPie/RetroPie-Setup/blob/master/scriptmodules/helpers.sh
+    # this code allows a joypad to navigate the dialogs when running on retropie
     PID = subprocess.check_output(["pidof", "joy2key.py"])
     if PID == "":
         subprocess.call([
