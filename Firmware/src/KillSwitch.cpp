@@ -64,7 +64,6 @@ const int HOLD_TIME_DEFAULT = 5000;
 
 const int STATUS_ON_BRIGHTNESS_DEFAULT = 255;
 
-const int STATUS_TYPE_NORMAL = 0;
 const int STATUS_TYPE_OFF = 1;
 
 const int PROG_TIMEOUT = 15000;
@@ -520,7 +519,7 @@ void doCounterDone(DHPulseCounter* counter) {
 			}
 		}
 		// TODO: need to reset counter here in case we accidentally send a
-		// pulse while testing?
+		// pulse while testing? or reset in general to get next event?
 
 	// no pulses, finish boot/shutdown/reboot
 	} else {
