@@ -61,6 +61,9 @@ DONE: firmware needs LED at 100% during programming, reset to On level afterward
 
 DONE: strip IRRemote to remove all decoding stuff - only need raw codes
 
+DONE: fix relative paths? installer, uninstaller, any bash script
+    DONE: change to dir of script so relative paths work
+
 test on retropie - what is A/B? A is enter.. B is ??? escape?
     update main readme
 
@@ -76,10 +79,6 @@ get arduino libs into firmware lib folder and remove symlinks
 when building, check github for latest version of each lib
     if newer, download to libs folder
     then build
-
-fix relative paths? installer, uninstaller, ???
-    need base dir of script otherwise only works when run from Bash dir
-    no stupid, run it from where I told you!!!
 
 use pulses for trigger in killswitch-boot.py? (instead of timing length of
     pulse)
