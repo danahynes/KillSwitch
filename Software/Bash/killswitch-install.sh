@@ -17,6 +17,17 @@ VERSION_NUMBER="0.5.5"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
+# helpers
+
+check_error() {
+    if [ "$?" != "0" ]; then
+        echo "${1}"
+        echo "Aborting install"
+        exit 1
+    fi
+}
+
+#-------------------------------------------------------------------------------
 # start
 
 echo ""
@@ -77,11 +88,7 @@ done
 # what if one or more fail to install?
 
 apt-get install $INSTALL_STR
-if [ "$?" != "0" ]; then
-    echo "Error installing dependencies"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Error installing dependencies"
 
 echo ""
 
@@ -112,11 +119,7 @@ cat < "${CMD_FILE_OLD}" | sed 's/ console=.*,[0-9]*//' > "${CMD_FILE_NEW}"
 
 # move new file to old file
 mv "${CMD_FILE_NEW}" "${CMD_FILE_OLD}"
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 
 echo "Done"
 
@@ -138,11 +141,7 @@ echo "enable_uart=1" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
 mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 
 echo "Done"
 echo ""
@@ -214,103 +213,49 @@ echo ""
 # copy boot service script
 echo -n "Copying killswitch-boot.service to /lib/systemd/system/... "
 cp ../Services/killswitch-boot.service /lib/systemd/system/
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 systemctl enable killswitch-boot.service > /dev/null 2>&1
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 echo "Done"
 
 # copy boot script
 echo -n "Copying killswitch-boot.py to /usr/local/bin/... "
 cp ../Python/killswitch-boot.py /usr/local/bin/
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 chmod +x /usr/local/bin/killswitch-boot.py
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 echo "Done"
 
 # copy shutodwn service script
 echo -n "Copying killswitch-shutdown.service to /lib/systemd/system/... "
 cp ../Services/killswitch-shutdown.service /lib/systemd/system/
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 systemctl enable killswitch-shutdown.service
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 echo "Done"
 
 # copy shutdown script
 echo -n "Copying killswitch-shutdown.py to /usr/local/bin/... "
 cp ../Python/killswitch-shutdown.py /usr/local/bin/
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 chmod +x /usr/local/bin/killswitch-shutdown.py
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 echo "Done"
-
-# copy settings gui script
-#echo -n "Copying kilswitch-settings.sh to /usr/local/bin/... "
-#cp killswitch-settings.sh /usr/local/bin/
-#chmod +x /usr/local/bin/killswitch-settings.sh
-#echo "Done"
 
 # copy settings gui script
 echo -n "Copying kilswitch-settings.py to /usr/local/bin/... "
 cp ../Python/killswitch-settings.py /usr/local/bin/
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 chmod +x /usr/local/bin/killswitch-settings.py
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 echo "Done"
 
 # copy uninstaller script
 echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
 cp killswitch-uninstall.sh /usr/local/bin
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 chmod +x /usr/local/bin/killswitch-uninstall.sh
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 echo "Done"
 
 echo ""
@@ -322,17 +267,9 @@ echo -n "Creating settings directory... "
 
 if [ ! -d "${SETTINGS_DIR}" ]; then
     mkdir -p "${SETTINGS_DIR}"
-    if [ "$?" != "0" ]; then
-        echo "Failed"
-        echo "Aborting install"
-        exit 1
-    fi
+    check_error "Failed"
     chown "${SUDO_USER}" "${SETTINGS_DIR}"
-    if [ "$?" != "0" ]; then
-        echo "Failed"
-        echo "Aborting install"
-        exit 1
-    fi
+    check_error "Failed"
 fi
 
 echo "Done"
@@ -348,17 +285,9 @@ echo -n "Setting up avrdude... "
 AVRDUDE_CONF="${SETTINGS_DIR}/killswitch-avrdude.conf"
 rm "${AVRDUDE_CONF}" &> /dev/null
 touch "${AVRDUDE_CONF}"
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 chown "${SUDO_USER}" "${AVRDUDE_CONF}"
-if [ "$?" != "0" ]; then
-    echo "Failed"
-    echo "Aborting install"
-    exit 1
-fi
+check_error "Failed"
 AVRDUDE_TEXT="programmer\n"
 AVRDUDE_TEXT+="  id    = \"killswitch\";\n"
 AVRDUDE_TEXT+="  desc  = \"Update KillSwitch firmware using GPIO\";\n"
@@ -380,31 +309,15 @@ echo ""
 if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
     echo -n "Creating RetroPie port... "
 	mkdir -p "/home/${SUDO_USER}/RetroPie/roms/ports"
-    if [ "$?" != "0" ]; then
-        echo "Failed"
-        echo "Aborting install"
-        exit 1
-    fi
+    check_error "Failed"
     chown "${SUDO_USER}":"${SUDO_USER}" "/home/${SUDO_USER}/RetroPie/roms/ports"
-    if [ "$?" != "0" ]; then
-        echo "Failed"
-        echo "Aborting install"
-        exit 1
-    fi
+    check_error "Failed"
 	ln -s  "/usr/local/bin/killswitch-settings.py" \
 	    "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch" &> /dev/null
-    if [ "$?" != "0" ]; then
-        echo "Failed"
-        echo "Aborting install"
-        exit 1
-    fi
+    check_error "Failed"
     chown -h "${SUDO_USER}":"${SUDO_USER}" \
         "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch"
-    if [ "$?" != "0" ]; then
-        echo "Failed"
-        echo "Aborting install"
-        exit 1
-    fi
+    check_error "Failed"
 	echo "Done"
     echo ""
 fi
