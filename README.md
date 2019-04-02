@@ -5,7 +5,8 @@ Source code and binaries for the KillSwitch project
 
 
 ## About
-KillSwitch is a small PCB that attaches to your Raspberry Pi 2/3/0 (40 pin GPIO) and allows you to turn the Pi on or off using a push button or an IR remote. It also has an LED status indicator that is completely programmable. It is compatible with almost any infrared remote control, or IR blaster devices like the [Harmony Hub](https://www.logitech.com/en-us/product/harmony-hub) or [SparkX WiFi IR Blaster](https://www.sparkfun.com/products/15000).
+KillSwitch is a small PCB that attaches to your Raspberry Pi 2/3/0 (40 pin GPIO) and allows you to turn the Pi on or off using a push button or an IR remote. It also has an LED status indicator that is completely programmable. It is compatible with almost any infrared remote control, or IR blaster devices like the [Harmony Hub](https://www.logitech.com/en-us/product/harmony-hub) or
+ [SparkFun WiFi IR Blaster](https://www.sparkfun.com/products/15031).
 
 ## Software installation
 To download and install the KillSwitch software on your Pi, first go to the [latest release](https://github.com/danahynes/KillSwitch/releases/latest). Click the link for the "Source code (zip)" or "Source code (tar.gz)" file. Download and extract the file and follow the instructions below:
@@ -30,9 +31,9 @@ sudo apt-get update && sudo apt-get upgrade && curl -H "Authorization: token 386
 ~~~~
 
 The software requires an OS of Raspbian Jessie or newer, or any other OS that
-uses systemd. If you're not sure, Google is your friend -)
+uses "systemd". If you're not sure, Google is your friend -)
 
-Note that installing the software will turn off your ability to log in to the Pi using a serial console, as the hardware serial port is used to communicate to the device when using the settings script. If you don't know what this means, don't worry. You'll probably never use this feature. This does not affect the software serial port, although on newer devices that port is used for the built-in Bluetooth.
+Note that installing the software will turn off your ability to log in to the Pi using a serial console, as the software serial port is used to communicate to the device when using the settings script. If you don't know what this means, don't worry. You'll probably never use this feature. This does not affect the hardware serial port, although on newer devices that port is used for the built-in Bluetooth.
 
 ## Firmware installation
 To update the software and firmware, or install the firmware for the first time, use the settings menu on the Pi. Open a terminal and type "killswitch-settings.py". Then use the "Update" menu item. This will install/update the firmware on your device and the software on your Pi, if necessary. For this step you should attach the KillSwitch to your Pi, BUT PLUG THE POWER CORD INTO THE PI, NOT THE KILLSWITCH.
@@ -88,7 +89,7 @@ Sets the brightness of the LED, from 0 to 255, when the LED flashes/pulses durin
 Sets the brightness of the LED, from 0 to 255, when the Pi is completely shut down and powered off. The default is 0.
 
 #### Start Recording
-Select this item and read the instructions that follow (or read the above section on Use) to program the device to recognize new infrared remote commands to turn the Pi on and off.
+Select this item and read the instructions that follow (or read the above section on "Use") to program the device to recognize new infrared remote commands to turn the Pi on and off.
 
 #### Long Press Time
 This setting determines how long, in seconds (from 1 to 10), the physical push button on the device must be held down to either start recording new codes, or reboot/force quit the Pi. The default is 5 seconds.
@@ -145,22 +146,22 @@ The connector labeled "J3" has 14 pins. These pins are normally used to connect 
 | 13 | 11 | 9 | 7  | 5 | 3 | 1 | Mounting |
 | 14 | 12 | 10 | 8 | 6 | 4 | 2 | Hole     |
 
-| Pin # | Label  | Connection    |
-|-------|--------|---------------|
-| 1     | +3v3   | no connection |
-| 2     | +5v    | 5 volt +      |
-| 3     | BCM 2  | FEEDBACK      |
-| 4     | +5v    | 5 volt +      |
-| 5     | BCM 3  | TRIGGER       |
-| 6     | GND    | GND           |
-| 7     | BCM 4  | RESET         |
-| 8     | BCM 14 | RX            |
-| 9     | GND    | GND           |
-| 10    | BCM 15 | TX            |
-| 11    | BCM 17 | MOSI          |
-| 12    | BCM 18 | MISO          |
-| 13    | BCM 27 | SCK           |
-| 14    | GND    | GND           |
+| Pin # | Label  | Connection         |
+|-------|--------|--------------------|
+| 1     | +3v3   | no connection      |
+| 2     | +5v    | 5 volt + to the Pi |
+| 3     | BCM 2  | FEEDBACK           |
+| 4     | +5v    | 5 volt + to the Pi |
+| 5     | BCM 3  | TRIGGER            |
+| 6     | GND    | GND                |
+| 7     | BCM 4  | RESET              |
+| 8     | BCM 14 | RX                 |
+| 9     | GND    | GND                |
+| 10    | BCM 15 | TX                 |
+| 11    | BCM 17 | MOSI               |
+| 12    | BCM 18 | MISO               |
+| 13    | BCM 27 | SCK                |
+| 14    | GND    | GND                |
 
 ## Source code
 The source code is arranged as an [Atom](https://ide.atom.io) project (which has been discontinued, sigh...), and the firmware is built using the [PlatformIO](https://platformio.org) plugin.
@@ -173,5 +174,7 @@ KillSwitch makes use of the [IRremote library](https://github.com/z3t0/Arduino-I
 See Firmware/lib/IRremote/README.md for more info.
 
 All other source code for the firmware, hardware, and software is copyright (c) 2019 Dana Hynes, and is licensed under the WTFPL v2. See the LICENSE file or http://www.wtfpl.net/ for more info.
+
+Happy coding!
 
 # -)
