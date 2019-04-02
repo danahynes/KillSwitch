@@ -5,7 +5,7 @@ Source code and binaries for the KillSwitch project
 
 
 ## About
-KillSwitch is a small PCB that attaches to your Raspberry Pi 2/3/0 (40 pin GPIO) and allows you to turn the Pi on or off using a push button or an IR remote. It also has an LED status indicator that is completely programmable. It is compatible with almost any infrared remote control, or IR blaster devices like the [Harmony Hub](https://www.logitech.com/en-us/product/harmony-hub) or
+KillSwitch is a small PCB that attaches to your Raspberry Pi 2/3/0 (40 pin GPIO) and allows you to turn the Pi on or off using a push button or an IR remote. It is compatible with almost any infrared remote control, or IR blaster devices like the [Harmony Hub](https://www.logitech.com/en-us/product/harmony-hub) or
  [SparkFun WiFi IR Blaster](https://www.sparkfun.com/products/15031).
 
 ## Software installation
@@ -33,7 +33,9 @@ sudo apt-get update && sudo apt-get upgrade && curl -H "Authorization: token 386
 The software requires an OS of Raspbian Jessie or newer, or any other OS that
 uses "systemd". If you're not sure, Google is your friend -)
 
-Note that installing the software will turn off your ability to log in to the Pi using a serial console, as the software serial port is used to communicate to the device when using the settings script. If you don't know what this means, don't worry. You'll probably never use this feature. This does not affect the hardware serial port, although on newer devices that port is used for the built-in Bluetooth.
+The Raspberry Pi has two UARTs, one based on hardware, and one based on software. The hardware port is faster and more reliable, since it is hard-coded into the device's firmware. This port is, by default, used for Bluetooth for obvious reasons. The software port is reconfigured by KillSwitch to allow communication between the device and the Pi.
+
+That means that installing the software will turn off your ability to log in to the Pi using a serial console, as the software serial port (physical pins 8 and 10, labeled BCM 14 & BCM 15, and in Linux is known as /dev/ttyAMA0) is used to communicate to the device when using the settings script. If you don't know what this means, don't worry. You'll probably never use this feature. This does not affect the hardware serial port, although on newer devices that port is used for the built-in Bluetooth.
 
 ## Firmware installation
 To update the software and firmware, or install the firmware for the first time, use the settings menu on the Pi. Open a terminal and type "killswitch-settings.py". Then use the "Update" menu item. This will install/update the firmware on your device and the software on your Pi, if necessary. For this step you should attach the KillSwitch to your Pi, BUT PLUG THE POWER CORD INTO THE PI, NOT THE KILLSWITCH.
