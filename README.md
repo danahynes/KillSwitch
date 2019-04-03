@@ -78,40 +78,44 @@ The hold time is configurable using "killswitch-settings.py" and selecting the "
 The KillSwitch device can be configured by opening a terminal and typing "killswitch-settings.py". The following settings are available:
 
 #### LED options
-![LED Menu Image](Pics/led-menu.img)
+![LED Menu Image](Pics/led-menu.png)
 The LED on the KillSwitch is arguably the most configurable part of the device. Here you can set different options for the status LED on the KillSwitch.
 
-###### LED Type
+###### LED type
 * On (default) - the LED is at the "On" brightness when the Pi is on, and at the "Off" brightness when the Pi is off. You can set the "Off" brightness to a low value to have a dim "Standby" indicator, or 0 (the default) for completely off.
 * Off - the LED is always off, unless the device is being programmed.
 
-###### LED Style
+###### LED style
 * Flash (default) - the LED flashes sharply from "On" brightness to completely off during bootup and shutdown.
 * Pulse - the LED uses PWM to fade from completely off to "On" brightness and back to completely off during bootup and shutdown, giving a warm "glow" effect. Not entirely necessary, but it was fun to write the code for this. I even gave it a logarithmic effect so the change in brightness is more appealing to the eye.
 
-###### LED On Brightness
+###### LED on brightness
 Sets the brightness of the LED, from 0 to 255, when the LED flashes/pulses during the bootup/shutdown process or when the Pi is fully booted and running. Note that this setting does not affect the brightness of the LED during programming. The default is 255.
 
-###### LED Off Brightness
+###### LED off brightness
 Sets the brightness of the LED, from 0 to 255, when the Pi is completely shut down and powered off. The default is 0.
 
-#### Start Recording
+#### Start recording
 Select this item and read the instructions that follow (or read the above section on "Use") to program the device to recognize new infrared remote commands to turn the Pi on and off.
 
-#### Long Press Time
+#### Long press time
 This setting determines how long, in seconds (from 1 to 10), the physical push button on the device must be held down to either start recording new codes, or reboot/force quit the Pi. The default is 5 seconds.
 
-#### Long Press Action
+#### Long press action
 Here you can set what happens when the physical push button on the device is held down for the Long Press Time when the Pi is running (see above). Holding the button down when the Pi is off will always enter programming mode.
 * Reboot (default) - sends the "reboot" command the the Pi, which will shut down safely and restart. If the Pi is not responding, holding down the button may have no effect and you will need to remove the power plug from the device, or remove the device from the Pi to shut it off.
 * Force quit - if you prefer to have the device cut the power completely to the Pi when it is not responding (same as pulling out the power plug), set this option. This option is useful if the power plug is not easily accessible, but the physical button is (for instance, an enclosure where the button is custom-mounted in a different location, see the below section about connector "J2").
 
-#### Restart After Power Failure
+#### Restart after power failure
 AKA "My favorite feature"
 
 This option lets you decide if the Pi is rebooted after an unexpected power failure. If this option is selected, and the the Pi was running, and power to the device was lost without a proper shutdown, KillSwitch will automagically boot the Pi once power is restored. If the option is unselected, you will need to use the physical button/remote button to turn the Pi back on after power is restored. This is a very handy feature if the Pi is used as a file/media server.
 
 Note that the whole point of KillSwitch is that it is unsafe/unwise to simply remove power from the Pi without a safe shutdown. Therefore, the device will restore power to the Pi and attempt to boot it, however if the SD card in the Pi was corrupted during the power loss, it may not boot. The device will only restore power to the Pi, after that it's up to the Pi (and the integrity of it's SD card) to decide if it will actually boot up.
+
+#### Install RetroPie shortcut
+This setting can be used if the software was originally installed on a Raspbian/Other OS system, and you have since installed RetroPie. It places a shortcut named "KillSwitch" in the "Ports" system and allows you to access the Settings program using a plugged in/paired controller. It is equivalent to symlinking "/usr/local/bin/killswitch-settings.py" to
+"~/RetroPie/roms/ports/KillSwitch".
 
 #### Update
 This setting will attempt to update the software on your Pi, as well as the firmware in the device itself. It requires an internet connection to check for the latest release of the code on GitHub, then compares the GitHub version number to the version number running on the Pi/KillSwitch. If a newer version is available, you will be asked to confirm the update. The software will attempt to reprogram the device using ICSP, and then run the new installer (which requires a sudo password, so please make sure you have a keyboard attached/paired to the Pi).
@@ -128,7 +132,7 @@ The software installed on your Pi is compatible with RetroPie (it was originally
 
 Where you see "killswitch-settings.py" above, select "KillSwitch" from the "Ports" menu item.
 
-When you install the software, a shortcut to "killswitch-settings.py" will be installed in the "Ports" directory (as "KillSwitch"), where you can access it and use it with a paired game controller. Use the D-Pad to navigate between menu options, and the A/B buttons to accept/cancel. (So far it is tested on a Pi 3 B+ with RetroPie v4.4, but it should work on any newer Pi hardware and RetroPie software). Note that the installer/uninstaller will need a root password, for which you will need a keyboard attached/paired to the Pi.
+When you install the software on a system that has RetroPie, a shortcut to "killswitch-settings.py" will be installed in the "Ports" directory (as "KillSwitch"), where you can access it and use it with a paired game controller. Use the D-Pad to navigate between menu options, and the A/B buttons to accept/cancel. (So far it is tested on a Pi 3 B+ with RetroPie v4.4, but it should work on any newer Pi hardware and RetroPie software). Note that the installer/uninstaller will need a root password, for which you will need a keyboard attached/paired to the Pi.
 
 Specific buttons to use depend on your setup, but the defaults are that the A button is Enter, and the B button is
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
