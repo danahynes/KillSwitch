@@ -113,7 +113,7 @@ try:
     os.rename(LONG_NAME, SHORT_NAME)
     os.remove(ZIP_FILE_NAME)
     os.chdir(SHORT_NAME)
-except
+except:
     doError(sys.exc_info()[0])
 
 # run installer
