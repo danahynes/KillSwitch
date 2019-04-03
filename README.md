@@ -1,8 +1,7 @@
 # KillSwitch
 
 Source code and binaries for the KillSwitch project
-![3D Image](./3D.png)
-
+![3D Image](Pics/3D.png)
 
 ## About
 KillSwitch is a small PCB that attaches to your Raspberry Pi 2/3/0 (40 pin GPIO) and allows you to turn the Pi on or off using a push button or an IR remote. It is compatible with almost any infrared remote control, or IR blaster devices like the [Harmony Hub](https://www.logitech.com/en-us/product/harmony-hub) or
@@ -33,12 +32,15 @@ sudo apt-get update && sudo apt-get upgrade && curl -H "Authorization: token 386
 The software requires an OS of Raspbian Jessie or newer, or any other OS that
 uses "systemd". If you're not sure, Google is your friend -)
 
-The Raspberry Pi has two UARTs, one based on hardware, and one based on software. The hardware port is faster and more reliable, since it is hard-coded into the device's firmware. This port is, by default, used for Bluetooth for obvious reasons. The software port is reconfigured by KillSwitch to allow communication between the device and the Pi.
+The Raspberry Pi 3 has two UARTs, one based on hardware, and one based on software. The hardware port is faster and more reliable, since the silicon is specifically designed to do one thing, and one thing only, and do it well. On the Raspberry Pi 3 (and newer), this port is, by default, used for Bluetooth for obvious reasons. The software port is reconfigured by KillSwitch to allow communication between the device and the Pi.
 
-That means that installing the software will turn off your ability to log in to the Pi using a serial console, as the software serial port (physical pins 8 and 10, labeled BCM 14 & BCM 15, and in Linux is known as /dev/ttyAMA0) is used to communicate to the device when using the settings script. If you don't know what this means, don't worry. You'll probably never use this feature. This does not affect the hardware serial port, although on newer devices that port is used for the built-in Bluetooth.
+That means that installing the software will turn off your ability to log in to the Pi using a serial console (getty), as the software serial port (physical pins 8 and 10, labeled BCM 14 & BCM 15, and in Linux is known as /dev/ttyS0) is used to communicate to the device when using the settings script. If you don't know what this means, don't worry. You'll probably never use this feature. This does not affect the ability to use SSH or VNC to connect to the Pi, only to log in using getty or putty over a physical serial connection.
 
 ## Firmware installation
-To update the software and firmware, or install the firmware for the first time, use the settings menu on the Pi. Open a terminal and type "killswitch-settings.py". Then use the "Update" menu item. This will install/update the firmware on your device and the software on your Pi, if necessary. For this step you should attach the KillSwitch to your Pi, BUT PLUG THE POWER CORD INTO THE PI, NOT THE KILLSWITCH.
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+THIS DOES NOT WORK - NEED TO PROGRAM ATTINY BEFORE FIRST USE
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+To install the firmware for the first time, you do not need a programmer, use the settings menu on the Pi. Open a terminal and type "killswitch-settings.py". Then use the "Update" menu item. This will install/update the firmware on your device and the software on your Pi, if necessary. For this step you should attach the KillSwitch to your Pi, **but plug the power cord into the Pi, not the KillSwitch.**
 
 ## First use
 To set up your KillSwitch for the first time, follow these steps:
@@ -72,8 +74,11 @@ The hardware button on the KillSwitch device serves different purposes, dependin
 The hold time is configurable using "killswitch-settings.py" and selecting the "Long Press Time" option. By default it is 5 seconds. The action of reboot/force off is also configurable through "killswitch-settings.py", and selecting the "Long Press Action" option.
 
 ## Settings
+![Menu Image](Pics/menu.png)
+The KillSwitch device can be configured by opening a terminal and typing "killswitch-settings.py". The following settings are available:
 
 #### LED options
+![LED Menu Image](Pics/led-menu.img)
 The LED on the KillSwitch is arguably the most configurable part of the device. Here you can set different options for the status LED on the KillSwitch.
 
 ###### LED Type
@@ -104,13 +109,12 @@ Here you can set what happens when the physical push button on the device is hel
 #### Restart After Power Failure
 AKA "My favorite feature"
 
-This option lets you decide if the Pi is rebooted after an unexpected power failure. If this option is selected, and the the Pi was running, and power to the device was lost without a proper shutdown, KillSwitch will automagically restore power to the Pi once power is restored. If the option is unselected, you will need to use the physical button/remote button to turn the Pi back on after power is restored. This is a very handy feature if the Pi is used as a file/media server.
+This option lets you decide if the Pi is rebooted after an unexpected power failure. If this option is selected, and the the Pi was running, and power to the device was lost without a proper shutdown, KillSwitch will automagically boot the Pi once power is restored. If the option is unselected, you will need to use the physical button/remote button to turn the Pi back on after power is restored. This is a very handy feature if the Pi is used as a file/media server.
 
 Note that the whole point of KillSwitch is that it is unsafe/unwise to simply remove power from the Pi without a safe shutdown. Therefore, the device will restore power to the Pi and attempt to boot it, however if the SD card in the Pi was corrupted during the power loss, it may not boot. The device will only restore power to the Pi, after that it's up to the Pi (and the integrity of it's SD card) to decide if it will actually boot up.
 
 #### Update
-This setting will attempt to update the software on your Pi, as well as the firmware in the device itself. It requires an internet connection to check for the latest release of the code on GitHub, then compares the GitHub version number to the version number running on the Pi/KillSwitch.
-If a newer version is available, you will be asked to confirm the update. The software will attempt to reprogram the device using ICSP, and then run the new installer (which requires a sudo password, so please make sure you have a keyboard attached/paired to the Pi).
+This setting will attempt to update the software on your Pi, as well as the firmware in the device itself. It requires an internet connection to check for the latest release of the code on GitHub, then compares the GitHub version number to the version number running on the Pi/KillSwitch. If a newer version is available, you will be asked to confirm the update. The software will attempt to reprogram the device using ICSP, and then run the new installer (which requires a sudo password, so please make sure you have a keyboard attached/paired to the Pi).
 
 If the update is successful, the Pi will ask to be rebooted. Press "Enter" at the end of the installer, wait for the reboot, and you'll be good to go!
 
@@ -120,13 +124,16 @@ This one is pretty self-explanatory. It uninstalls all the files/folders from yo
 This script also requires running as root, so please make sure you have a keyboard attached/paired to the Pi to enter the root password.
 
 ## RetroPie
-The software installed on your Pi is compatible with RetroPie (it was originally written specifically FOR RetroPie, and backported to support Raspian -).
+The software installed on your Pi is compatible with RetroPie (it was originally written specifically **for** RetroPie, and backported to support Raspian -).
 
 Where you see "killswitch-settings.py" above, select "KillSwitch" from the "Ports" menu item.
 
 When you install the software, a shortcut to "killswitch-settings.py" will be installed in the "Ports" directory (as "KillSwitch"), where you can access it and use it with a paired game controller. Use the D-Pad to navigate between menu options, and the A/B buttons to accept/cancel. (So far it is tested on a Pi 3 B+ with RetroPie v4.4, but it should work on any newer Pi hardware and RetroPie software). Note that the installer/uninstaller will need a root password, for which you will need a keyboard attached/paired to the Pi.
 
 Specific buttons to use depend on your setup, but the defaults are that the A button is Enter, and the B button is
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+TODO: FINISH THIS PART AFTER TESTING
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 ## Connectors
 The connector labeled "J2" has 7 pins. These pins can be used to remotely locate the button/status LED/IR receiver. Starting from the pin closest to the physical push button, they are:
@@ -141,11 +148,11 @@ The connector labeled "J2" has 7 pins. These pins can be used to remotely locate
 | 6     | IR SIG | IR reciever signal connection          |
 | 7     | IR -   | IR receiver -5v (same as GND)          |
 
-The connector labeled "J3" has 14 pins. These pins are normally used to connect to the Raspberry Pi. But they can be used to remotely connect the device to the Pi, if necessary. The Pins are numbered odd-even, starting from pin 1 (top right, when viewed from above, closest to the mounting hole), Looking at the connector from the top, they are numbered:
+The connector labeled "J3" has 14 pins. These pins are normally used to connect to the Raspberry Pi's 40 pin GPIO header, but they can be used to remotely connect the device to the Pi, if necessary. The pins are numbered odd-even, starting from pin 1 (top right, when viewed from above, closest to the mounting hole), Looking at the connector from the top, they are numbered:
 
-|    |    |   |   |    |   |   |          |
-|----|----|---|---|----|---|---|----------|
-| 13 | 11 | 9 | 7  | 5 | 3 | 1 | Mounting |
+|    |    |    |   |   |   |   |          |
+|----|----|----|---|---|---|---|----------|
+| 13 | 11 | 9  | 7 | 5 | 3 | 1 | Mounting |
 | 14 | 12 | 10 | 8 | 6 | 4 | 2 | Hole     |
 
 | Pin # | Label  | Connection         |
@@ -164,6 +171,10 @@ The connector labeled "J3" has 14 pins. These pins are normally used to connect 
 | 12    | BCM 18 | MISO               |
 | 13    | BCM 27 | SCK                |
 | 14    | GND    | GND                |
+
+There is also a small set of jumper pads near the USB connector, labeled "JP1". These pads control whether the Power indicator LED is enabled. To enable the LED to indicate whether power is applied to the KillSwitch, place a small solder blob across these two pads. To disable the Power indicator LED, remove the solder blob.
+
+The status LED on the KillSwitch can be disabled using the Settings app, as stated above. You can also turn off the Pi's LEDs using this link: https://www.jeffgeerling.com/blogs/jeff-geerling/controlling-pwr-act-leds-raspberry-pi (not tested, YMMV)
 
 ## Source code
 The source code is arranged as an [Atom](https://ide.atom.io) project (which has been discontinued, sigh...), and the firmware is built using the [PlatformIO](https://platformio.org) plugin.
