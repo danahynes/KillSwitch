@@ -19,7 +19,7 @@ In a terminal, type:
 ~~~~
 Step 2:
 
-Open a terminal to the KillSwitch-vN.N.N/Software/Bash folder and type:
+Open a terminal to the KillSwitch-N.N.N/Software/Bash folder and type:
 ~~~~
 ~ $ sudo ./killswitch-install.sh
 ~~~~
@@ -32,6 +32,7 @@ sudo apt-get update && sudo apt-get upgrade && curl -H "Authorization: token 386
 The software requires an OS of Raspbian Jessie or newer, or any other OS that
 uses "systemd". If you're not sure, Google is your friend -)
 
+## A note on the serial port
 The Raspberry Pi 3 has two UARTs, one based on hardware, and one based on software. The hardware port is faster and more reliable, since the silicon is specifically designed to do one thing, and one thing only, and do it well. On the Raspberry Pi 3 (and newer), this port is, by default, used for Bluetooth for obvious reasons. The software port is reconfigured by KillSwitch to allow communication between the device and the Pi.
 
 That means that installing the software will turn off your ability to log in to the Pi using a serial console (getty), as the software serial port (physical pins 8 and 10, labeled BCM 14 & BCM 15, and in Linux is known as /dev/ttyS0) is used to communicate to the device when using the settings script. If you don't know what this means, don't worry. You'll probably never use this feature. This does not affect the ability to use SSH or VNC to connect to the Pi, only to log in using getty or putty over a physical serial connection.
@@ -40,7 +41,7 @@ That means that installing the software will turn off your ability to log in to 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 THIS DOES NOT WORK - NEED TO PROGRAM ATTINY BEFORE FIRST USE
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-To install the firmware for the first time, you do not need a programmer, use the settings menu on the Pi. Open a terminal and type "killswitch-settings.py". Then use the "Update" menu item. This will install/update the firmware on your device and the software on your Pi, if necessary. For this step you should attach the KillSwitch to your Pi, **but plug the power cord into the Pi, not the KillSwitch.**
+To install the firmware for the first time, you do not need a programmer, use the settings menu on the Pi. Open a terminal and type "killswitch-settings.py". Then use the "Update" menu item. This will install/update the firmware on your device and the software on your Pi, if necessary. For this step you should attach the KillSwitch to your Pi, **but plug the power cord into the Pi, not the KillSwitch.** Since the KillSwitch has no firmware, it cannot control the power to the Pi. So you need to the power the Pi as it would be without the KillSwitch, and treat the KillSwitch as an add-on or shield. Once the firmware is installed, you can use the KillSwitch as it is intended.
 
 ## First use
 To set up your KillSwitch for the first time, follow these steps:
