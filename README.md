@@ -38,9 +38,9 @@ The Raspberry Pi 3 has two UARTs, one based on hardware, and one based on softwa
 That means that installing the software will turn off your ability to log in to the Pi using a serial console (getty), as the software serial port (physical pins 8 and 10, labeled BCM 14 & BCM 15, and in Linux is known as /dev/ttyS0) is used to communicate to the device when using the settings script. If you don't know what this means, don't worry. You'll probably never use this feature. This does not affect the ability to use SSH or VNC to connect to the Pi, only to log in using getty or putty over a physical serial connection.
 
 ## Firmware installation
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-THIS DOES NOT WORK - NEED TO PROGRAM ATTINY BEFORE FIRST USE
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
+THIS DOES NOT WORK - NEED TO PROGRAM ATTINY BEFORE FIRST USE\
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 To install the firmware for the first time, you do not need a programmer, use the settings menu on the Pi. Open a terminal and type "killswitch-settings.py". Then use the "Update" menu item. This will install/update the firmware on your device and the software on your Pi, if necessary. For this step you should attach the KillSwitch to your Pi, **but plug the power cord into the Pi, not the KillSwitch.** Since the KillSwitch has no firmware, it cannot control the power to the Pi. So you need to the power the Pi as it would be without the KillSwitch, and treat the KillSwitch as an add-on or shield. Once the firmware is installed, you can use the KillSwitch as it is intended.
 
 ## First use
@@ -75,11 +75,11 @@ The hardware button on the KillSwitch device serves different purposes, dependin
 The hold time is configurable using "killswitch-settings.py" and selecting the "Long Press Time" option. By default it is 5 seconds. The action of reboot/force off is also configurable through "killswitch-settings.py", and selecting the "Long Press Action" option.
 
 ## Settings
-![Menu Image](Pics/menu.png)
+![Menu Image](Pics/menu.png)\
 The KillSwitch device can be configured by opening a terminal and typing "killswitch-settings.py". The following settings are available:
 
 #### LED options
-![LED Menu Image](Pics/led-menu.png)
+![LED Menu Image](Pics/led-menu.png)\
 The LED on the KillSwitch is arguably the most configurable part of the device. Here you can set different options for the status LED on the KillSwitch.
 
 ###### LED type
@@ -124,21 +124,23 @@ This setting will attempt to update the software on your Pi, as well as the firm
 If the update is successful, the Pi will ask to be rebooted. Press "Enter" at the end of the installer, wait for the reboot, and you'll be good to go!
 
 #### Uninstall
-This one is pretty self-explanatory. It uninstalls all the files/folders from your Pi that were installed using the installer. If you use this option, please be sure to read the caveats at the end of the uninstall script output, as there are some things the uninstaller cannot revert, such as installed dependencies and the serial port options.
+This one is pretty self-explanatory. It uninstalls almost all the files/folders from your Pi that were installed using the installer. If you use this option, please be sure to read the caveats at the end of the uninstall script output, as there are some things the uninstaller cannot revert, such as installed dependencies and the serial port options.
 
 This script also requires running as root, so please make sure you have a keyboard attached/paired to the Pi to enter the root password.
 
 ## RetroPie
-The software installed on your Pi is compatible with RetroPie (it was originally written specifically **for** RetroPie, and backported to support Raspian -).
+The software installed on your Pi is compatible with RetroPie (it was originally written specifically **for** RetroPie, and backported to support regular old Raspian -).
 
 Where you see "killswitch-settings.py" above, select "KillSwitch" from the "Ports" menu item.
 
 When you install the software on a system that has RetroPie, a shortcut to "killswitch-settings.py" will be installed in the "Ports" directory (as "KillSwitch"), where you can access it and use it with a paired game controller. Use the D-Pad to navigate between menu options, and the A/B buttons to accept/cancel. (So far it is tested on a Pi 3 B+ with RetroPie v4.4, but it should work on any newer Pi hardware and RetroPie software). Note that the installer/uninstaller will need a root password, for which you will need a keyboard attached/paired to the Pi.
 
-Specific buttons to use depend on your setup, but the defaults are that the A button is Enter, and the B button is
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-TODO: FINISH THIS PART AFTER TESTING
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+(Side note: I would really like to see RetroPie get an on-screen keyboard... I think I know what I'll be working on next -)
+
+Specific buttons to use depend on your setup, but the defaults are that the A button is Enter, and the B button is\
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
+TODO: FINISH THIS PART AFTER TESTING\
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 
 ## Connectors
 The connector labeled "J2" has 7 pins. These pins can be used to remotely locate the button/status LED/IR receiver. Starting from the pin closest to the physical push button, they are:
@@ -179,7 +181,7 @@ The connector labeled "J3" has 14 pins. These pins are normally used to connect 
 
 There is also a small set of jumper pads near the USB connector, labeled "JP1". These pads control whether the Power indicator LED is enabled. To enable the LED to indicate whether power is applied to the KillSwitch, place a small solder blob across these two pads. To disable the Power indicator LED, remove the solder blob.
 
-The status LED on the KillSwitch can be disabled using the Settings app, as stated above. You can also turn off the Pi's LEDs using this link: https://www.jeffgeerling.com/blogs/jeff-geerling/controlling-pwr-act-leds-raspberry-pi (not tested, YMMV)
+The status LED on the KillSwitch can be disabled using the Settings app, as stated above. You can also turn off the Pi's power and activity LEDs using this link: https://www.jeffgeerling.com/blogs/jeff-geerling/controlling-pwr-act-leds-raspberry-pi (not tested, YMMV)
 
 ## Source code
 The source code is arranged as an [Atom](https://ide.atom.io) project (which has been discontinued, sigh...), and the firmware is built using the [PlatformIO](https://platformio.org) plugin.
