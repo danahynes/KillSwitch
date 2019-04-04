@@ -66,6 +66,8 @@ DEPS=(\
 echo "Checking dependencies..."
 echo ""
 
+# TODO: if no python3-dialog, need "pip3 install pythondialog"
+
 for i in ${DEPS[@]}; do
     echo -n "Searching for ${i}... "
     RES=$(apt-cache search "^${i}$")
