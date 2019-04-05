@@ -67,6 +67,13 @@ DONE: fix relative paths? installer, uninstaller, any bash script
 DONE: tell folks about pinout for female header so they can do custom wiring of
     PWR/GND/ICSP/serial/feedback/trigger
 
+
+fix settings not showing up in ports - only works for bash script???
+https://github.com/RetroPie/RetroPie-Setup/wiki/Ports
+
+fix install-latest.py requirement for python3-requests
+
+
 check if we are able to do a first-time programming on the atmega
     we won't have a version number though
     do we use the version number from the actual device?
