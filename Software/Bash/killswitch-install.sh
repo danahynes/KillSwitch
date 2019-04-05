@@ -154,61 +154,63 @@ echo ""
 
 #-------------------------------------------------------------------------------
 # set permissions
-# NB not sure if this is needed?
 
-#echo "Setting up permissions..."
-#echo ""
+# NB: this is needed on RetroPie because we don't have permission to
+# shutdown/reboot. otherwise we need to run this script as sudo...
+
+echo "Setting up permissions..."
+echo ""
 
 #-------------------------------------------------------------------------------
 # shutdown
 
-#echo -n "Setting shutdown permission... "
+echo -n "Setting shutdown permission... "
 
 # filenames
-#CFG_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
-#CFG_FILE_NEW="/home/${SUDO_USER}/.bash_aliases_tmp"
+CFG_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
+CFG_FILE_NEW="/home/${SUDO_USER}/.bash_aliases_tmp"
 
 # move everything except old shutdown (if present) to new file
-#grep -v "alias shutdown=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
+grep -v "alias shutdown=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
 
 # add new shutdown line
-#echo "alias shutdown='sudo shutdown -h now'" >> "${CFG_FILE_NEW}"
+echo "alias shutdown='sudo shutdown -h now'" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
-#mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
+mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
 
-#echo "Done"
+echo "Done"
 
 #-------------------------------------------------------------------------------
 # reboot
 
-#echo -n "Setting reboot permission... "
+echo -n "Setting reboot permission... "
 
 # filenames
-#CFG_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
-#CFG_FILE_NEW="/home/${SUDO_USER}/.bash_aliases_tmp"
+CFG_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
+CFG_FILE_NEW="/home/${SUDO_USER}/.bash_aliases_tmp"
 
 # move everything except old reboot (if present) to new file
-#grep -v "alias reboot=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
+grep -v "alias reboot=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
 
 # add new reboot line
-#echo "alias reboot='sudo shutdown -r now'" >> "${CFG_FILE_NEW}"
+echo "alias reboot='sudo shutdown -r now'" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
-#mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
+mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
 
-#echo "Done"
+echo "Done"
 
 #-------------------------------------------------------------------------------
 # finish permissions
 
-#echo -n "Finishing permissions... "
+echo -n "Finishing permissions... "
 
 # pull in new bash aliases
-#source "/home/${SUDO_USER}/.bash_aliases"
+source "/home/${SUDO_USER}/.bash_aliases"
 
-#echo "Done"
-#echo ""
+echo "Done"
+echo ""
 
 #-------------------------------------------------------------------------------
 # copy files
