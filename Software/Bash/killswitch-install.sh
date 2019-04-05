@@ -318,7 +318,7 @@ if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
     check_error "Failed"
     chown "${SUDO_USER}":"${SUDO_USER}" "/home/${SUDO_USER}/RetroPie/roms/ports"
     check_error "Failed"
-	ln -s  "/usr/local/bin/killswitch-settings.py" \
+	ln -s -f "/usr/local/bin/killswitch-settings.py" \
 	    "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch" &> /dev/null
     check_error "Failed"
     chown -h "${SUDO_USER}":"${SUDO_USER}" \
