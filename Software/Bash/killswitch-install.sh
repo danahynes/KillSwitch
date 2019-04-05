@@ -24,6 +24,8 @@ check_error() {
         echo "${1}"
         echo "Aborting install"
         exit 1
+        # TODO: clean up (remove) any dirs created at this point (.killswitch)
+        # and any copied files
     fi
 }
 
@@ -316,16 +318,16 @@ echo ""
 # create shortcut in RetroPie menu
 if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
     echo -n "Creating RetroPie port... "
-	mkdir -p "/home/${SUDO_USER}/RetroPie/roms/ports"
-    check_error "Failed"
-    chown "${SUDO_USER}":"${SUDO_USER}" "/home/${SUDO_USER}/RetroPie/roms/ports"
-    check_error "Failed"
+	#mkdir -p "/home/${SUDO_USER}/RetroPie/roms/ports"
+    #check_error "Failed"
+    #chown "${SUDO_USER}":"${SUDO_USER}" "/home/${SUDO_USER}/RetroPie/roms/ports"
+    #check_error "Failed"
 	#ln -s -f "/usr/local/bin/killswitch-settings.py" \
 	#    "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch" &> /dev/null
     #check_error "Failed"
-    chown -h "${SUDO_USER}":"${SUDO_USER}" \
-        "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch"
-    check_error "Failed"
+    #chown -h "${SUDO_USER}":"${SUDO_USER}" \
+    #    "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch"
+    #check_error "Failed"
 
     #cd "/home/${SUDO_USER}/RetroPie/roms/ports"
     #touch "KillSwitch.sh"
@@ -333,6 +335,7 @@ if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
     #echo "#! /usr/bin/env bash" > "KillSwitch.sh"
     #echo "/usr/local/bin/killswitch-settings.py" >> "KillSwitch.sh"
 
+    source "/home/${SUDO_USER}/RetroPie-Setup/scriptmodules/inifuncs.sh"
     source "/home/${SUDO_USER}/RetroPie-Setup/scriptmodules/helpers.sh"
 
     addPort "killswitch" "killswitch" "KillSwitch" "/usr/local/bin/killswitch-settings.py"

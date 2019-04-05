@@ -131,8 +131,8 @@ except:
 # remove unzipped folder and one-liner
 try:
     os.chdir("../../../")
-    shutil.rmtree(SHORT_NAME)
-    os.remove("install-latest.py")
+    #shutil.rmtree(SHORT_NAME)
+    #os.remove("install-latest.py")
 except:
     doError(sys.exc_info()[0])
 
