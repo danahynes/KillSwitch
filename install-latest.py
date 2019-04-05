@@ -43,7 +43,7 @@ locale.setlocale(locale.LC_ALL, '')
 # Functions
 
 def doError(error):
-    print("Installation failed: " + error)
+    print("Installation failed: " + str(error))
     sys.exit(1)
 
 #-------------------------------------------------------------------------------
