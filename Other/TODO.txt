@@ -70,6 +70,7 @@ DONE: tell folks about pinout for female header so they can do custom wiring of
 
 fix settings not showing up in ports - only works for bash script???
 https://github.com/RetroPie/RetroPie-Setup/wiki/Ports
+~/RetroPie-Setup/scriptmodules/helpers.sh (addPort)
 
 fix install-latest.py requirement for python3-requests
 
