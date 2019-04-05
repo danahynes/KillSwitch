@@ -24,7 +24,7 @@ Open a terminal to the KillSwitch-N.N.N/Software/Bash folder and type:
 ~ $ sudo ./killswitch-install.sh
 ~~~~
 
-Here is a one-line command that will do everything for you (requires python 3):
+Here is a one-line command that will do everything for you (requires python3 and python3-requests):
 ~~~~
 sudo apt-get update && sudo apt-get upgrade && curl -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" -H "Accept: application/vnd.github.v3.raw" -O https://api.github.com/repos/danahynes/KillSwitch/contents/install-latest.py && chmod +x install-latest.py && python3 install-latest.py
 ~~~~
