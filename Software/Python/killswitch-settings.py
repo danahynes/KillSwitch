@@ -260,7 +260,7 @@ UNINSTALL_HEIGHT = 10
 UNINSTALL_WIDTH = 40
 UNINSTALL_COMMAND = "/usr/local/bin/killswitch-uninstall.sh"
 
-JOY_2_KEY_DIR = HOME_DIR + "/scriptmodules/supplementary/runcommand/"
+JOY_2_KEY_DIR = HOME_DIR + "/RetroPie/scriptmodules/supplementary/runcommand/"
 JOY_2_KEY_CMD = "joy2key.py"
 JOY_2_KEY_DEVICE = "/dev/input/jsX"
 JOY_2_KEY_PARAMS = ["kcub1", "kcuf1", "kcuu1", "kcud1", "0x0a", "0x20"]
@@ -947,6 +947,7 @@ else:
 # map joystick to keyboard if running RetroPie
 if os.path.isdir(JOY_2_KEY_DIR):
 
+    # TODO: this does not work!!!
     # stolen from https://github.com/RetroPie/RetroPie-Setup/blob/master/scriptmodules/helpers.sh
     # this code allows a joypad to navigate the dialogs when running on retropie
     PID = subprocess.check_output(["pidof", "joy2key.py"])
