@@ -35,7 +35,7 @@ uses "systemd". If you're not sure, Google is your friend -)
 ## A note on the serial port
 The Raspberry Pi 3 has two UARTs, one based on hardware, and one based on software. The hardware port is faster and more reliable, since the silicon is specifically designed to do one thing, and one thing only, and do it well. On the Raspberry Pi 3 (and newer), this port is, by default, used for Bluetooth for obvious reasons. The software port is reconfigured by KillSwitch to allow communication between the device and the Pi.
 
-That means that installing the software will turn off your ability to log in to the Pi using a serial console (getty), as the software serial port (physical pins 8 and 10, labeled BCM 14 & BCM 15, and in Linux is known as /dev/ttyS0) is used to communicate to the device when using the settings script. If you don't know what this means, don't worry. You'll probably never use this feature. This does not affect the ability to use SSH or VNC to connect to the Pi, only to log in using getty or putty over a physical serial connection.
+That means that installing the software will turn off your ability to log in to the Pi using a serial console (getty/putty), as the software serial port (physical pins 8 and 10, labeled BCM 14 & BCM 15, and in Linux is known as /dev/ttyS0) is used to communicate to the device when using the settings script. If you don't know what this means, don't worry. You'll probably never use this feature. This does not affect the ability to use SSH or VNC to connect to the Pi, only to log in using getty or putty over a physical serial connection.
 
 ## Firmware installation
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
@@ -72,7 +72,7 @@ The hardware button on the KillSwitch device serves different purposes, dependin
 | Programming "On"  | Skip code    | Exit programming |
 | Programming "Off" | Copy code    | Exit programming |
 
-The hold time is configurable using "killswitch-settings.py" and selecting the "Long Press Time" option. By default it is 5 seconds. The action of reboot/force off is also configurable through "killswitch-settings.py", and selecting the "Long Press Action" option.
+The hold time is configurable using "killswitch-settings.py" and selecting the "Long Press Time" option. By default it is 5 seconds. The action of reboot/force off is also configurable through "killswitch-settings.py", and selecting the "Long Press Action" option. The default is reboot.
 
 ## Settings
 ![Menu Image](Pics/menu.png)\
@@ -160,7 +160,7 @@ The connector labeled "J3" has 14 pins. These pins are normally used to connect 
 |    |    |    |   |   |   |   |          |
 |----|----|----|---|---|---|---|----------|
 | 13 | 11 | 9  | 7 | 5 | 3 | 1 | Mounting |
-| 14 | 12 | 10 | 8 | 6 | 4 | 2 | Hole     |
+| 14 | 12 | 10 | 8 | 6 | 4 | 2 | Hole ( ) |
 
 | Pin # | Label  | Connection         |
 |-------|--------|--------------------|
