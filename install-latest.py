@@ -59,7 +59,7 @@ try:
     response = requests.get(GITHUB_URL, headers = headers)
     JSON = response.json()
 except:
-    doError(sys.exc_info()[0])
+    doError("1 " + sys.exc_info()[0])
 
 # get path to actual source
 UPDATE_URL = JSON["zipball_url"]
@@ -76,7 +76,7 @@ try:
     SHORT_NAME = "KillSwitch-" + ZIP_NAME
     ZIP_FILE_NAME = SHORT_NAME + ".zip"
 except:
-    doError(sys.exc_info()[0])
+    doError("2 " + sys.exc_info()[0])
 
 # NB: we really shouldn't delete directories if we aren't 100% sure they're
 # ours. this dir would be in the user's home folder, so they could have another
@@ -103,7 +103,7 @@ try:
     with open(ZIP_FILE_NAME, "wb") as file:
         file.write(response.content)
 except:
-    doError(sys.exc_info()[0])
+    doError("4 " + sys.exc_info()[0])
 
 # unzip
 try:
@@ -114,7 +114,7 @@ try:
     os.remove(ZIP_FILE_NAME)
     os.chdir(SHORT_NAME)
 except:
-    doError(sys.exc_info()[0])
+    doError("5 " + sys.exc_info()[0])
 
 # run installer
 try:
@@ -125,7 +125,7 @@ try:
         "./killswitch-install.sh"
     ])
 except:
-    doError(sys.exc_info()[0])
+    doError("6 " + sys.exc_info()[0])
 
 # cleanup
 # remove unzipped folder and one-liner
@@ -134,7 +134,7 @@ try:
     #shutil.rmtree(SHORT_NAME)
     #os.remove("install-latest.py")
 except:
-    doError(sys.exc_info()[0])
+    doError("7 " + sys.exc_info()[0])
 
 # exit cleanly
 sys.exit(0)
