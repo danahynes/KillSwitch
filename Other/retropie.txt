@@ -1,0 +1,80 @@
+files
+
+/home/pi/.emulationstation -> /opt/retropie/configs/all/emulationstation
+
+/home/pi/RetroPie-Setup/scriptmodules/supplementary/killswitch.sh
+    install script for killswitch through retropie setup experimental
+
+/etc/emulationstation/es_systems.cfg
+    list all systems 'available' (not 'displayed') for launcher
+    this is the default file, updated by retropie
+
+/opt/retropie/configs/all/emulationstation/es_systems.cfg
+    list all systems 'available' (not 'displayed') for launcher
+    same as below (symlinked)
+/home/pi/.emulationstation/es_systems.cfg
+    customized version, needs to be updated with customizations after retropie update
+
+/opt/retropie/configs/all/emulationstation/gamelists/retropie/gamelist.xml
+    same as below
+/home/pi/.emulationstation/gamelists/retropie/gamelist.xml
+    config file for retropie system menu
+
+/opt/retropie/configs/$system/emulators.cfg
+    $rom_name = "$cmdline"
+
+more gamelist.xml?
+more emulators.cfg?
+
+
+variables
+
+$configdir -
+$datadir -
+$md_id -
+$md_inst -
+
+
+joystick-selection
+
+install.sh -
+    download js-scriptmodule.sh and save it as /home/pi/RetroPie-Setup/scriptmodules/supplementary/joystick-selection.sh
+    run /home/pi/RetroPie-Setup/retropie_packages.sh joystick-selection.sh
+    run /home/pi/RetroPie-Setup/retropie_packages.sh joystick-selection.sh gui
+
+js-scriptmodule.sh -
+    set rp_module vars (id. desc, help,  section)
+    functions:
+        deps
+        sources
+            get all files, including underscore
+        build
+        install
+            link installed joystick_selection.sh (underscore) to retropie menu
+            copy configs/all/emulationstation/gamelists/retropie/gamelist.xml to datadir/retropiemenu/gamelist.xml
+            check for existence of path to underscore, if not add it
+            chown pi datadir/retropiemenu
+            set md_return_files
+        remove
+        gui
+
+moonlight
+
+    install.sh -
+        1 - do everything
+            add repo
+            add gpg
+            apt-get update
+            apt-get install
+            pair
+            cp /etc/emulationstation/es_systems.cfg to /home/pi/.emulationstation/es_systems.cfg
+            add system if not already
+            make /home/pi/RetroPie/roms/moonlight
+            make scripts for different ratios
+            chmod scripts
+            chown pi /home/pi/roms/moonlight
+            chown pi /home/pi/.emulationstation/es_systems.cfg
+            reboot
+        7 - refresh system file
+            cp /etc/emulationstation/es_systems.cfg to /home/pi/.emulationstation/es_systems.cfg
+            add system if not already
