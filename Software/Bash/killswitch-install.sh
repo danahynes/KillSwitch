@@ -87,16 +87,18 @@ echo ""
 echo "Installing dependencies..."
 echo ""
 
-INSTALL_STR=""
+#INSTALL_STR=""
 for i in ${DEPS[@]}; do
-    INSTALL_STR="${INSTALL_STR} ${i}"
+    #INSTALL_STR="${INSTALL_STR} ${i}"
+    apt-get install "${i}"
+    check_error "Error installing dependencies"
 done
 
 # TODO: what are the implications of trying to install all found deps at once?
 # what if one or more fail to install?
 
-apt-get install $INSTALL_STR
-check_error "Error installing dependencies"
+#apt-get install $INSTALL_STR
+#check_error "Error installing dependencies"
 
 echo ""
 
@@ -158,7 +160,7 @@ echo ""
 # set permissions
 
 # NB: this is needed on RetroPie because we don't have permission to
-# shutdown/reboot. otherwise we need to run this script as sudo...
+# shutdown/reboot. otherwise we would need to run killswitch-boot.py as sudo
 
 echo "Setting up permissions..."
 echo ""
@@ -173,7 +175,9 @@ CFG_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
 CFG_FILE_NEW="/home/${SUDO_USER}/.bash_aliases_tmp"
 
 # move everything except old shutdown (if present) to new file
-grep -v "alias shutdown=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
+if [[ -f "${CFG_FILE_OLD}" ]]; then
+    grep -v "alias shutdown=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
+fi
 
 # add new shutdown line
 echo "alias shutdown='sudo shutdown -h now'" >> "${CFG_FILE_NEW}"
@@ -316,8 +320,25 @@ echo ""
 # add RetroPie port
 
 # create shortcut in RetroPie menu
-if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
-    echo -n "Creating RetroPie port... "
+#if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
+#    echo -n "Creating RetroPie port... "
+
+
+
+
+# 1. check if ports exists
+#
+# 2. if it does, we continue
+# if not, do sudo sed -i -e 's|</systemList>|<system>\n<name>limelight</name>\n<fullname>Limelight</fullname>\n<path>~/RetroPie/roms/limelight</path>\n<extension>.sh .SH</extension>\n<command>bash %ROM%</command>\n<platform>limelight</platform>\n<theme>limelight</theme>\n</system>\n</systemList>|g' /etc/emulationstation/es_systems.cfg
+#
+#
+
+
+
+
+
+
+
 	#mkdir -p "/home/${SUDO_USER}/RetroPie/roms/ports"
     #check_error "Failed"
     #chown "${SUDO_USER}":"${SUDO_USER}" "/home/${SUDO_USER}/RetroPie/roms/ports"
@@ -335,23 +356,51 @@ if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
     #echo "#! /usr/bin/env bash" > "KillSwitch.sh"
     #echo "/usr/local/bin/killswitch-settings.py" >> "KillSwitch.sh"
 
-    source "/home/${SUDO_USER}/RetroPie-Setup/scriptmodules/inifuncs.sh"
-    source "/home/${SUDO_USER}/RetroPie-Setup/scriptmodules/helpers.sh"
+    #source "/home/${SUDO_USER}/RetroPie-Setup/scriptmodules/inifuncs.sh"
+    #source "/home/${SUDO_USER}/RetroPie-Setup/scriptmodules/helpers.sh"
+    #cd "/home/${SUDO_USER}/RetroPie-Setup/scriptmodules/"
 
-    addPort "killswitch" "killswitch" "KillSwitch" "/usr/local/bin/killswitch-settings.py"
-
-
-
-
-
-
+    # rp_module_id="killswitch"
+    # rp_module_desc="KillSwitch"
+    # rp_module_menus="4+"
+    # rp_module_flags="nobin"
 
 
+    #addSystem "ports" "Ports"
+    #mkRomDir "ports"
+    #addPort "$md_id" "killswitch" "KillSwitch" "/usr/local/bin/killswitch-settings.py"
+
+    # if [ -f /home/pi/.emulationstation/es_systems.cfg ]
+	# then
+	# 	echo -e "Removing Duplicate Systems File"
+	# 	rm /home/pi/.emulationstation/es_systems.cfg
+	# fi
+    #
+	# echo -e "Copying Systems Config File"
+	# cp /etc/emulationstation/es_systems.cfg /home/pi/.emulationstation/es_systems.cfg
+    #
+	# if grep -q "<platform>steam</platform>" /home/pi/.emulationstation/es_systems.cfg; then
+	# 	echo -e "NOTE: Steam Entry Exists - Skipping"
+	# else
+	# 	echo -e "Adding Steam to Systems"
+	# 	sudo sed -i -e 's|</systemList>|  <system>\n    <name>steam</name>\n    <fullname>Steam</fullname>\n    <path>~/RetroPie/roms/moonlight</path>\n    <extension>.sh .SH</extension>\n    <command>bash %ROM%</command>\n    <platform>steam</platform>\n    <theme>steam</theme>\n  </system>\n</systemList>|g' /home/pi/.emulationstation/es_systems.cfg
+	# fi
 
 
-	echo "Done"
-    echo ""
-fi
+
+    #sudo sed -i -e 's|</systemList>|  <system>\n    <name>steam</name>\n    <fullname>Steam</fullname>\n    <path>~/RetroPie/roms/moonlight</path>\n    <extension>.sh .SH</extension>\n    <command>bash %ROM%</command>\n    <platform>steam</platform>\n    <theme>steam</theme>\n  </system>\n</systemList>|g' /home/pi/.emulationstation/es_systems.cfg
+    #cd ${0%/*}
+
+
+
+
+
+
+
+
+	#echo "Done"
+    #echo ""
+#fi
 
 #-------------------------------------------------------------------------------
 # ask for reboot
