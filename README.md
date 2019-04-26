@@ -115,6 +115,9 @@ This option lets you decide if the Pi is rebooted after an unexpected power fail
 Note that the whole point of KillSwitch is that it is unsafe/unwise to simply remove power from the Pi without a safe shutdown. Therefore, the device will restore power to the Pi and attempt to boot it, however if the SD card in the Pi was corrupted during the power loss, it may not boot. The device will only restore power to the Pi, after that it's up to the Pi (and the integrity of it's SD card) to decide if it will actually boot up.
 
 #### Install RetroPie shortcut
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
+THIS DOES NOT WORK - STILL NOODLING OUT THE FINAL CODE\
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 This setting can be used if the software was originally installed on a Raspbian/Other OS system, and you have since installed RetroPie. It places a shortcut named "KillSwitch" in the "Ports" system and allows you to access the Settings program using a plugged in/paired controller. It is equivalent to symlinking "/usr/local/bin/killswitch-settings.py" to
 "~/RetroPie/roms/ports/KillSwitch".
 
@@ -129,6 +132,9 @@ This one is pretty self-explanatory. It uninstalls almost all the files/folders 
 This script also requires running as root, so please make sure you have a keyboard attached/paired to the Pi to enter the root password.
 
 ## RetroPie
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
+THIS DOES NOT WORK - STILL NOODLING OUT THE FINAL CODE\
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 The software installed on your Pi is compatible with RetroPie (it was originally written specifically **for** RetroPie, and backported to support regular old Raspian -).
 
 Where you see "killswitch-settings.py" above, select "KillSwitch" from the "Ports" menu item.
@@ -145,15 +151,15 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 ## Connectors
 The connector labeled "J2" has 7 pins. These pins can be used to remotely locate the button/status LED/IR receiver. Starting from the pin closest to the physical push button, they are:
 
-| Pin # | Label  | Connection                             |
-|-------|--------|----------------------------------------|
-| 1     | BTN +  | Physical push button +5v               |
-| 2     | BTN -  | Physical push button -5v (same as GND) |
-| 3     | LED +  | Status LED +5v                         |
-| 4     | LED -  | Status LED -5v (same as GND)           |
-| 5     | IR +   | IR receiver +5v                        |
-| 6     | IR SIG | IR reciever signal connection          |
-| 7     | IR -   | IR receiver -5v (same as GND)          |
+| Pin # | Label  | Connection               |
+|-------|--------|--------------------------|
+| 1     | BTN +  | Physical push button +5v |
+| 2     | BTN -  | Physical push button GND |
+| 3     | LED +  | Status LED +5v           |
+| 4     | LED -  | Status LED GND           |
+| 5     | IR +   | IR receiver +5v          |
+| 6     | IR SIG | IR reciever signal       |
+| 7     | IR -   | IR receiver GND          |
 
 The connector labeled "J3" has 14 pins. These pins are normally used to connect to the Raspberry Pi's 40 pin GPIO header, but they can be used to remotely connect the device to the Pi, if necessary. The pins are numbered odd-even, starting from pin 1 (top right, when viewed from above, closest to the mounting hole), Looking at the connector from the top, they are numbered:
 
@@ -187,7 +193,7 @@ The status LED on the KillSwitch can be disabled using the Settings app, as stat
 The source code is arranged as an [Atom](https://ide.atom.io) project (which has been discontinued, sigh...), and the firmware is built using the [PlatformIO](https://platformio.org) plugin.
 
 If you want to compile the source for the firmware yourself, you'll also need to download the [Arduino-Libraries repo](https://github.com/danahynes/Arduino-Libraries/releases/latest).
-You will also need to adjust the relative paths of the library file links in Firmware/src/ since I use symlinks to the library files that reside outside this project. (I don't like having to copy/paste library directories every time I change something in one of them, so symlinks just pull in the latest version of a header or source file, from where it lives in a different repo folder on my build system. I know this isn't the most "correct" way to do it, and I could write a script to automate it or create Arduino packages, and maybe I will, but hey, for now... it works!)
+You may also need to adjust the relative paths of the library file links in Firmware/src/ since I use symlinks to the library files that reside outside this project. (I don't like having to copy/paste library directories every time I change something in one of them, so symlinks just pull in the latest version of a header or source file, from where it lives in a different repo folder on my build system. I know this isn't the most "correct" way to do it, and I could write a script to automate it or create Arduino packages, and maybe I will, but hey, for now... it works!)
 
 ## Licensing
 KillSwitch makes use of the [IRremote library](https://github.com/z3t0/Arduino-IRremote) by Ken Shirriff, et al.
