@@ -59,7 +59,7 @@ try:
     response = requests.get(GITHUB_URL, headers = headers)
     JSON = response.json()
 except:
-    doError("1 " + sys.exc_info()[0])
+    doError("error in step 1: " + sys.exc_info()[0])
 
 # get path to actual source
 UPDATE_URL = JSON["zipball_url"]
@@ -68,7 +68,7 @@ UPDATE_URL = JSON["zipball_url"]
 try:
     os.chdir(HOME_DIR)
 except:
-    doError(sys.exc_info()[0])
+    doError("error in step 2: " + sys.exc_info()[0])
 
 # fudge some names
 try:
@@ -76,14 +76,15 @@ try:
     SHORT_NAME = "KillSwitch-" + ZIP_NAME
     ZIP_FILE_NAME = SHORT_NAME + ".zip"
 except:
-    doError("2 " + sys.exc_info()[0])
+    doError("error in step 3: " + sys.exc_info()[0])
 
 # NB: we really shouldn't delete directories if we aren't 100% sure they're
 # ours. this dir would be in the user's home folder, so they could have another
 # folder that starts with "KillSwitch-" and deleting it would be bad. better to
 # let the user worry about deleting when done, or the installer could delete
 # its ../.. owner folder, or overwrite when unzipping, etc.
-
+# this code is left for posterity
+#
 # remove old dir if necessary
 # try:
 #     for file in os.listdir("."):
@@ -103,7 +104,7 @@ try:
     with open(ZIP_FILE_NAME, "wb") as file:
         file.write(response.content)
 except:
-    doError("4 " + sys.exc_info()[0])
+    doError("error in step 4: " + sys.exc_info()[0])
 
 # unzip
 try:
@@ -114,7 +115,7 @@ try:
     os.remove(ZIP_FILE_NAME)
     os.chdir(SHORT_NAME)
 except:
-    doError("5 " + sys.exc_info()[0])
+    doError("error in step 5: " + sys.exc_info()[0])
 
 # run installer
 try:
@@ -125,16 +126,16 @@ try:
         "./killswitch-install.sh"
     ])
 except:
-    doError("6 " + sys.exc_info()[0])
+    doError("error in step 6: " + sys.exc_info()[0])
 
 # cleanup
 # remove unzipped folder and one-liner
 try:
-    os.chdir("../../../")
-    #shutil.rmtree(SHORT_NAME)
-    #os.remove("install-latest.py")
+    os.chdir(HOME_DIR)
+    shutil.rmtree(SHORT_NAME)
+    os.remove("install-latest.py")
 except:
-    doError("7 " + sys.exc_info()[0])
+    doError("error in step 7: " + sys.exc_info()[0])
 
 # exit cleanly
 sys.exit(0)
