@@ -36,9 +36,8 @@ locale.setlocale(locale.LC_ALL, '')
 #-------------------------------------------------------------------------------
 # constants
 #-------------------------------------------------------------------------------
-pin_feedback = 2
 pin_trigger = 3
-time_hold = 0.5
+time_hold = 5
 time_debounce = 0.05
 
 #-------------------------------------------------------------------------------
@@ -90,15 +89,6 @@ if (onPi):
     # set up trigger pin
     trigger = g0.Button(pin_trigger, hold_time = time_hold, \
         bounce_time = time_debounce)
-
-    # feedback (active_high = True, initial_value = False)
-    # when the script starts, this pin will be HIGH (the poweroff/sleep default)
-    # and then go LOW
-    # when the pi is sleeping, this pin will use its internal pullup to set
-    # the pin back to HIGH
-    # if we are shutting power to the pi, the arduino will use ITS internal
-    # pullup to set this pin HIGH
-    feedback = g0.OutputDevice(pin_feedback)
 
 #-------------------------------------------------------------------------------
 # initialize
