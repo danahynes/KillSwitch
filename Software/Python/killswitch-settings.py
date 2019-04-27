@@ -668,16 +668,16 @@ def doPower():
     return CODE_TAGS[0]
 
 def doRetroPie():
-    if os.path.isdir(HOME_DIR + "/RetroPie"):
-        if not os.path.isdir(HOME_DIR + "/RetroPie/roms/ports"):
-            #USER_NAME = getpass.getuser()
-            #USER_ID = pwd.getpwnam(USER_NAME).pw_uid
-            os.makedirs(HOME_DIR + "/RetroPie/roms/ports")
-        if not os.path.exists(HOME_DIR + "/RetroPie/roms/ports/KillSwitch"):
-            os.symlink("/usr/local/bin/killswitch-settings.py", \
-            HOME_DIR + "/RetroPie/roms/ports/KillSwitch")
-
-        # TODO: some sort of confirm/error dialog here
+    # TODO: RetroPie
+    pass
+    # if os.path.isdir(HOME_DIR + "/RetroPie"):
+    #     if not os.path.isdir(HOME_DIR + "/RetroPie/roms/ports"):
+    #         #USER_NAME = getpass.getuser()
+    #         #USER_ID = pwd.getpwnam(USER_NAME).pw_uid
+    #         os.makedirs(HOME_DIR + "/RetroPie/roms/ports")
+    #     if not os.path.exists(HOME_DIR + "/RetroPie/roms/ports/KillSwitch"):
+    #         os.symlink("/usr/local/bin/killswitch-settings.py", \
+    #         HOME_DIR + "/RetroPie/roms/ports/KillSwitch")
 
 def doDownloadError():
     CODE = dlg.msgbox(
