@@ -76,7 +76,8 @@ The hold time is configurable using "killswitch-settings.py" and selecting the "
 
 ## Settings
 ![Menu Image](Pics/menu.png)\
-The KillSwitch device can be configured by opening a terminal and typing "killswitch-settings.py". The following settings are available:
+The KillSwitch device can be configured by opening a terminal and typing "killswitch-settings.py". You can press "ESC" at any time to quit the program.\
+The following settings are available:
 
 #### LED options
 ![LED Menu Image](Pics/led-menu.png)\
