@@ -135,13 +135,9 @@ This script also requires running as root, so please make sure you have a keyboa
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 THIS DOES NOT WORK - STILL NOODLING OUT THE FINAL CODE\
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
-The software installed on your Pi is compatible with RetroPie (it was originally written specifically **for** RetroPie, and backported to support regular old Raspian -).
-
-Where you see "killswitch-settings.py" above, select "KillSwitch" from the "Ports" menu item.
+The software installed on your Pi is compatible with RetroPie. Where you see "killswitch-settings.py" above, select "KillSwitch" from the "Ports" menu item.
 
 When you install the software on a system that has RetroPie, a shortcut to "killswitch-settings.py" will be installed in the "Ports" directory (as "KillSwitch"), where you can access it and use it with a paired game controller. Use the D-Pad to navigate between menu options, and the A/B buttons to accept/cancel. (So far it is tested on a Pi 3 B+ with RetroPie v4.4, but it should work on any newer Pi hardware and RetroPie software). Note that the installer/uninstaller will need a root password, for which you will need a keyboard attached/paired to the Pi.
-
-(Side note: I would really like to see RetroPie get an on-screen keyboard... I think I know what I'll be working on next -)
 
 Specific buttons to use depend on your setup, but the defaults are that the A button is Enter, and the B button is\
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
