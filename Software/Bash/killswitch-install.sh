@@ -65,41 +65,34 @@ DEPS=(\
     python3-serial \
 )
 
-echo "Checking dependencies..."
-echo ""
-
-# TODO: if no python3-dialog, need "pip3 install pythondialog"
-
-for i in ${DEPS[@]}; do
-    echo -n "Searching for ${i}... "
-    RES=$(apt-cache search "^${i}$")
-    if [ "$RES" != "" ]; then
-        echo "Found"
-    else
-        echo "Not found"
-        echo "Aborting install"
-        exit 1
-    fi
-done
-
-echo ""
+# echo "Checking dependencies..."
+# echo ""
+#
+# # TODO: if no python3-dialog, need "pip3 install pythondialog"
+#
+# for i in ${DEPS[@]}; do
+#     echo -n "Searching for ${i}... "
+#     RES=$(apt-cache search "^${i}$")
+#     if [ "$RES" != "" ]; then
+#         echo "Found"
+#     else
+#         echo "Not found"
+#         echo "Aborting install"
+#         exit 1
+#     fi
+# done
+#
+# echo ""
 
 echo "Installing dependencies..."
 echo ""
 
-#INSTALL_STR=""
 for i in ${DEPS[@]}; do
-    #INSTALL_STR="${INSTALL_STR} ${i}"
     apt-get install "${i}"
-    check_error "Error installing dependencies"
+    check_error "Error installing dependency ${i}"
 done
 
-# TODO: what are the implications of trying to install all found deps at once?
-# what if one or more fail to install?
-
-#apt-get install $INSTALL_STR
-#check_error "Error installing dependencies"
-
+echo "Done"
 echo ""
 
 #-------------------------------------------------------------------------------
