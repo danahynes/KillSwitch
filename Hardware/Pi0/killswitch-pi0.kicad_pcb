@@ -13,7 +13,7 @@
   (title_block
     (title "KillSwitch for Pi Zero")
     (date "2019-04-27")
-    (rev "0.5.13")
+    (rev "0.5.14")
   )
 
   (layers
@@ -2345,7 +2345,7 @@
   (gr_text "IR +" (at 123.156 89.886 270) (layer F.SilkS)
     (effects (font (size 0.8 0.8) (thickness 0.1)))
   )
-  (gr_text "KillSwitch\nv0.5.13" (at 91.152 99.03 90) (layer B.SilkS)
+  (gr_text "KillSwitch\nv0.5.14" (at 91.152 99.03 90) (layer B.SilkS)
     (effects (font (size 1.5 1.5) (thickness 0.3)) (justify mirror))
   )
   (gr_line (start 120 106.5) (end 120 113) (layer Edge.Cuts) (width 0.15))
