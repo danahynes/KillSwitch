@@ -7,7 +7,7 @@ encoding utf-8
 Sheet 1 1
 Title "KillSwitch for Pi 3"
 Date "2019-04-27"
-Rev "0.5.12"
+Rev "0.5.13"
 Comp ""
 Comment1 ""
 Comment2 ""
