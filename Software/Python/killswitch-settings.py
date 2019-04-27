@@ -151,7 +151,7 @@ LEDT_ITEMS = [
 # that works is the code below, but only gives us single quotes. i can live
 # with it for now.
 LEDT_HELP = [
-    'LED at '"'On'"' brightness when Pi is on, and '"'Off'"' brightness when Pi is off",
+    "LED at '"'On'"' brightness when Pi is on, and '"'Off'"' brightness when Pi is off",
     "The LED is always off, except when programming"
 ]
 LEDT_SETTING = "LTP"
