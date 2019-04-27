@@ -68,7 +68,7 @@ DEPS=(\
 # echo "Checking dependencies..."
 # echo ""
 #
-# # TODO: if no python3-dialog, need "pip3 install pythondialog"
+# # TODO: if no python3-dialog, need "pip3 install pythondialog" (on laptop)
 #
 # for i in ${DEPS[@]}; do
 #     echo -n "Searching for ${i}... "
@@ -311,86 +311,11 @@ echo ""
 
 #-------------------------------------------------------------------------------
 # add RetroPie port
-
+# TODO: RetroPie
 # create shortcut in RetroPie menu
 #if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
 #    echo -n "Creating RetroPie port... "
-
-
-
-
-# 1. check if ports exists
 #
-# 2. if it does, we continue
-# if not, do sudo sed -i -e 's|</systemList>|<system>\n<name>limelight</name>\n<fullname>Limelight</fullname>\n<path>~/RetroPie/roms/limelight</path>\n<extension>.sh .SH</extension>\n<command>bash %ROM%</command>\n<platform>limelight</platform>\n<theme>limelight</theme>\n</system>\n</systemList>|g' /etc/emulationstation/es_systems.cfg
-#
-#
-
-
-
-
-
-
-
-	#mkdir -p "/home/${SUDO_USER}/RetroPie/roms/ports"
-    #check_error "Failed"
-    #chown "${SUDO_USER}":"${SUDO_USER}" "/home/${SUDO_USER}/RetroPie/roms/ports"
-    #check_error "Failed"
-	#ln -s -f "/usr/local/bin/killswitch-settings.py" \
-	#    "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch" &> /dev/null
-    #check_error "Failed"
-    #chown -h "${SUDO_USER}":"${SUDO_USER}" \
-    #    "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch"
-    #check_error "Failed"
-
-    #cd "/home/${SUDO_USER}/RetroPie/roms/ports"
-    #touch "KillSwitch.sh"
-    #chmod +x "KillSwitch.sh"
-    #echo "#! /usr/bin/env bash" > "KillSwitch.sh"
-    #echo "/usr/local/bin/killswitch-settings.py" >> "KillSwitch.sh"
-
-    #source "/home/${SUDO_USER}/RetroPie-Setup/scriptmodules/inifuncs.sh"
-    #source "/home/${SUDO_USER}/RetroPie-Setup/scriptmodules/helpers.sh"
-    #cd "/home/${SUDO_USER}/RetroPie-Setup/scriptmodules/"
-
-    # rp_module_id="killswitch"
-    # rp_module_desc="KillSwitch"
-    # rp_module_menus="4+"
-    # rp_module_flags="nobin"
-
-
-    #addSystem "ports" "Ports"
-    #mkRomDir "ports"
-    #addPort "$md_id" "killswitch" "KillSwitch" "/usr/local/bin/killswitch-settings.py"
-
-    # if [ -f /home/pi/.emulationstation/es_systems.cfg ]
-	# then
-	# 	echo -e "Removing Duplicate Systems File"
-	# 	rm /home/pi/.emulationstation/es_systems.cfg
-	# fi
-    #
-	# echo -e "Copying Systems Config File"
-	# cp /etc/emulationstation/es_systems.cfg /home/pi/.emulationstation/es_systems.cfg
-    #
-	# if grep -q "<platform>steam</platform>" /home/pi/.emulationstation/es_systems.cfg; then
-	# 	echo -e "NOTE: Steam Entry Exists - Skipping"
-	# else
-	# 	echo -e "Adding Steam to Systems"
-	# 	sudo sed -i -e 's|</systemList>|  <system>\n    <name>steam</name>\n    <fullname>Steam</fullname>\n    <path>~/RetroPie/roms/moonlight</path>\n    <extension>.sh .SH</extension>\n    <command>bash %ROM%</command>\n    <platform>steam</platform>\n    <theme>steam</theme>\n  </system>\n</systemList>|g' /home/pi/.emulationstation/es_systems.cfg
-	# fi
-
-
-
-    #sudo sed -i -e 's|</systemList>|  <system>\n    <name>steam</name>\n    <fullname>Steam</fullname>\n    <path>~/RetroPie/roms/moonlight</path>\n    <extension>.sh .SH</extension>\n    <command>bash %ROM%</command>\n    <platform>steam</platform>\n    <theme>steam</theme>\n  </system>\n</systemList>|g' /home/pi/.emulationstation/es_systems.cfg
-    #cd ${0%/*}
-
-
-
-
-
-
-
-
 	#echo "Done"
     #echo ""
 #fi
