@@ -116,13 +116,13 @@ echo ""
 #-------------------------------------------------------------------------------
 # remove RetroPie port
 
-if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
-	echo -n "Removing RetroPie port... "
-	rm "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch"
-    check_error "Failed"
-	echo "Done"
-    echo ""
-fi
+# if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
+# 	echo -n "Removing RetroPie port... "
+# 	rm "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch"
+#     check_error "Failed"
+# 	echo "Done"
+#     echo ""
+# fi
 
 #-------------------------------------------------------------------------------
 # stuff we can't undo
