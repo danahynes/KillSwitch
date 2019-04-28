@@ -643,7 +643,7 @@ void setup() {
 	tmpFeedback.setOnRelease(doFeedbackRelease);
 #endif
 
-// TODO: this has no effect, unless we comment out all ir code in loop(), we
+// NB: this has no effect, unless we comment out all ir code in loop(), we
 // still get spurious events
 #if DH_BEBUG == 0
 
@@ -696,46 +696,46 @@ void loop() {
 //-----------------------------------------------------------------------------
 // ir
 
-// 	if (irrecv.decode(&results)) {
-//
-// #if DEBUG == 1
-// 		Serial.println(results.value, HEX);
-// #endif
-//
-// 		if (results.value != REPEAT) {
-//
-// 			// normal on/off
-// 			if (progState == PROG_STATE_NONE) {
-// 				unsigned long onCode = EEPROMReadLong(EEPROM_ADDR_CODE_ON);
-// 				unsigned long offCode = EEPROMReadLong(EEPROM_ADDR_CODE_OFF);
-// 				if ((results.value == onCode) && (state == STATE_OFF)) {
-// 					doBootup();
-// 				} else if ((results.value == offCode) && (state == STATE_ON)) {
-// 					doShutdown();
-// 				}
-//
-// 			// programming
-// 			} else {
-// 				if (progState == PROG_STATE_CODE_ON) {
-// 					long onCode = results.value;
-// 					EEPROMWriteLong(EEPROM_ADDR_CODE_ON, onCode);
-//
-// 					// count flashes and start watchdog
-// 					progChanging = true;
-// 					progTimer.start();
-// 				} else if (progState == PROG_STATE_CODE_OFF) {
-// 					long offCode = results.value;
-// 					EEPROMWriteLong(EEPROM_ADDR_CODE_OFF, offCode);
-//
-// 					// count flashes before exiting programming mode
-// 					progChanging = true;
-// 				}
-// 			}
-// 		}
-//
-// 		// get the next code
-// 		irrecv.resume();
-// 	}
+	if (irrecv.decode(&results)) {
+
+#if DEBUG == 1
+		Serial.println(results.value, HEX);
+#endif
+
+		if (results.value != REPEAT) {
+
+			// normal on/off
+			if (progState == PROG_STATE_NONE) {
+				unsigned long onCode = EEPROMReadLong(EEPROM_ADDR_CODE_ON);
+				unsigned long offCode = EEPROMReadLong(EEPROM_ADDR_CODE_OFF);
+				if ((results.value == onCode) && (state == STATE_OFF)) {
+					doBootup();
+				} else if ((results.value == offCode) && (state == STATE_ON)) {
+					doShutdown();
+				}
+
+			// programming
+			} else {
+				if (progState == PROG_STATE_CODE_ON) {
+					long onCode = results.value;
+					EEPROMWriteLong(EEPROM_ADDR_CODE_ON, onCode);
+
+					// count flashes and start watchdog
+					progChanging = true;
+					progTimer.start();
+				} else if (progState == PROG_STATE_CODE_OFF) {
+					long offCode = results.value;
+					EEPROMWriteLong(EEPROM_ADDR_CODE_OFF, offCode);
+
+					// count flashes before exiting programming mode
+					progChanging = true;
+				}
+			}
+		}
+
+		// get the next code
+		irrecv.resume();
+	}
 
 //-----------------------------------------------------------------------------
 // feedback
