@@ -264,10 +264,10 @@ UNINSTALL_HEIGHT = 10
 UNINSTALL_WIDTH = 40
 UNINSTALL_COMMAND = "/usr/local/bin/killswitch-uninstall.sh"
 
-JOY_2_KEY_DIR = HOME_DIR + "/RetroPie/scriptmodules/supplementary/runcommand/"
-JOY_2_KEY_CMD = "joy2key.py"
-JOY_2_KEY_DEVICE = "/dev/input/jsX"
-JOY_2_KEY_PARAMS = ["kcub1", "kcuf1", "kcuu1", "kcud1", "0x0a", "0x20"]
+# JOY_2_KEY_DIR = HOME_DIR + "/RetroPie/scriptmodules/supplementary/runcommand/"
+# JOY_2_KEY_CMD = "joy2key.py"
+# JOY_2_KEY_DEVICE = "/dev/input/jsX"
+# JOY_2_KEY_PARAMS = ["kcub1", "kcuf1", "kcuu1", "kcud1", "0x0a", "0x20"]
 
 #-------------------------------------------------------------------------------
 # Variables
@@ -776,7 +776,7 @@ def doActualUpdate():
         os.remove(ZIP_FILE_NAME)
         os.chdir(SHORT_NAME)
 
-        # NB: do hardware first because software may cause reboot
+        # do hardware first because software may cause reboot
 
         # do avrdude update with hex file
         os.chdir("Firmware")
@@ -797,7 +797,7 @@ def doActualUpdate():
         if RET != 0:
             doHardwareUpdateError()
 
-            # TODO: don't return here if we can still try software update
+            # NB: don't return here if we can still try software update
             #return
 
         # run installer
@@ -949,18 +949,18 @@ else:
         json.dump(SETTINGS_DICT, file)
 
 # map joystick to keyboard if running RetroPie
-if os.path.isdir(JOY_2_KEY_DIR):
-
-    # TODO: this does not work!!!
-    # stolen from https://github.com/RetroPie/RetroPie-Setup/blob/master/scriptmodules/helpers.sh
-    # this code allows a joypad to navigate the dialogs when running on retropie
-    PID = subprocess.check_output(["pidof", "joy2key.py"])
-    if PID == "":
-        subprocess.call([
-            JOY_2_KEY_DIR + JOY_2_KEY_CMD,
-            JOY_2_KEY_DEVICE,
-            JOY_2_KEY_PARAMS
-        ])
+# if os.path.isdir(JOY_2_KEY_DIR):
+#
+#     # TODO: RetroPie
+#     # stolen from https://github.com/RetroPie/RetroPie-Setup/blob/master/scriptmodules/helpers.sh
+#     # this code allows a joypad to navigate the dialogs when running on retropie
+#     PID = subprocess.check_output(["pidof", "joy2key.py"])
+#     if PID == "":
+#         subprocess.call([
+#             JOY_2_KEY_DIR + JOY_2_KEY_CMD,
+#             JOY_2_KEY_DEVICE,
+#             JOY_2_KEY_PARAMS
+#         ])
 
 # set up serial port
 ser = serial.Serial(SERIAL_PORT, SERIAL_SPEED)
