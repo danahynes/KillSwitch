@@ -23,9 +23,11 @@ check_error() {
     if [ "$?" != "0" ]; then
         echo "${1}"
         echo "Aborting install"
-        exit 1
+
         # TODO: clean up (remove) any dirs created at this point (.killswitch)
         # and any copied files
+
+        exit 1
     fi
 }
 
@@ -87,10 +89,18 @@ DEPS=(\
 echo "Installing dependencies..."
 echo ""
 
+# build list of deps on one line
+INSTALL_STR=""
 for i in ${DEPS[@]}; do
-    apt-get install "${i}"
-    check_error "Error installing dependency ${i}"
+    INSTALL_STR+="${i} "
 done
+
+# no quotes for no globbing (all deps are seperate params)
+apt-get install $INSTALL_STR
+check_error "Error installing dependencies"
+
+# a little cleanup if needed
+apt-get autoremove
 
 echo "Done"
 echo ""
@@ -116,7 +126,6 @@ echo -n "Turning off login console... "
 CMD_FILE_OLD="/boot/cmdline.txt"
 CMD_FILE_NEW="/boot/cmdline_tmp.txt"
 
-# TODO: get result & test
 # move everything except login console to new file
 cat < "${CMD_FILE_OLD}" | sed 's/ console=.*,[0-9]*//' > "${CMD_FILE_NEW}"
 
@@ -135,7 +144,6 @@ echo -n "Turning on serial hardware... "
 CFG_FILE_OLD="/boot/config.txt"
 CFG_FILE_NEW="/boot/config_tmp.txt"
 
-# TODO: get result & test
 # move everything except old enable_uart (if present) to new file
 grep -v "enable_uart=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
 
@@ -152,7 +160,7 @@ echo ""
 #-------------------------------------------------------------------------------
 # set permissions
 
-# NB: this is needed on RetroPie because we don't have permission to
+# this is needed on RetroPie because we don't have permission to
 # shutdown/reboot. otherwise we would need to run killswitch-boot.py as sudo
 
 echo "Setting up permissions..."
