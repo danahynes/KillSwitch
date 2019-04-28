@@ -6,8 +6,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "KillSwitch for Pi 3"
-Date "2019-04-27"
-Rev "0.5.14"
+Date "2019-04-28"
+Rev "0.5.15"
 Comp ""
 Comment1 ""
 Comment2 ""
