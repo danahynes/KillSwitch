@@ -76,6 +76,8 @@ fix install-latest.py requirement for python3-requests (only in retropie?)
 
 
 check if we are able to do a first-time programming on the atmega
+    just put it in the installer, reprogram every time we run installer
+        (should only be first install and update)
     we won't have a version number though
     do we use the version number from the actual device?
     using the one from the firmware won't work
