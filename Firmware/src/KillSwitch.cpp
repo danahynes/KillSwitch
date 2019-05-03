@@ -467,10 +467,9 @@ void doLEDDoneFlashing(DHLED* led) {
  ----------------------------------------------------------------------------*/
 void doCounterDone(DHPulseCounter* counter) {
 
-	/* N.B.
-	The counter is basically used to differentiate between a pulse count (early
-	in shutdown/reboot) and a permanent change (after the boot/shutdown/reboot
-	process is complete), on the feedback line.
+	/* NB: The counter is basically used to differentiate between a pulse count
+	(early in shutdown/reboot) and a permanent change (after the
+	boot/shutdown/reboot process is complete), on the feedback line.
 	Only a permanent change is seen at bootup.
 	This method is only called when the pin changes from the NOT WANTED state to
 	the WANTED state. So if the line is LOW, and you're looking for a LOW, this
