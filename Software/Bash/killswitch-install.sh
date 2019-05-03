@@ -329,6 +329,22 @@ echo ""
 #fi
 
 #-------------------------------------------------------------------------------
+# cleanup
+
+# move to home dir
+cd "/home/${SUDO_USER}"
+
+# remove install-latest.py
+rm "install-latest.py"
+
+# remove unzipped folder
+pattern="KillSwitch-v"
+for _dir in "${pattern}"*; do
+    [ -d "${_dir}" ] && dir="${_dir}" && break
+done
+rm -r "${dir}"
+
+#-------------------------------------------------------------------------------
 # ask for reboot
 
 echo "***************************************************"
