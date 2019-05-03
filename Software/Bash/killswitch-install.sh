@@ -273,6 +273,24 @@ chmod +x /usr/local/bin/killswitch-uninstall.sh
 check_error "Failed"
 echo "Done"
 
+cd ../../Other
+
+# copy reboot test script
+echo -n "Copying reboot-test.sh to /usr/local/bin... "
+cp reboot-test.sh /usr/local/bin
+check_error "Failed"
+chmod +x /usr/local/bin/reboot-test.sh
+check_error "Failed"
+echo "Done"
+
+# copy shutdown test script
+echo -n "Copying shutdown-test.sh to /usr/local/bin... "
+cp shutdown-test.sh /usr/local/bin
+check_error "Failed"
+chmod +x /usr/local/bin/shutdown-test.sh
+check_error "Failed"
+echo "Done"
+
 echo ""
 
 #-------------------------------------------------------------------------------
