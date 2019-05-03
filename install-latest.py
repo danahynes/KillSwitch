@@ -128,6 +128,7 @@ try:
 except:
     doError("error in step 6: " + sys.exc_info()[0])
 
+# TODO: this won't get called if the user reboots after install
 # cleanup
 # remove unzipped folder and one-liner
 try:
