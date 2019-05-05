@@ -103,6 +103,18 @@ rm /usr/local/bin/killswitch-uninstall.sh
 check_error "Failed"
 echo "Done"
 
+# remove reboot test script
+echo -n "Removing reboot-test.sh from /usr/local/bin/... "
+rm /usr/local/bin/reboot-test.sh
+check_error "Failed"
+echo "Done"
+
+# remove shutdown test script
+echo -n "Removing shutdown-test.sh from /usr/local/bin/... "
+rm /usr/local/bin/shutdown-test.sh
+check_error "Failed"
+echo "Done"
+
 # remove settings storage dir
 if [ -d "$SETTINGS_DIR" ]; then
     echo -n "Removing ${SETTINGS_DIR}... "
