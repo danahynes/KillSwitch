@@ -128,16 +128,16 @@ try:
 except:
     doError("error in step 6: " + str(sys.exc_info()[1]))
 
-# TODO: this won't get called if the user reboots after install
-# TODO: handled by installer
+# NB: this won't get called if the user reboots after install
+
 # cleanup
 # remove unzipped folder and one-liner
-#try:
-#    os.chdir(HOME_DIR)
-#    shutil.rmtree(SHORT_NAME)
-#    os.remove("install-latest.py")
-#except:
-#    doError("error in step 7: " + str(sys.exc_info()[1]))
+try:
+    os.chdir(HOME_DIR)
+    shutil.rmtree(SHORT_NAME)
+    os.remove("install-latest.py")
+except:
+    doError("error in step 7: " + str(sys.exc_info()[1]))
 
 # exit cleanly
 sys.exit(0)
