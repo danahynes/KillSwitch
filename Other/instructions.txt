@@ -29,6 +29,11 @@ add serial code to firmware to read/write new setting in loop()
 add code to software settings init to see if new setting has a value
 if it's blank, write the default to the conf file
 
+clone github repo on pi:
+
+cd ~/Downloads/KillSwitch
+rm -rf KillSwitch; git clone https://danahynes:5447Wasmynumber@github.com/danahynes/KillSwitch.git; cd KillSwitch
+
 to create new release of master:
 
 update number in Other/make-release.py
