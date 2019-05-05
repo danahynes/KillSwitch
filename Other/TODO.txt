@@ -68,6 +68,16 @@ DONE: tell folks about pinout for female header so they can do custom wiring of
     PWR/GND/ICSP/serial/feedback/trigger
 
 
+first step for install-latest, update is create .killswitch
+download everything there
+delete in error
+
+
+
+
+
+
+
 fix settings not showing up in ports - only works for bash script???
 https://github.com/RetroPie/RetroPie-Setup/wiki/Ports
 ~/RetroPie-Setup/scriptmodules/helpers.sh (addPort)
