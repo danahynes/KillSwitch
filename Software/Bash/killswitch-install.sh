@@ -352,15 +352,15 @@ echo ""
 # move to home dir
 cd "/home/${SUDO_USER}"
 
-# remove install-latest.py
-rm "install-latest.py" 2> /dev/null
-
 # remove unzipped folder
 pattern="KillSwitch-v"
 for _dir in "${pattern}"*; do
     [ -d "${_dir}" ] && dir="${_dir}" && break
 done
 rm -r "${dir}" 2> /dev/null
+
+# remove install-latest.py
+rm "install-latest.py" 2> /dev/null
 
 #-------------------------------------------------------------------------------
 # ask for reboot
