@@ -808,15 +808,17 @@ def doActualUpdate():
             "./killswitch-install.sh"
         ])
 
-        # TODO: none of this will get called if installer reboots
+        # NB: none of this will get called if installer reboots
+
         if RET != 0:
             doSoftwareUpdateError()
             return
 
-        # TODO: handled by installer
-        # remove unzipped folder
-        #os.chdir("../../..")
-        #shutil.rmtree(SHORT_NAME)
+        # remove unzipped folder (in .killswitch) & install-latest (in /home/pi)
+        os.chdir("../../..")
+        shutil.rmtree(SHORT_NAME)
+        os.chdir(HOME_DIR)
+        os.remove("install-latest.py")
 
         # run new settings file
         subprocess.call([
