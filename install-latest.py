@@ -132,10 +132,10 @@ except:
 
 # cleanup
 # remove unzipped folder and one-liner
+print("remove from latest")
 try:
     os.chdir(HOME_DIR)
     shutil.rmtree(SHORT_NAME)
-    print("remove from latest")
     os.remove("install-latest.py")
 except:
     doError("error in step 7: " + str(sys.exc_info()[1]))

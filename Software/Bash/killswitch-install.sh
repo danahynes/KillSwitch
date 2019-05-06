@@ -348,7 +348,7 @@ echo ""
 
 #-------------------------------------------------------------------------------
 # cleanup
-
+echo "cleanup"
 # move to home dir
 cd "/home/${SUDO_USER}"
 
