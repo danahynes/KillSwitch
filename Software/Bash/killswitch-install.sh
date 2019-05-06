@@ -361,6 +361,7 @@ rm -r "${dir}" 2> /dev/null
 
 # remove install-latest.py
 if [ -f "install-latest.py" ]; then
+    echo "removing from installer"
     rm "install-latest.py" > /dev/null 2>&1
 fi
 
