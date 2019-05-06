@@ -360,7 +360,7 @@ done
 rm -r "${dir}" 2> /dev/null
 
 # remove install-latest.py
-rm "install-latest.py" 2> /dev/null
+rm "install-latest.py" > /dev/null 2>&1
 
 #-------------------------------------------------------------------------------
 # ask for reboot
