@@ -124,6 +124,13 @@ try:
 except:
     doError("error in step 5: " + str(sys.exc_info()[1]))
 
+# remove ourself
+# try:
+#     os.chdir(os.getcwd())
+#     os.remove("install-latest.py")
+# except:
+#     doError("error in step 6: " + str(sys.exec_info()[1]))
+
 # run installer
 try:
     os.chdir("Software/Bash")
@@ -133,7 +140,7 @@ try:
         "./killswitch-install.sh"
     ])
 except:
-    doError("error in step 6: " + str(sys.exc_info()[1]))
+    doError("error in step 7: " + str(sys.exc_info()[1]))
 
 # NB: this won't get called if the user reboots after install
 
@@ -145,7 +152,7 @@ try:
     shutil.rmtree(SHORT_NAME)
     os.remove("install-latest.py")
 except:
-    doError("error in step 7: " + str(sys.exc_info()[1]))
+    doError("error in step 8: " + str(sys.exc_info()[1]))
 
 # exit cleanly
 sys.exit(0)

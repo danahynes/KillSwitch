@@ -356,7 +356,7 @@ echo ""
 # cleanup
 echo "cleanup"
 # move to home dir
-cd "/home/${SUDO_USER}"
+cd "/home/${SUDO_USER}/.killswitch"
 
 # remove unzipped folder
 pattern="KillSwitch-v"
@@ -366,10 +366,10 @@ done
 rm -r "${dir}" 2> /dev/null
 
 # remove install-latest.py
-if [ -f "install-latest.py" ]; then
-    echo "removing from installer"
-    rm "install-latest.py" > /dev/null 2>&1
-fi
+# if [ -f "install-latest.py" ]; then
+#     echo "removing from installer"
+#     rm "install-latest.py" > /dev/null 2>&1
+# fi
 
 #-------------------------------------------------------------------------------
 # ask for reboot
