@@ -355,15 +355,18 @@ echo ""
 #-------------------------------------------------------------------------------
 # cleanup
 echo "cleanup"
-# move to home dir
+
+# move to settings dir
 cd "/home/${SUDO_USER}/.killswitch"
 
+rm -rf "latest"
+
 # remove unzipped folder
-pattern="KillSwitch-v"
-for _dir in "${pattern}"*; do
-    [ -d "${_dir}" ] && dir="${_dir}" && break
-done
-rm -r "${dir}" 2> /dev/null
+# pattern="KillSwitch-v"
+# for _dir in "${pattern}"*; do
+#     [ -d "${_dir}" ] && dir="${_dir}" && break
+# done
+# rm -r "${dir}" 2> /dev/null
 
 # remove install-latest.py
 # if [ -f "install-latest.py" ]; then
@@ -379,7 +382,7 @@ echo ""
 echo "You need to reboot the pi to complete installation."
 read -p "Do you want to reboot now? (Y/n) [default=yes]" ANSWER
 case "${ANSWER}" in
-    [Nn]* ) exit;;
+    [Nn]* ) exit 1;;
         * ) shutdown -r now;;
 esac
 
