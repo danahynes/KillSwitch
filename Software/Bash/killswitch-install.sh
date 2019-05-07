@@ -56,6 +56,12 @@ echo "KillSwitch Installer v${VERSION_NUMBER} (c) 2019 Dana Hynes"
 echo ""
 
 #-------------------------------------------------------------------------------
+# do update/upgrade
+
+apt-get update
+apt-get upgrade
+
+#-------------------------------------------------------------------------------
 # dependencies
 
 DEPS=(\

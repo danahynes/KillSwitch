@@ -32,6 +32,8 @@ GITHUB_TOKEN = "3868839158c75239f3ed89a4aedfe620e72156b4"
 GITHUB_URL = "https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 
 HOME_DIR = os.path.expanduser("~")
+SETTINGS_DIR = HOME_DIR + "/.killswitch"
+DOWNLOAD_DIR = SETTINGS_DIR + "/latest"
 
 #-------------------------------------------------------------------------------
 # Init
@@ -64,9 +66,14 @@ except:
 # get path to actual source
 UPDATE_URL = JSON["zipball_url"]
 
-# change to download location
+# remove any old downloads
+if os.path.exists(DOWNLOAD_DIR):
+    shutil.rmtree(DOWNLOAD_DIR)
+
+# create download dir and change to it
 try:
-    os.chdir(HOME_DIR)
+    os.makedirs(DOWNLOAD_DIR)
+    os.chdir(DOWNLOAD_DIR)
 except:
     doError("error in step 2: " + str(sys.exc_info()[1]))
 
