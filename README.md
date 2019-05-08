@@ -10,23 +10,14 @@ KillSwitch is a small PCB that attaches to your Raspberry Pi 2/3/0 (40 pin GPIO)
 ## Software installation
 To download and install the KillSwitch software on your Pi, first go to the [latest release](https://github.com/danahynes/KillSwitch/releases/latest). Click the link for the "Source code (zip)" or "Source code (tar.gz)" file. Download and extract the file and follow the instructions below:
 
-Step 1: (recommended)
-
-In a terminal, type:
-~~~~
-~ $ sudo apt-get update
-~ $ sudo apt-get upgrade
-~~~~
-Step 2:
-
-Open a terminal to the KillSwitch-N.N.N/Software/Bash folder and type:
+Open a terminal, cd to the KillSwitch-N.N.N/Software/Bash folder, and type:
 ~~~~
 ~ $ sudo ./killswitch-install.sh
 ~~~~
 
-Here is a one-line command that will do everything for you (requires python3 and python3-requests):
+Here is a one-line command that will do everything for you (requires python3 and python3-requests, both included in the latest Raspbian release):
 ~~~~
-sudo apt-get update && sudo apt-get upgrade && curl -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" -H "Accept: application/vnd.github.v3.raw" -O https://api.github.com/repos/danahynes/KillSwitch/contents/install-latest.py && chmod +x install-latest.py && python3 install-latest.py
+curl -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" -H "Accept: application/vnd.github.v3.raw" -O https://api.github.com/repos/danahynes/KillSwitch/contents/install-latest.py && chmod +x install-latest.py && python3 install-latest.py
 ~~~~
 
 The software requires an OS of Raspbian Jessie or newer, or any other OS that
