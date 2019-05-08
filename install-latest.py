@@ -46,39 +46,46 @@ locale.setlocale(locale.LC_ALL, '')
 
 def doError(error):
     print("Installation failed: ", error)
+
+    # TODO: need to delete anything create by now (.killswitch)
+    
     sys.exit(1)
 
 #-------------------------------------------------------------------------------
 # Main code
 
-# get latest JSON
-headers = {
-    "Authorization" : "token " + GITHUB_TOKEN,
-    "Accept" : "application/vnd.github.v3.raw"
-}
-
+# step 1
 try:
+    # get latest JSON
+    headers = {
+        "Authorization" : "token " + GITHUB_TOKEN,
+        "Accept" : "application/vnd.github.v3.raw"
+    }
     response = requests.get(GITHUB_URL, headers = headers)
     JSON = response.json()
+
+    # get path to zip file
+    UPDATE_URL = JSON["zipball_url"]
 except:
     doError("error in step 1: " + str(sys.exc_info()[1]))
 
-# get path to actual source
-UPDATE_URL = JSON["zipball_url"]
-
-# remove any old downloads
-if os.path.exists(DOWNLOAD_DIR):
-    shutil.rmtree(DOWNLOAD_DIR)
-
-# create download dir and change to it
+# step 2
 try:
+
+    # remove any old downloads
+    if os.path.exists(DOWNLOAD_DIR):
+        shutil.rmtree(DOWNLOAD_DIR)
+
+    # create download dir and change to it
     os.makedirs(DOWNLOAD_DIR)
     os.chdir(DOWNLOAD_DIR)
 except:
     doError("error in step 2: " + str(sys.exc_info()[1]))
 
-# fudge some names
+# step 3
 try:
+
+    # fudge some names
     ZIP_NAME = os.path.basename(UPDATE_URL)
     SHORT_NAME = "KillSwitch-" + ZIP_NAME
     ZIP_FILE_NAME = SHORT_NAME + ".zip"
@@ -100,24 +107,28 @@ except:
 # except:
 #     doError(sys.exc_info()[0])
 
-# get actual source
-headers = {
-    "Authorization" : "token " + GITHUB_TOKEN,
-    "Accept" : "application/vnd.github.v3.raw"
-}
-
+# step 4
 try:
+    # get actual source
+    headers = {
+        "Authorization" : "token " + GITHUB_TOKEN,
+        "Accept" : "application/vnd.github.v3.raw"
+    }
     response = requests.get(UPDATE_URL, headers = headers)
     with open(ZIP_FILE_NAME, "wb") as file:
         file.write(response.content)
 except:
     doError("error in step 4: " + str(sys.exc_info()[1]))
 
-# unzip
+# step 5
 try:
+
+    # unzip
     ZIP_FILE = zipfile.ZipFile(ZIP_FILE_NAME)
     LONG_NAME = ZIP_FILE.namelist()[0]
     ZIP_FILE.extractall()
+
+    # rename and change into unzipped folder
     os.rename(LONG_NAME, SHORT_NAME)
     os.remove(ZIP_FILE_NAME)
     os.chdir(SHORT_NAME)
@@ -131,28 +142,29 @@ except:
 # except:
 #     doError("error in step 6: " + str(sys.exec_info()[1]))
 
-# run installer
+# step 6
 try:
+
+    # run installer (forked)
     os.chdir("Software/Bash")
     os.chmod("killswitch-install.sh", 0o0755)
     subprocess.call([
         "sudo",
-        "./killswitch-install.sh"
+        "./killswitch-install.sh",
+        "&"
     ])
 except:
-    doError("error in step 7: " + str(sys.exc_info()[1]))
+    doError("error in step 6: " + str(sys.exc_info()[1]))
 
 # NB: this won't get called if the user reboots after install
 
 # cleanup
 # remove unzipped folder and one-liner
-print("remove from latest")
-try:
-    #os.chdir(HOME_DIR)
-    shutil.rmtree(DOWNLOAD_DIR)
-    #os.remove("install-latest.py")
-except:
-    doError("error in step 8: " + str(sys.exc_info()[1]))
+# print("remove from latest")
+#
+# # remove any old downloads
+# if os.path.exists(DOWNLOAD_DIR):
+#     shutil.rmtree(DOWNLOAD_DIR)
 
 # exit cleanly
 sys.exit(0)
