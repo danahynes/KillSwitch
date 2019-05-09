@@ -55,6 +55,9 @@ SETTINGS_DIR = HOME_DIR + "/.killswitch"
 SETTINGS_FILE = SETTINGS_DIR + "/killswitch-settings.json"
 SETTINGS_DICT = {}
 
+DOWNLOAD_DIR = SETTINGS_DIR + "/latest"
+AVRDUDE_FILE = SETTINGS_DIR + "/killswitch-avrdude.conf"
+
 LEDN_DEFAULT = 255            # 0-255
 LPT_DEFAULT = 5               # in seconds
 
@@ -734,33 +737,39 @@ def doActualUpdate():
 
     if CODE == dlg.OK:
 
-        # change to download location
-        os.chdir(SETTINGS_DIR)
-
-        # get version number for zip/folder name
-        ZIP_NAME = os.path.basename(UPDATE_URL)
-        SHORT_NAME = "KillSwitch-" + ZIP_NAME
-        ZIP_FILE_NAME = SHORT_NAME + ".zip"
-
-        # NB: we really shouldn't delete directories if we aren't 100% sure
-        # they're ours. this dir would be in our settings folder, but the user
-        # could have another folder that starts with "KillSwitch-" and deleting
-        # it would be bad. better to let the user worry about deleting when
-        # done, or the installer could delete its ../.. owner folder, or
-        # overwrite when unzipping, etc.
-
-        # delete old dir if present
-        # for file in os.listdir("."):
-        #     if fnmatch.fnmatch(file, "KillSwitch-*"):
-        #         shutil.rmtree(file, ignore_errors = True)
-
-        # get actual source
-        headers = {
-            "Authorization" : "token " + GITHUB_TOKEN,
-            "Accept" : "application/vnd.github.v3.raw"
-        }
-
+        # step 2
         try:
+
+            # remove any old downloads
+            if os.path.exists(DOWNLOAD_DIR):
+                shutil.rmtree(DOWNLOAD_DIR)
+
+            # create download dir and change to it
+            os.makedirs(DOWNLOAD_DIR)
+            os.chdir(DOWNLOAD_DIR)
+        except:
+            doDownloadError()
+            return
+
+        # step 3
+        try:
+
+            # get version number for zip/folder name
+            ZIP_NAME = os.path.basename(UPDATE_URL)
+            SHORT_NAME = "KillSwitch-" + ZIP_NAME
+            ZIP_FILE_NAME = SHORT_NAME + ".zip"
+        except:
+            doDownloadError()
+            return
+
+        # step 4
+        try:
+
+            # get actual source
+            headers = {
+                "Authorization" : "token " + GITHUB_TOKEN,
+                "Accept" : "application/vnd.github.v3.raw"
+            }
             response = requests.get(UPDATE_URL, headers = headers)
             with open(ZIP_FILE_NAME, "wb") as file:
                 file.write(response.content)
@@ -768,59 +777,68 @@ def doActualUpdate():
             doDownloadError()
             return
 
-        # unzip
-        ZIP_FILE = zipfile.ZipFile(ZIP_FILE_NAME)
-        LONG_NAME = ZIP_FILE.namelist()[0]
-        ZIP_FILE.extractall()
-        os.rename(LONG_NAME, SHORT_NAME)
-        os.remove(ZIP_FILE_NAME)
-        os.chdir(SHORT_NAME)
+        # step 5
+        try:
+
+            # unzip
+            ZIP_FILE = zipfile.ZipFile(ZIP_FILE_NAME)
+            LONG_NAME = ZIP_FILE.namelist()[0]
+            ZIP_FILE.extractall()
+
+            # rename and change into unzipped folder
+            os.rename(LONG_NAME, SHORT_NAME)
+            os.remove(ZIP_FILE_NAME)
+            os.chdir(SHORT_NAME)
+        except:
+            doDownloadError()
+            return
 
         # do hardware first because software may cause reboot
+        try:
 
-        # do avrdude update with hex file
-        os.chdir("Firmware")
-        for file in os.listdir("."):
-            if file.endswith(".hex"):
-                FIRMWARE_FILE = file
+            # do avrdude update with hex file
+            os.chdir("Firmware")
+            for file in os.listdir("."):
+                if file.endswith(".hex"):
+                    FIRMWARE_FILE = file
 
-        RET = subprocess.call([
-            "avrdude",
-            "-p", CHIP_ID,
-            "-C", "+" + SETTINGS_DIR + "/killswitch-avrdude.conf",
-            "-c", "killswitch",
-            "-U", "flash:w:" + FIRMWARE_FILE + ":i",
-            "-U", "flash:v:" + FIRMWARE_FILE + ":i"
-        ])
+            RET = subprocess.call([
+                "avrdude",
+                "-p", CHIP_ID,
+                "-C", "+" + AVRDUDE_FILE,
+                "-c", "killswitch",
+                "-U", "flash:w:" + FIRMWARE_FILE + ":i",
+                "-U", "flash:v:" + FIRMWARE_FILE + ":i"
+            ])
 
-        print("avrdude:" + str(RET))
-        if RET != 0:
+            if RET != 0:
+                doHardwareUpdateError()
+
+                # NB: don't return here if we can still try software update
+                #return
+        except:
             doHardwareUpdateError()
+            return
 
-            # NB: don't return here if we can still try software update
-            #return
+        # step 6
+        try:
 
-        # run installer
-        os.chdir("../Software/Bash")
-        os.chmod("killswitch-install.sh", 0o0755)
-        RET = subprocess.call([
-            "sudo",
-            "./killswitch-install.sh"
-        ])
+            # run installer
+            os.chdir("../Software/Bash")
+            os.chmod("killswitch-install.sh", 0o0755)
+            RET = subprocess.call([
+                "sudo",
+                "./killswitch-install.sh"
+            ])
 
-        # NB: none of this will get called if installer reboots
-
-        if RET != 0:
+            if RET != 0:
+                doSoftwareUpdateError()
+                return
+        except:
             doSoftwareUpdateError()
             return
 
-        # remove unzipped folder (in .killswitch) & install-latest (in /home/pi)
-        os.chdir("../../..")
-        shutil.rmtree(SHORT_NAME)
-        os.chdir(HOME_DIR)
-        os.remove("install-latest.py")
-
-        # run new settings file
+        # if user did NOT reboot, re-run new settings in new shell
         subprocess.call([
             "/usr/local/bin/killswitch-settings.py",
             "&"
@@ -854,20 +872,24 @@ def doUpdate():
     LOCAL_VERSION_NUMBER_B = int(LOCAL_VERSION_NUMBERS[1])
     LOCAL_VERSION_NUMBER_C = int(LOCAL_VERSION_NUMBERS[2])
 
-    headers = {
-        "Authorization" : "token " + GITHUB_TOKEN,
-        "Accept" : "application/vnd.github.v3.raw"
-    }
-
+    # step 1
     try:
+
+        # get latest JSON
+        headers = {
+            "Authorization" : "token " + GITHUB_TOKEN,
+            "Accept" : "application/vnd.github.v3.raw"
+        }
         response = requests.get(GITHUB_URL, headers = headers)
         JSON = response.json()
     except:
         doDownloadError()
         return
 
+    # get path to zip file
     global UPDATE_URL
     UPDATE_URL = JSON["zipball_url"]
+
     ZIP_NAME = os.path.basename(UPDATE_URL)
     REMOTE_VERSION_NUMBER = ZIP_NAME.split("v")[1]
     REMOTE_VERSION_NUMBERS = REMOTE_VERSION_NUMBER.split(".")
