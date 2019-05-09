@@ -24,7 +24,7 @@ The software requires an OS of Raspbian Jessie or newer, or any other OS that
 uses "systemd". If you're not sure, Google is your friend -)
 
 ## A note on the serial port
-The Raspberry Pi 3 has two UARTs, one based on hardware, and one based on software. The hardware port is faster and more reliable, since the silicon is specifically designed to do one thing, and one thing only, and do it well. On the Raspberry Pi 3 (and newer), this port is, by default, used for Bluetooth for obvious reasons. The software port is reconfigured by KillSwitch to allow communication between the device and the Pi.
+The Raspberry Pi 3 has two UARTs, one based on hardware, and one based on software. The hardware port is faster and more reliable, since the silicon is specifically designed to do one thing, and one thing only, and do it well. On the Raspberry Pi 3 (and newer), this port is, by default, used for Bluetooth for obvious reasons. The software port is used for serial login (the ablility to log into, and control, the Pi over a standard RS-232 serial hardware connection). This port is reconfigured by KillSwitch to allow communication between the device and the Pi.
 
 That means that installing the software will turn off your ability to log in to the Pi using a serial console (getty/putty), as the software serial port (physical pins 8 and 10, labeled BCM 14 & BCM 15, and in Linux is known as /dev/ttyS0) is used to communicate to the device when using the settings script. If you don't know what this means, don't worry. You'll probably never use this feature. This does not affect the ability to use SSH or VNC to connect to the Pi, only to log in using getty or putty over a physical serial connection.
 
@@ -67,7 +67,7 @@ The hold time is configurable using "killswitch-settings.py" and selecting the "
 
 ## Settings
 ![Menu Image](Pics/menu.png)\
-The KillSwitch device can be configured by opening a terminal and typing "killswitch-settings.py". You can press "ESC" at any time to quit the program.\
+The KillSwitch device can be configured by opening a terminal and typing "killswitch-settings.py". You can press "ESC" at any time to quit the program (Any current changes will not be saved).\
 The following settings are available:
 
 #### LED options
@@ -89,7 +89,7 @@ Sets the brightness of the LED, from 0 to 255, when the LED flashes/pulses durin
 Sets the brightness of the LED, from 0 to 255, when the Pi is completely shut down and powered off. The default is 0.
 
 #### Start recording
-Select this item and read the instructions that follow (or read the above section on "Use") to program the device to recognize new infrared remote commands to turn the Pi on and off.
+Select this item and read the instructions that follow (or read the above section on "First use") to program the device to recognize new infrared remote commands to turn the Pi on and off.
 
 #### Long press time
 This setting determines how long, in seconds (from 1 to 10), the physical push button on the device must be held down to either start recording new codes, or reboot/force quit the Pi. The default is 5 seconds.
@@ -102,7 +102,7 @@ Here you can set what happens when the physical push button on the device is hel
 #### Restart after power failure
 AKA "My favorite feature"
 
-This option lets you decide if the Pi is rebooted after an unexpected power failure. If this option is selected, and the the Pi was running, and power to the device was lost without a proper shutdown, KillSwitch will automagically boot the Pi once power is restored. If the option is unselected, you will need to use the physical button/remote button to turn the Pi back on after power is restored. This is a very handy feature if the Pi is used as a file/media server.
+This option lets you decide if the Pi is rebooted after an unexpected power failure. If this option is selected, and the the Pi was running, and power to the device was lost without a proper shutdown, KillSwitch will automagically boot the Pi once power is restored. If the option is unselected, you will need to use the physical button/remote button to turn the Pi back on after power is restored. This is a very handy feature if the Pi is used as a file/media server, or the button/power supply is inaccessible.
 
 Note that the whole point of KillSwitch is that it is unsafe/unwise to simply remove power from the Pi without a safe shutdown. Therefore, the device will restore power to the Pi and attempt to boot it, however if the SD card in the Pi was corrupted during the power loss, it may not boot. The device will only restore power to the Pi, after that it's up to the Pi (and the integrity of it's SD card) to decide if it will actually boot up.
 
@@ -156,22 +156,22 @@ The connector labeled "J3" has 14 pins. These pins are normally used to connect 
 | 13 | 11 | 9  | 7 | 5 | 3 | 1 | Mounting |
 | 14 | 12 | 10 | 8 | 6 | 4 | 2 | Hole ( ) |
 
-| Pin # | Label  | Connection         |
-|-------|--------|--------------------|
-| 1     | +3v3   | no connection      |
-| 2     | +5v    | 5 volt + to the Pi |
-| 3     | BCM 2  | FEEDBACK           |
-| 4     | +5v    | 5 volt + to the Pi |
-| 5     | BCM 3  | TRIGGER            |
-| 6     | GND    | GND                |
-| 7     | BCM 4  | RESET              |
-| 8     | BCM 14 | RX                 |
-| 9     | GND    | GND                |
-| 10    | BCM 15 | TX                 |
-| 11    | BCM 17 | MOSI               |
-| 12    | BCM 18 | MISO               |
-| 13    | BCM 27 | SCK                |
-| 14    | GND    | GND                |
+| Pin # | Label  | Connection    |
+|-------|--------|---------------|
+| 1     | +3v3   | no connection |
+| 2     | +5v    | +5v to the Pi |
+| 3     | BCM 2  | FEEDBACK      |
+| 4     | +5v    | +5v to the Pi |
+| 5     | BCM 3  | TRIGGER       |
+| 6     | GND    | GND           |
+| 7     | BCM 4  | RESET         |
+| 8     | BCM 14 | RX            |
+| 9     | GND    | GND           |
+| 10    | BCM 15 | TX            |
+| 11    | BCM 17 | MOSI          |
+| 12    | BCM 18 | MISO          |
+| 13    | BCM 27 | SCK           |
+| 14    | GND    | GND           |
 
 There is also a small set of jumper pads near the USB connector, labeled "JP1". These pads control whether the Power indicator LED is enabled. To enable the LED to indicate whether power is applied to the KillSwitch, place a small solder blob across these two pads. To disable the Power indicator LED, remove the solder blob.
 
@@ -189,6 +189,6 @@ See Firmware/lib/IRremote/README.md for more info.
 
 All other source code for the firmware, hardware, and software is copyright (c) 2019 Dana Hynes, and is licensed under the WTFPL v2. See the LICENSE file or http://www.wtfpl.net/ for more info.
 
-Happy coding!
+Happy hacking!
 
 # -)
