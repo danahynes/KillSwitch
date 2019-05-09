@@ -15,6 +15,7 @@
 
 VERSION_NUMBER="0.5.20"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
+DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
 
 #-------------------------------------------------------------------------------
 # helpers
@@ -72,25 +73,6 @@ DEPS=(\
     python3-requests \
     python3-serial \
 )
-
-# echo "Checking dependencies..."
-# echo ""
-#
-# # TODO: if no python3-dialog, need "pip3 install pythondialog" (on laptop)
-#
-# for i in ${DEPS[@]}; do
-#     echo -n "Searching for ${i}... "
-#     RES=$(apt-cache search "^${i}$")
-#     if [ "$RES" != "" ]; then
-#         echo "Found"
-#     else
-#         echo "Not found"
-#         echo "Aborting install"
-#         exit 1
-#     fi
-# done
-#
-# echo ""
 
 echo "Installing dependencies..."
 echo ""
@@ -354,25 +336,8 @@ echo ""
 
 #-------------------------------------------------------------------------------
 # cleanup
-echo "cleanup"
 
-# move to settings dir
-cd "/home/${SUDO_USER}/.killswitch"
-
-rm -rf "latest"
-
-# remove unzipped folder
-# pattern="KillSwitch-v"
-# for _dir in "${pattern}"*; do
-#     [ -d "${_dir}" ] && dir="${_dir}" && break
-# done
-# rm -r "${dir}" 2> /dev/null
-
-# remove install-latest.py
-# if [ -f "install-latest.py" ]; then
-#     echo "removing from installer"
-#     rm "install-latest.py" > /dev/null 2>&1
-# fi
+rm -rf "${DOWNLOAD_DIR}" 2>&1 /dev/null
 
 #-------------------------------------------------------------------------------
 # ask for reboot
