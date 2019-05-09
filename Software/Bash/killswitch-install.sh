@@ -59,7 +59,10 @@ echo ""
 #-------------------------------------------------------------------------------
 # do update/upgrade
 
+echo "Running apt-get update..."
 apt-get update
+
+echo "Running apt-get upgrade..."
 apt-get upgrade
 
 #-------------------------------------------------------------------------------
@@ -88,6 +91,7 @@ apt-get install $INSTALL_STR
 check_error "Error installing dependencies"
 
 # a little cleanup if needed
+echo "Running apt-get autoremove..."
 apt-get autoremove
 
 echo "Done"
@@ -202,7 +206,7 @@ echo "Done"
 echo -n "Finishing permissions... "
 
 # set owner of .bash_aliases
-chown "${SUDO_USER}:${SUDO_USER} /home/${SUDO_USER}/.bash_aliases"
+chown "${SUDO_USER}:${SUDO_USER}" "/home/${SUDO_USER}/.bash_aliases"
 
 # pull in new bash aliases
 source "/home/${SUDO_USER}/.bash_aliases"
@@ -292,7 +296,7 @@ echo -n "Creating settings directory... "
 if [ ! -d "${SETTINGS_DIR}" ]; then
     mkdir -p "${SETTINGS_DIR}"
     check_error "Failed"
-    chown "${SUDO_USER}" "${SETTINGS_DIR}"
+    chown "${SUDO_USER}:${SUDO_USER}" "${SETTINGS_DIR}"
     check_error "Failed"
 fi
 
