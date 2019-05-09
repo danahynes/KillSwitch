@@ -201,6 +201,9 @@ echo "Done"
 
 echo -n "Finishing permissions... "
 
+# set owner of .bash_aliases
+chown "${SUDO_USER}:${SUDO_USER} /home/${SUDO_USER}/.bash_aliases"
+
 # pull in new bash aliases
 source "/home/${SUDO_USER}/.bash_aliases"
 
