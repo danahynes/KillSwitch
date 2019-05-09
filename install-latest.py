@@ -48,7 +48,7 @@ def doError(error):
     print("Installation failed: ", error)
 
     # TODO: need to delete anything create by now (.killswitch)
-    
+
     sys.exit(1)
 
 #-------------------------------------------------------------------------------
@@ -56,6 +56,8 @@ def doError(error):
 
 # step 1
 try:
+    print("Getting URL to latest release...")
+
     # get latest JSON
     headers = {
         "Authorization" : "token " + GITHUB_TOKEN,
@@ -71,6 +73,7 @@ except:
 
 # step 2
 try:
+    print("Removing old directories...")
 
     # remove any old downloads
     if os.path.exists(DOWNLOAD_DIR):
@@ -85,6 +88,8 @@ except:
 # step 3
 try:
 
+    print("Creating path names...")
+
     # fudge some names
     ZIP_NAME = os.path.basename(UPDATE_URL)
     SHORT_NAME = "KillSwitch-" + ZIP_NAME
@@ -92,23 +97,10 @@ try:
 except:
     doError("error in step 3: " + str(sys.exc_info()[1]))
 
-# NB: we really shouldn't delete directories if we aren't 100% sure they're
-# ours. this dir would be in the user's home folder, so they could have another
-# folder that starts with "KillSwitch-" and deleting it would be bad. better to
-# let the user worry about deleting when done, or the installer could delete
-# its ../.. owner folder, or overwrite when unzipping, etc.
-# this code is left for posterity
-#
-# remove old dir if necessary
-# try:
-#     for file in os.listdir("."):
-#         if fnmatch.fnmatch(file, "KillSwitch-*"):
-#             shutil.rmtree(file, ignore_errors = True)
-# except:
-#     doError(sys.exc_info()[0])
-
 # step 4
 try:
+    print("Downloading latest release...")
+
     # get actual source
     headers = {
         "Authorization" : "token " + GITHUB_TOKEN,
@@ -122,6 +114,7 @@ except:
 
 # step 5
 try:
+    print("Unzipping latest release...")
 
     # unzip
     ZIP_FILE = zipfile.ZipFile(ZIP_FILE_NAME)
@@ -135,36 +128,20 @@ try:
 except:
     doError("error in step 5: " + str(sys.exc_info()[1]))
 
-# remove ourself
-# try:
-#     os.chdir(os.getcwd())
-#     os.remove("install-latest.py")
-# except:
-#     doError("error in step 6: " + str(sys.exec_info()[1]))
-
 # step 6
 try:
+    print("Running installer...")
+    print("")
 
     # run installer (forked)
     os.chdir("Software/Bash")
     os.chmod("killswitch-install.sh", 0o0755)
     subprocess.call([
         "sudo",
-        "./killswitch-install.sh",
-        "&"
+        "./killswitch-install.sh"
     ])
 except:
     doError("error in step 6: " + str(sys.exc_info()[1]))
-
-# NB: this won't get called if the user reboots after install
-
-# cleanup
-# remove unzipped folder and one-liner
-# print("remove from latest")
-#
-# # remove any old downloads
-# if os.path.exists(DOWNLOAD_DIR):
-#     shutil.rmtree(DOWNLOAD_DIR)
 
 # exit cleanly
 sys.exit(0)
