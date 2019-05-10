@@ -141,8 +141,8 @@ echo ""
 
 echo "***************************************************"
 echo ""
-echo "The following dependencies may have been installed with KillSwitch:"
-echo "python3, python3-dialog, python3-gpiozero, python3-requests, \
+echo -e "The following dependencies may have been installed with KillSwitch:"
+echo "python3, python3-dialog, python3-gpiozero, python3-requests, \n
 python3-serial, avrdude"
 echo "You can remove them if you wish using apt-get."
 echo ""
