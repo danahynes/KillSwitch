@@ -147,7 +147,7 @@ python3-serial, avrdude"
 echo "You can remove them if you wish using apt-get."
 echo ""
 echo "If you wish to turn the login console back on, you can use the "
-echo "raspi-setup script."
+echo "raspi-config script."
 
 #-------------------------------------------------------------------------------
 # ask for reboot
