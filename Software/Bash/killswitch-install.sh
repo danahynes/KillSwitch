@@ -354,7 +354,7 @@ echo ""
 echo "You need to reboot the pi to complete installation."
 read -p "Do you want to reboot now? (Y/n) [default=yes]" ANSWER
 case "${ANSWER}" in
-    [Nn]* ) exit 1;;
+    [Nn]* ) exit 0;;
         * ) shutdown -r now;;
 esac
 
