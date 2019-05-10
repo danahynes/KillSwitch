@@ -2383,7 +2383,7 @@
     (arrow2a (pts (xy 166.605124 68.993) (xy 166.018703 70.119504)))
     (arrow2b (pts (xy 166.605124 68.993) (xy 167.191545 70.119504)))
   )
-  (gr_text "KillSwitch\nv0.5.20" (at 143.49 77.502) (layer B.SilkS)
+  (gr_text "KillSwitch\nv0.5.21" (at 143.49 77.502) (layer B.SilkS)
     (effects (font (size 1.5 1.5) (thickness 0.3)) (justify mirror))
   )
   (gr_text BTN- (at 138.918 101.124) (layer F.SilkS)
