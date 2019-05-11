@@ -127,7 +127,7 @@ echo ""
 
 #-------------------------------------------------------------------------------
 # remove RetroPie port
-
+# TODO: RetroPie
 # if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
 # 	echo -n "Removing RetroPie port... "
 # 	rm "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch"
@@ -157,7 +157,7 @@ echo ""
 echo "You need to reboot the pi to complete uninstallation."
 read -p "Do you want to reboot now? (Y/n) [default=yes]" ANSWER
 case "${ANSWER}" in
-    [Nn]* ) exit;;
+    [Nn]* ) exit 0;;
         * ) shutdown -r now;;
 esac
 
