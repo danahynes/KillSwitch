@@ -133,9 +133,8 @@ except:
 # step 6
 try:
     print("Running installer...")
-    print("")
 
-    # run installer (forked)
+    # run installer
     os.chdir("Software/Bash")
     os.chmod("killswitch-install.sh", 0o0755)
     subprocess.call([
