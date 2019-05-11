@@ -267,6 +267,7 @@ UNINSTALL_HEIGHT = 10
 UNINSTALL_WIDTH = 40
 UNINSTALL_COMMAND = "/usr/local/bin/killswitch-uninstall.sh"
 
+# TODO: RetroPie
 # JOY_2_KEY_DIR = HOME_DIR + "/RetroPie/scriptmodules/supplementary/runcommand/"
 # JOY_2_KEY_CMD = "joy2key.py"
 # JOY_2_KEY_DEVICE = "/dev/input/jsX"
@@ -293,7 +294,6 @@ PWR_STATE = STATE_OFF
 UPDATE_TEXT = ""
 UPDATE_URL = ""
 
-#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 # Helpers
 
@@ -937,7 +937,6 @@ def doUninstall():
 
     return CODE
 
-#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 # Init
 
