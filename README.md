@@ -125,7 +125,7 @@ This script also requires running as root, so please make sure you have a keyboa
 
 ## RetroPie
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
-THIS DOES NOT WORK - STILL NOODLING OUT THE FINAL CODE\
+TODO: RETROPIE - THIS DOES NOT WORK - STILL NOODLING OUT THE FINAL CODE\
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 The software installed on your Pi is compatible with RetroPie. Where you see "killswitch-settings.py" above, select "KillSwitch" from the "Ports" menu item.
 
@@ -133,7 +133,7 @@ When you install the software on a system that has RetroPie, a shortcut to "kill
 
 Specific buttons to use depend on your setup, but the defaults are that the A button is Enter, and the B button is\
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
-TODO: FINISH THIS PART AFTER TESTING\
+TODO: RETROPIE - FINISH THIS PART AFTER TESTING\
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 
 ## Connectors
