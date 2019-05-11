@@ -161,7 +161,7 @@ Text GLabel 6000 3600 0    60   Input ~ 0
 TR_A
 Text GLabel 6000 3800 0    60   Input ~ 0
 FB_A
-Text GLabel 6000 2700 0    60   Input ~ 0
+Text GLabel 6000 3200 0    60   Input ~ 0
 MOSI_A
 Text GLabel 6000 2600 0    60   Input ~ 0
 RST_A
@@ -172,9 +172,9 @@ Wire Wire Line
 	4750 4250 4750 4600
 Wire Wire Line
 	4750 4900 4750 5200
-Text GLabel 6000 3300 0    60   Input ~ 0
+Text GLabel 6000 2900 0    60   Input ~ 0
 TX_A
-Text GLabel 6000 3200 0    60   Input ~ 0
+Text GLabel 6000 2800 0    60   Input ~ 0
 RX_A
 $Comp
 L power:GND #PWR07
@@ -273,7 +273,7 @@ Text GLabel 6700 1750 0    60   Input ~ 0
 MOSI_P
 Text GLabel 7800 1750 2    60   Input ~ 0
 MISO_P
-Text GLabel 6000 2900 0    60   Input ~ 0
+Text GLabel 6000 3300 0    60   Input ~ 0
 MISO_A
 Text GLabel 6000 3400 0    60   Input ~ 0
 SCK_A
@@ -491,10 +491,6 @@ Wire Wire Line
 	8400 3800 8400 4050
 Connection ~ 8400 3800
 Wire Wire Line
-	4000 4850 4000 2800
-Wire Wire Line
-	4000 2800 6300 2800
-Wire Wire Line
 	2500 2600 6300 2600
 Wire Wire Line
 	6300 3500 4750 3500
@@ -532,8 +528,6 @@ Wire Wire Line
 	6900 1650 6900 1950
 Wire Wire Line
 	7500 1650 7800 1650
-Wire Wire Line
-	6000 2700 6300 2700
 Wire Wire Line
 	6000 2900 6300 2900
 Wire Wire Line
@@ -1004,4 +998,10 @@ Wire Wire Line
 	3100 4400 3100 4350
 Wire Wire Line
 	3100 4350 3300 4350
+Wire Wire Line
+	6000 2800 6300 2800
+Wire Wire Line
+	4000 2700 4000 4850
+Wire Wire Line
+	4000 2700 6300 2700
 $EndSCHEMATC

@@ -47,7 +47,9 @@ locale.setlocale(locale.LC_ALL, '')
 def doError(error):
     print("Installation failed: ", error)
 
-    # TODO: need to delete anything create by now (.killswitch)
+    # delete anything create by now (.killswitch)
+    if os.path.exists(SETTINGS_DIR):
+        shutil.rmtree(SETTINGS_DIR)
 
     sys.exit(1)
 

@@ -25,8 +25,9 @@ check_error() {
         echo "${1}"
         echo "Aborting install"
 
-        # TODO: clean up (remove) any dirs created at this point (.killswitch)
+        # clean up (remove) any dirs created at this point (.killswitch)
         # and any copied files
+        rm -rf "${SETTINGS_DIR}"
 
         exit 1
     fi
