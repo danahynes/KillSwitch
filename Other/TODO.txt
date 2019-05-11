@@ -67,10 +67,9 @@ DONE: fix relative paths? installer, uninstaller, any bash script
 DONE: tell folks about pinout for female header so they can do custom wiring of
     PWR/GND/ICSP/serial/feedback/trigger
 
-
-first step for install-latest, update is create .killswitch
-download everything there
-delete in error
+DONE: first step for install-latest, update is create .killswitch
+    download everything there
+    delete in error
 
 
 
