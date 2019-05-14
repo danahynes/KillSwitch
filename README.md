@@ -36,7 +36,7 @@ To install the firmware for the first time, you do not need a programmer, use th
 
 ## First use
 To set up your KillSwitch for the first time, follow these steps:
-1. After following the above steps to install the software and firmware, attach the KillSwitch to your Pi and plug the power source in to the KillSwitch.
+1. After following the above steps to install the software and firmware, attach the KillSwitch to your Pi and plug the power source in to the KillSwitch. The KillSwitch device uses the same USB Micro B power supply that the Pi uses, so you just have to move the plug from the Pi to the KillSwitch.
 2. Press and hold the push button on the device for a few seconds (The default is 5 seconds, but this can be changed using the Settings program, see below). The status LED will begin flashing rapidly. Release the button.
 3. Point the remote at the device's IR receiver and press the button on the remote that you want to use as the "On" button (note that you have 15 seconds before the device exits the programming mode). The status LED will flash once slowly, then flash rapidly again.
 4. Press the button on the remote that you want to use as the "Off" button (again, you have 15 seconds before the device exits programming mode). It can be the same as the "On" button if you wish, creating a "toggle" button. The status LED will flash twice slowly, then turn off.
@@ -46,7 +46,7 @@ During programming, the button works in the following ways:
 * If the button is pressed quickly, and you are currently recording the "On" code, the "On" code is left unchanged, and Programming is set to record a new "Off" code ("Skip code" in the table below).
 * If the button is pressed quickly, and you are currently recording the "Off" code, the Programming mode is exited, and the new "Off" code is the same as the previously recorded "On" code ("Copy code" in the table below).
 
-That's it! Your KillSwitch will now turn power on to the Pi when you press the "On" remote button, and will safely shut down and power off when you press the "Off" remote button (or the "On" button again, if the buttons are the same).
+That's it! Your KillSwitch will now turn power on to the Pi when you press the "On" remote button, or press the hardware button once, and will safely shut down and power off when you press the "Off" remote button (or the "On" button again, if the buttons are the same), or press the hardware button again.
 
 To change the remote codes, you can either shut down the Pi and repeat the steps above, or you can use the Settings program by typing in a terminal "killswitch-settings.py" and selecting the "Start recording" option.
 
@@ -96,7 +96,7 @@ This setting determines how long, in seconds (from 1 to 10), the physical push b
 
 #### Long press action
 Here you can set what happens when the physical push button on the device is held down for the Long Press Time when the Pi is running (see above). Holding the button down when the Pi is off will always enter programming mode.
-* Reboot (default) - sends the "reboot" command the the Pi, which will shut down safely and restart. If the Pi is not responding, holding down the button may have no effect and you will need to remove the power plug from the device, or remove the device from the Pi to shut it off.
+* Reboot (default) - sends the "reboot" command the the Pi, which will safely shut down and restart. If the Pi is not responding, holding down the button may have no effect and you will need to remove the power plug from the device, or remove the device from the Pi to shut it off.
 * Force quit - if you prefer to have the device cut the power completely to the Pi when it is not responding (same as pulling out the power plug), set this option. This option is useful if the power plug is not easily accessible, but the physical button is (for instance, an enclosure where the button is custom-mounted in a different location, see the below section about connector "J2").
 
 #### Restart after power failure
@@ -106,10 +106,12 @@ This option lets you decide if the Pi is rebooted after an unexpected power fail
 
 Note that the whole point of KillSwitch is that it is unsafe/unwise to simply remove power from the Pi without a safe shutdown. Therefore, the device will restore power to the Pi and attempt to boot it, however if the SD card in the Pi was corrupted during the power loss, it may not boot. The device will only restore power to the Pi, after that it's up to the Pi (and the integrity of it's SD card) to decide if it will actually boot up.
 
+This also applies to the sections above about reboot/force quit. The KillSwitch device only handles power, and can not adjust for SD card corruption. Your Mileage May Vary.
+
 #### Install RetroPie shortcut
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 THIS DOES NOT WORK - STILL NOODLING OUT THE FINAL CODE\
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 This setting can be used if the software was originally installed on a Raspbian/Other OS system, and you have since installed RetroPie. It places a shortcut named "KillSwitch" in the "Ports" system and allows you to access the Settings program using a plugged in/paired controller. It is equivalent to symlinking "/usr/local/bin/killswitch-settings.py" to
 "~/RetroPie/roms/ports/KillSwitch".
 
@@ -124,17 +126,17 @@ This one is pretty self-explanatory. It uninstalls almost all the files/folders 
 This script also requires running as root, so please make sure you have a keyboard attached/paired to the Pi to enter the root password.
 
 ## RetroPie
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 TODO: RETROPIE - THIS DOES NOT WORK - STILL NOODLING OUT THE FINAL CODE\
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 The software installed on your Pi is compatible with RetroPie. Where you see "killswitch-settings.py" above, select "KillSwitch" from the "Ports" menu item.
 
 When you install the software on a system that has RetroPie, a shortcut to "killswitch-settings.py" will be installed in the "Ports" directory (as "KillSwitch"), where you can access it and use it with a paired game controller. Use the D-Pad to navigate between menu options, and the A/B buttons to accept/cancel. (So far it is tested on a Pi 3 B+ with RetroPie v4.4, but it should work on any newer Pi hardware and RetroPie software). Note that the installer/uninstaller will need a root password, for which you will need a keyboard attached/paired to the Pi.
 
 Specific buttons to use depend on your setup, but the defaults are that the A button is Enter, and the B button is\
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 TODO: RETROPIE - FINISH THIS PART AFTER TESTING\
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 
 ## Connectors
 The connector labeled "J2" has 7 pins. These pins can be used to remotely locate the button/status LED/IR receiver. Starting from the pin closest to the physical push button, they are:
@@ -149,7 +151,7 @@ The connector labeled "J2" has 7 pins. These pins can be used to remotely locate
 | 6     | IR SIG | IR reciever signal       |
 | 7     | IR -   | IR receiver GND          |
 
-The connector labeled "J3" has 14 pins. These pins are normally used to connect to the Raspberry Pi's 40 pin GPIO header, but they can be used to remotely connect the device to the Pi, if necessary. The pins are numbered odd-even, starting from pin 1 (top right, when viewed from above, closest to the mounting hole), Looking at the connector from the top, they are numbered:
+The connector labeled "J3" has 14 pins. These pins are normally used to connect to the Raspberry Pi's 40 pin GPIO header, but they can be used to remotely connect the device to the Pi, if necessary. The pins are numbered odd-even, starting from pin 1 (top right, when viewed from above, closest to the mounting hole). Looking at the connector from the top, they are numbered:
 
 |    |    |    |   |   |   |   |          |
 |----|----|----|---|---|---|---|----------|
@@ -164,18 +166,20 @@ The connector labeled "J3" has 14 pins. These pins are normally used to connect 
 | 4     | +5v    | +5v to the Pi |
 | 5     | BCM 3  | TRIGGER       |
 | 6     | GND    | GND           |
-| 7     | BCM 4  | RESET         |
+| 7     | BCM 4  | RESET (ICSP)  |
 | 8     | BCM 14 | RX            |
 | 9     | GND    | GND           |
 | 10    | BCM 15 | TX            |
-| 11    | BCM 17 | MOSI          |
-| 12    | BCM 18 | MISO          |
-| 13    | BCM 27 | SCK           |
+| 11    | BCM 17 | MOSI (ICSP)   |
+| 12    | BCM 18 | MISO (ICSP)   |
+| 13    | BCM 27 | SCK  (ICSP)   |
 | 14    | GND    | GND           |
+
+FEEDBACK and TRIGGER are the connections used to sync the KillSwitch device to the Pi. TX and RX are the connections used to communicate between the device and the Pi when using the killswitch-settings app. ICSP connections are used to update the firmware on the device. +5v and GND are the connections used to power/unpower the Pi.
 
 There is also a small set of jumper pads near the USB connector, labeled "JP1". These pads control whether the Power indicator LED is enabled. To enable the LED to indicate whether power is applied to the KillSwitch, place a small solder blob across these two pads. To disable the Power indicator LED, remove the solder blob.
 
-The status LED on the KillSwitch can be disabled using the Settings app, as stated above. You can also turn off the Pi's power and activity LEDs using this link: https://www.jeffgeerling.com/blogs/jeff-geerling/controlling-pwr-act-leds-raspberry-pi (not tested, YMMV)
+The status LED on the KillSwitch can be disabled using the Settings app, as stated above. You can also turn off the Pi's power and activity LEDs for a truly "dark" experience using this link: https://www.jeffgeerling.com/blogs/jeff-geerling/controlling-pwr-act-leds-raspberry-pi (not tested, YMMV)
 
 ## Source code
 The source code is arranged as an [Atom](https://ide.atom.io) project (which has been discontinued, sigh...), and the firmware is built using the [PlatformIO](https://platformio.org) plugin.
