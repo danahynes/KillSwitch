@@ -27,8 +27,6 @@ import zipfile
 
 VERSION_NUMBER = "0.1.0"
 
-# TODO: hide this
-GITHUB_TOKEN = "3868839158c75239f3ed89a4aedfe620e72156b4"
 GITHUB_URL = "https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 
 HOME_DIR = os.path.expanduser("~")
@@ -61,11 +59,7 @@ try:
     print("Getting URL to latest release...")
 
     # get latest JSON
-    headers = {
-        "Authorization" : "token " + GITHUB_TOKEN,
-        "Accept" : "application/vnd.github.v3.raw"
-    }
-    response = requests.get(GITHUB_URL, headers = headers)
+    response = requests.get(GITHUB_URL)
     JSON = response.json()
 
     # get path to zip file
@@ -103,12 +97,7 @@ except:
 try:
     print("Downloading latest release...")
 
-    # get actual source
-    headers = {
-        "Authorization" : "token " + GITHUB_TOKEN,
-        "Accept" : "application/vnd.github.v3.raw"
-    }
-    response = requests.get(UPDATE_URL, headers = headers)
+    response = requests.get(UPDATE_URL)
     with open(ZIP_FILE_NAME, "wb") as file:
         file.write(response.content)
 except:

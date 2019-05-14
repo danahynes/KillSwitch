@@ -43,8 +43,6 @@ else:
     SERIAL_PORT = "/dev/ttyS0"
 SERIAL_SPEED = 9600
 
-# TODO: hide this
-GITHUB_TOKEN = "3868839158c75239f3ed89a4aedfe620e72156b4"
 GITHUB_URL = "https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 
 CHIP_ID = "atmega328p"
@@ -766,11 +764,7 @@ def doActualUpdate():
         try:
 
             # get actual source
-            headers = {
-                "Authorization" : "token " + GITHUB_TOKEN,
-                "Accept" : "application/vnd.github.v3.raw"
-            }
-            response = requests.get(UPDATE_URL, headers = headers)
+            response = requests.get(UPDATE_URL)
             with open(ZIP_FILE_NAME, "wb") as file:
                 file.write(response.content)
         except:
@@ -876,11 +870,7 @@ def doUpdate():
     try:
 
         # get latest JSON
-        headers = {
-            "Authorization" : "token " + GITHUB_TOKEN,
-            "Accept" : "application/vnd.github.v3.raw"
-        }
-        response = requests.get(GITHUB_URL, headers = headers)
+        response = requests.get(GITHUB_URL)
         JSON = response.json()
     except:
         doDownloadError()
