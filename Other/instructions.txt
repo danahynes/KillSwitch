@@ -34,10 +34,6 @@ add serial code to firmware to read/write new setting in loop()
 add code to software settings init to see if new setting has a value
 if it's blank, write the default to the conf file
 
-clone github repo on pi:
-
-cd ~/Downloads; rm -rf KillSwitch; git clone https://danahynes:5447Wasmynumber@github.com/danahynes/KillSwitch.git; cd KillSwitch/Software/Bash; sudo ./killswitch-install.sh
-
 to create new release of master:
 
 update number in Other/make-release.py
@@ -58,11 +54,16 @@ write title as vX.X.X
 write description
 publish release
 
+clone github repo on pi:
+
+cd ~/Downloads; rm -rf KillSwitch; git clone https://danahynes:5447Wasmynumber@github.com/danahynes/KillSwitch.git; cd KillSwitch/Software/Bash; sudo ./killswitch-install.sh
+
 one-liner:
 
 sudo apt-get update && sudo apt-get upgrade &&
 
 curl -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" -H "Accept: application/vnd.github.v3.raw" -O https://api.github.com/repos/danahynes/KillSwitch/contents/install-latest.py && chmod +x install-latest.py && python3 install-latest.py
+curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-latest.py && chmod +x install-latest.py && ./install-latest.py
 
 loopback serial for testing:
 
