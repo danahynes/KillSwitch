@@ -46,7 +46,7 @@ run Other/make-release.py
 
 open/close killswitch-firmware_X.X.X.hex to stage it
 
-commit/push
+commit/push 
 
 log into github
 go to repo
