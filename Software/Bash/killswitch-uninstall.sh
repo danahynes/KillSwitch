@@ -144,9 +144,9 @@ echo ""
 echo -e "The following dependencies may have been installed with KillSwitch:"
 echo "python3, python3-dialog, python3-gpiozero, python3-requests, \n
 python3-serial, avrdude"
-echo "You can remove them if you wish using apt-get."
+echo "You can remove them using apt-get."
 echo ""
-echo "If you wish to turn the login console back on, you can use the "
+echo "If you want to turn the login console back on, you can use the "
 echo "raspi-config script."
 
 #-------------------------------------------------------------------------------
