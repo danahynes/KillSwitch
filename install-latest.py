@@ -25,7 +25,7 @@ import zipfile
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.1.1"
+VERSION_NUMBER = "0.1.0"
 
 GITHUB_URL = "https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 
