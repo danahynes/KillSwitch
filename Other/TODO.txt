@@ -33,6 +33,8 @@ DONE: kicad pi3/pi0 common folder for silkscreen footprint/sheet logos/default w
 DONE: pi0 README
 DONE: we can remove logos for sheet i think? they are in the wks files as svg points?
 
+add JST and pins for power in
+
 DONE: update: pi may reboot after update, do we deal with this?
     if user DOESN'T reboot, settings re-runs itself and shows new version number
     escaping from new version goes back to old? should we just bail? FORK!!!
