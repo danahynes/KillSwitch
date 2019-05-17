@@ -32,6 +32,9 @@ GITHUB_URL = "https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 HOME_DIR = os.path.expanduser("~")
 SETTINGS_DIR = HOME_DIR + "/.killswitch"
 DOWNLOAD_DIR = SETTINGS_DIR + "/latest"
+RETROPIE_DIR = HOME_DIR + "/RetroPie-Setup"
+RETROPIE_URL="https://raw.githubusercontent.com/danahynes/killswitch/master/install-retropie.sh"
+RETROPIE_INSTALL_NAME = RETROPIE_DIR + "/install-retropie.sh"
 
 #-------------------------------------------------------------------------------
 # Init
@@ -53,6 +56,24 @@ def doError(error):
 
 #-------------------------------------------------------------------------------
 # Main code
+
+# Step 0
+# if we are on retropie, use a whole different animal
+try:
+    if os.path.exists(RETROPIE_DIR):
+        response = requests.get(RETROPIE_URL)
+        with open(RETROPIE_INSTALL_NAME, "wt") as file:
+            file.write(response.content)
+        os.chdir(RETROPIE_DIR)
+        os.chmod(RETROPIE_INSTALL_NAME, 0o0755)
+        subprocess.call([
+            "sudo",
+            RETROPIE_INSTALL_NAME,
+            "&"
+        ])
+        sys.exit(0)
+except:
+    doError("error in step 0: " + str(sys.exc_info()[1]))
 
 # step 1
 try:

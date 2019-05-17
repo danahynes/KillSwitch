@@ -31,9 +31,8 @@ DONE: kicad add my logo/osh logo to common folder for new sheets
 DONE: "designed with kicad" logo in block? (same as silkscreen)
 DONE: kicad pi3/pi0 common folder for silkscreen footprint/sheet logos/default wks
 DONE: pi0 README
-DONE: we can remove logos for sheet i think? they are in the wks files as svg points?
-
-add JST and pins for power in
+DONE: we can remove logos for sheet i think? they are in the wks files as svg points
+DONE: add JST and pins for power in
 
 DONE: update: pi may reboot after update, do we deal with this?
     if user DOESN'T reboot, settings re-runs itself and shows new version number
@@ -73,7 +72,10 @@ DONE: first step for install-latest, update is create .killswitch
     download everything there
     delete in error
 
-
+RETROPIE
+    deps in install-retropie.sh
+    icon in install-retropie.sh
+    
 
 
 
