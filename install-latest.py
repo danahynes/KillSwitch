@@ -59,21 +59,21 @@ def doError(error):
 
 # Step 0
 # if we are on retropie, use a whole different animal
-try:
-    if os.path.exists(RETROPIE_DIR):
-        response = requests.get(RETROPIE_URL)
-        with open(RETROPIE_INSTALL_NAME, "wb") as file:
-            file.write(response.content)
-        os.chdir(RETROPIE_DIR)
-        os.chmod(RETROPIE_INSTALL_NAME, 0o0755)
-        subprocess.call([
-            "sudo",
-            RETROPIE_INSTALL_NAME,
-            "&"
-        ])
-        sys.exit(0)
-except:
-    doError("error in step 0: " + str(sys.exc_info()[1]))
+# try:
+#     if os.path.exists(RETROPIE_DIR):
+#         response = requests.get(RETROPIE_URL)
+#         with open(RETROPIE_INSTALL_NAME, "wb") as file:
+#             file.write(response.content)
+#         os.chdir(RETROPIE_DIR)
+#         os.chmod(RETROPIE_INSTALL_NAME, 0o0755)
+#         subprocess.call([
+#             "sudo",
+#             RETROPIE_INSTALL_NAME,
+#             "&"
+#         ])
+#         sys.exit(0)
+# except:
+#     doError("error in step 0: " + str(sys.exc_info()[1]))
 
 # step 1
 try:
