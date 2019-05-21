@@ -33,7 +33,7 @@ function install_killswitch() {
     # get the menu xml and the entry to add
     local gamelistxml="$datadir/retropiemenu/gamelist.xml"
     local rpmenu_js_sh="$datadir/retropiemenu/killswitch-settings.sh"
-    
+
     # link the installed file to the menu
     #ln -sfv "$md_inst/killswitch-settings.py" "$rpmenu_js_sh"
     ln -sfv "$md_inst/Software/Bash/killswitch-settings.sh" "$rpmenu_js_sh"
@@ -78,7 +78,7 @@ function install_killswitch() {
 }
 
 # retropie will remove killswitch
-function remove_killswitch() {
+#function remove_killswitch() {
     #
     # # run uninstaller
     # bash "$md_inst/Software/Bash/killswitch-uninstall.sh"
@@ -87,9 +87,9 @@ function remove_killswitch() {
     #
     # # remove entry from main menu
     # xmlstarlet ed -P -L -d "/gameList/game[contains(path,'killswitch-settings.sh')]" "$datadir/retropiemenu/gamelist.xml"
-}
+#}
 
 # no gui, same as running from cmd line
-function gui_killswitch() {
+#function gui_killswitch() {
     # bash "$md_inst/killswitch-settings.sh"
-}
+#}
