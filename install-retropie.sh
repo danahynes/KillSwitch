@@ -73,7 +73,7 @@ function install_killswitch() {
     #    'joystick_selection.sh'
     #)
     md_ret_files=(
-        'killswitch-settings.sh'
+        'Software/Bash/killswitch-settings.sh'
     )
 }
 
