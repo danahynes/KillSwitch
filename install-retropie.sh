@@ -17,25 +17,25 @@ rp_module_help="Use the main menu entry for KillSwitch to change the settings"
 rp_module_section="exp"
 
 # retropie will download killswitch's dependencies
-#function depends_killswitch() {
+function depends_killswitch() {
 #    getDepends "libsdl2-dev"
-#}
+}
 
 # retropie will download killswitch's sources
-#function sources_killswitch() {
-#    gitPullOrClone "$md_build" "https://github.com/danahynes/KillSwitch.git"
-#}
+function sources_killswitch() {
+    gitPullOrClone "$md_build" "https://github.com/danahynes/KillSwitch.git"
+}
 
 # the fun part
 function install_killswitch() {
 
     # get the menu xml and the entry to add
     local gamelistxml="$datadir/retropiemenu/gamelist.xml"
-    local rpmenu_js_sh="$datadir/retropiemenu/killswitch-settings.py"
+    local rpmenu_js_sh="$datadir/retropiemenu/killswitch-settings.sh"
 
     # link the installed file to the menu
     #ln -sfv "$md_inst/killswitch-settings.py" "$rpmenu_js_sh"
-    ln -sfv "/usr/local/bin/killswitch-settings.py" "$rpmenu_js_sh"
+    ln -sfv "$md_inst/Software/Bash/killswitch-settings.sh" "$rpmenu_js_sh"
 
     # maybe the user is using a partition that doesn't support symbolic links...
     #[[ -L "$rpmenu_js_sh" ]] || cp -v "$md_inst/killswitch-settings.py" "$rpmenu_js_sh"
@@ -45,15 +45,15 @@ function install_killswitch() {
 
 
     cp -nv "$configdir/all/emulationstation/gamelists/retropie/gamelist.xml" "$gamelistxml"
-    if grep -vq "<path>./killswitch-settings.py</path>" "$gamelistxml"; then
+    if grep -vq "<path>./killswitch-settings.sh</path>" "$gamelistxml"; then
         xmlstarlet ed -L -P -s "/gameList" -t elem -n "gameTMP" \
-            -s "//gameTMP" -t elem -n path -v "./killswitch-settings.py" \
+            -s "//gameTMP" -t elem -n path -v "./killswitch-settings.sh" \
             -s "//gameTMP" -t elem -n name -v "KillSwitch Settings" \
             -s "//gameTMP" -t elem -n desc -v "Turn your RetroPie on and off using an infrared remote" \
-            \ #-s "//gameTMP" -t elem -n image -v "./icons/joystick_selection.png" \
             -r "//gameTMP" -v "game" \
             "$gamelistxml"
 
+            #-s "//gameTMP" -t elem -n image -v "./icons/joystick_selection.png" \
         # XXX: I don't know why the -P (preserve original formatting) isn't working,
         #      The new xml element for joystick_selection tool are all in only one line.
         #      Then let's format gamelist.xml.
@@ -72,7 +72,7 @@ function install_killswitch() {
     #    'joystick_selection.sh'
     #)
     md_ret_files=(
-        'killswitch-settings.py'
+        'killswitch-settings.sh'
     )
 }
 
@@ -80,15 +80,15 @@ function install_killswitch() {
 function remove_killswitch() {
 
     # run uninstaller
-    bash "/usr/local/bin/killswitch-uninstall.sh"
+    bash "$md_inst/Software/Bash/killswitch-uninstall.sh"
 
     #rm -rfv "$configdir"/*/joystick-selection.cfg "$datadir/retropiemenu/icons/joystick_selection.png" "$datadir/retropiemenu/joystick_selection.sh"
 
     # remove entry from main menu
-    xmlstarlet ed -P -L -d "/gameList/game[contains(path,'killswitch.sh')]" "$datadir/retropiemenu/gamelist.xml"
+    xmlstarlet ed -P -L -d "/gameList/game[contains(path,'killswitch-settings.sh')]" "$datadir/retropiemenu/gamelist.xml"
 }
 
 # no gui, same as running from cmd line
 function gui_killswitch() {
-    bash "/usr/local/bin/killswitch-settings.py"
+    bash "$md_inst/killswitch-settings.sh"
 }
