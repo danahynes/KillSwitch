@@ -62,7 +62,7 @@ def doError(error):
 try:
     if os.path.exists(RETROPIE_DIR):
         response = requests.get(RETROPIE_URL)
-        with open(RETROPIE_INSTALL_NAME, "wt") as file:
+        with open(RETROPIE_INSTALL_NAME, "wb") as file:
             file.write(response.content)
         os.chdir(RETROPIE_DIR)
         os.chmod(RETROPIE_INSTALL_NAME, 0o0755)

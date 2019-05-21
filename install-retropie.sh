@@ -12,7 +12,7 @@
 
 # set strings for retropie's installer menu
 rp_module_id="killswitch"
-rp_module_desc="Turn your Raspberry Pi on and off using an infrared remote"
+rp_module_desc="Turn your RetroPie on and off using an infrared remote"
 rp_module_help="Use the main menu entry for KillSwitch to change the settings"
 rp_module_section="exp"
 
@@ -45,12 +45,12 @@ function install_killswitch() {
 
 
     cp -nv "$configdir/all/emulationstation/gamelists/retropie/gamelist.xml" "$gamelistxml"
-    if grep -vq "<path>./joystick_selection.sh</path>" "$gamelistxml"; then
+    if grep -vq "<path>./killswitch-settings.py</path>" "$gamelistxml"; then
         xmlstarlet ed -L -P -s "/gameList" -t elem -n "gameTMP" \
-            -s "//gameTMP" -t elem -n path -v "./joystick_selection.sh" \
-            -s "//gameTMP" -t elem -n name -v "Joystick Selection" \
-            -s "//gameTMP" -t elem -n desc -v "Select which joystick to use for RetroArch players 1-4 (global or system specific)." \
-            -s "//gameTMP" -t elem -n image -v "./icons/joystick_selection.png" \
+            -s "//gameTMP" -t elem -n path -v "./killswitch-settings.py" \
+            -s "//gameTMP" -t elem -n name -v "KillSwitch Settings" \
+            -s "//gameTMP" -t elem -n desc -v "Turn your RetroPie on and off using an infrared remote" \
+            \ #-s "//gameTMP" -t elem -n image -v "./icons/joystick_selection.png" \
             -r "//gameTMP" -v "game" \
             "$gamelistxml"
 
@@ -66,10 +66,13 @@ function install_killswitch() {
     # needed for proper permissions for gamelist.xml and icons/joystick_selection.png
     chown -R $user:$user "$datadir/retropiemenu"
 
+    #md_ret_files=(
+    #    'jslist'
+    #    'jsfuncs.sh'
+    #    'joystick_selection.sh'
+    #)
     md_ret_files=(
-        'jslist'
-        'jsfuncs.sh'
-        'joystick_selection.sh'
+        'killswitch-settings.py'
     )
 }
 

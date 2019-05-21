@@ -34,6 +34,37 @@ $datadir -
 $md_id -
 $md_inst -
 
+===================================================================
+
+x sudo apt-get update
+x sudo apt-get upgrade
+x sudo apt-get install python3-pip
+x pip3 install requests
+
+x make image
+
+curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-latest.py && chmod +x install-latest.py && ./install-latest.py
+curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-retropie.sh && chmod +x install-retropie.sh
+cp install-retropie.sh /home/pi/RetroPie-Setup/scriptmodules/supplementary/killswitch.sh
+cd /home/pi/RetroPie-Setup/
+./retropie_packages.sh killswitch.sh
+./retropie_packages.sh killswitch.sh gui
+
+install-retropie.sh -
+    set rp_module vars (id, desc, help,  section)
+    functions:
+        deps
+        sources
+            get all files
+        build
+        install
+            link installed killswitch-settings.sh to retropie menu
+            copy configs/all/emulationstation/gamelists/retropie/gamelist.xml to datadir/retropiemenu/gamelist.xml
+            check for existence of path to killswitch-settings.sh, if not add it
+            chown pi datadir/retropiemenu
+            set md_return_files
+        remove
+        gui
 
 joystick-selection
 
@@ -43,7 +74,7 @@ install.sh -
     run /home/pi/RetroPie-Setup/retropie_packages.sh joystick-selection.sh gui
 
 js-scriptmodule.sh -
-    set rp_module vars (id. desc, help,  section)
+    set rp_module vars (id, desc, help,  section)
     functions:
         deps
         sources
