@@ -36,7 +36,7 @@ function install_killswitch() {
 
     # link the installed file to the menu
     #ln -sfv "$md_inst/killswitch-settings.py" "$rpmenu_js_sh"
-    ln -sfv "$md_inst/Software/Bash/killswitch-settings.sh" "$rpmenu_js_sh"
+    ln -sfv "$md_inst/killswitch-settings.sh" "$rpmenu_js_sh"
 
     # maybe the user is using a partition that doesn't support symbolic links...
     #[[ -L "$rpmenu_js_sh" ]] || cp -v "$md_inst/killswitch-settings.py" "$rpmenu_js_sh"
