@@ -17,10 +17,11 @@ rp_module_help="Use the main menu entry for KillSwitch to change the settings"
 rp_module_section="exp"
 
 # retropie will download killswitch's dependencies
-function depends_killswitch() {
-#    getDepends "libsdl2-dev"
-}
+#function depends_killswitch() {
+#}
 
+#    getDepends "libsdl2-dev"
+#
 # retropie will download killswitch's sources
 function sources_killswitch() {
     gitPullOrClone "$md_build" "https://github.com/danahynes/KillSwitch.git"
