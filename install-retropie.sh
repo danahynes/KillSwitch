@@ -17,11 +17,11 @@ rp_module_help="Use the main menu entry for KillSwitch to change the settings"
 rp_module_section="exp"
 
 # retropie will download killswitch's dependencies
-#function depends_killswitch() {
-#}
-
+function depends_killswitch() {
 #    getDepends "libsdl2-dev"
-#
+    :
+}
+
 # retropie will download killswitch's sources
 function sources_killswitch() {
     gitPullOrClone "$md_build" "https://github.com/danahynes/KillSwitch.git"
@@ -39,12 +39,14 @@ function install_killswitch() {
     ln -sfv "$md_inst/killswitch-settings.sh" "$rpmenu_js_sh"
 
     # maybe the user is using a partition that doesn't support symbolic links...
-    #[[ -L "$rpmenu_js_sh" ]] || cp -v "$md_inst/killswitch-settings.py" "$rpmenu_js_sh"
+    [[ -L "$rpmenu_js_sh" ]] || cp -v "$md_inst/killswitch-settings.py" "$rpmenu_js_sh"
 
     # copy menu icon
     #cp -v "$md_build/icon.png" "$datadir/retropiemenu/icons/killswitch-settings.png"
 
 
+    # TODO: this keeps adding entries?
+    #
     cp -nv "$configdir/all/emulationstation/gamelists/retropie/gamelist.xml" "$gamelistxml"
     if grep -vq "<path>./killswitch-settings.sh</path>" "$gamelistxml"; then
         xmlstarlet ed -L -P -s "/gameList" -t elem -n "gameTMP" \
@@ -78,18 +80,18 @@ function install_killswitch() {
 }
 
 # retropie will remove killswitch
-#function remove_killswitch() {
-    #
-    # # run uninstaller
-    # bash "$md_inst/Software/Bash/killswitch-uninstall.sh"
-    #
-    # #rm -rfv "$configdir"/*/joystick-selection.cfg "$datadir/retropiemenu/icons/joystick_selection.png" "$datadir/retropiemenu/joystick_selection.sh"
-    #
-    # # remove entry from main menu
-    # xmlstarlet ed -P -L -d "/gameList/game[contains(path,'killswitch-settings.sh')]" "$datadir/retropiemenu/gamelist.xml"
-#}
+function remove_killswitch() {
+
+    # run uninstaller
+    bash "$md_inst/Software/Bash/killswitch-uninstall.sh"
+
+    #rm -rfv "$configdir"/*/joystick-selection.cfg "$datadir/retropiemenu/icons/joystick_selection.png" "$datadir/retropiemenu/joystick_selection.sh"
+
+    # remove entry from main menu
+    xmlstarlet ed -P -L -d "/gameList/game[contains(path,'killswitch-settings.sh')]" "$datadir/retropiemenu/gamelist.xml"
+}
 
 # no gui, same as running from cmd line
-#function gui_killswitch() {
-    # bash "$md_inst/killswitch-settings.sh"
-#}
+function gui_killswitch() {
+    bash "$md_inst/Software/Bash/killswitch-settings.sh"
+}

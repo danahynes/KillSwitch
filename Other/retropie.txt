@@ -2,6 +2,13 @@ files
 
 /home/pi/.emulationstation -> /opt/retropie/configs/all/emulationstation
 
+/home/pi/RetroPie/retropiemenu
+    where the main menu script placeholders live
+/home/pi/RetroPie/retropiemenu/gamelist.xml
+    customized config for main menu
+/home/pi/RetroPie/retropiemenu/killswitch-settings.sh
+    symlinked to /opt/retropie.supplementary/killswitch/killswitch-settings.sh
+
 /home/pi/RetroPie-Setup/scriptmodules/supplementary/killswitch.sh
     install script for killswitch through retropie setup experimental
 
@@ -9,30 +16,22 @@ files
     list all systems 'available' (not 'displayed') for launcher
     this is the default file, updated by retropie
 
+/opt/retropie/configs
+    configs for each system or all
 /opt/retropie/configs/all/emulationstation/es_systems.cfg
     list all systems 'available' (not 'displayed') for launcher
-    same as below (symlinked)
-/home/pi/.emulationstation/es_systems.cfg
     customized version, needs to be updated with customizations after retropie update
-
 /opt/retropie/configs/all/emulationstation/gamelists/retropie/gamelist.xml
-    same as below
-/home/pi/.emulationstation/gamelists/retropie/gamelist.xml
-    config file for retropie system menu
-
-/opt/retropie/configs/$system/emulators.cfg
-    $rom_name = "$cmdline"
-
-more gamelist.xml?
-more emulators.cfg?
-
+    default config file for retropie main menu
+/opt/retropie/supplementary/killswitch/killswitch-settings.sh
+    the actual script linked from /home/pi/RetroPie/retropiemenu/killswitch-settings.sh
 
 variables
 
 $configdir -
 $datadir -
-$md_id -
 $md_inst -
+$md_build -
 
 ===================================================================
 
