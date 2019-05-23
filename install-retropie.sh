@@ -100,5 +100,5 @@ function remove_killswitch() {
 
 # no gui, same as running from cmd line
 function gui_killswitch() {
-    bash "$md_inst/Software/Bash/killswitch-settings.sh"
+    bash "$md_inst/killswitch-settings.sh"
 }
