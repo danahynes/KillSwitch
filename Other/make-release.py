@@ -25,7 +25,7 @@ import time
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.1.6"
+VERSION_NUMBER = "0.1.7"
 
 # set locale
 locale.setlocale(locale.LC_ALL, '')
@@ -119,6 +119,15 @@ with open(FILE, "w") as file:
     file.write(FILE_TEXT)
 
 FILE = "killswitch-install.sh"
+REGEX = re.compile("VERSION_NUMBER=\".*\"")
+with open(FILE, "r") as file:
+    FILE_TEXT = file.read()
+FILE_TEXT = re.sub(REGEX, "VERSION_NUMBER=\"" + VERSION_NUMBER + "\"",
+    FILE_TEXT)
+with open(FILE, "w") as file:
+    file.write(FILE_TEXT)
+
+FILE = "killswitch-settings.sh"
 REGEX = re.compile("VERSION_NUMBER=\".*\"")
 with open(FILE, "r") as file:
     FILE_TEXT = file.read()

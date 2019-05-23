@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.6"
+VERSION_NUMBER="0.1.7"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
 
@@ -203,7 +203,7 @@ mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
 echo "Done"
 
 #-------------------------------------------------------------------------------
-# F#-------------------------------------------------------------------------------inish permissions
+# Finish permissions
 #-------------------------------------------------------------------------------
 echo -n "Finishing permissions... "
 
@@ -312,8 +312,8 @@ echo "Done"
 echo ""
 
 #-------------------------------------------------------------------------------
-# configure avrdude
-
+# Configure avrdude
+#-------------------------------------------------------------------------------
 echo -n "Setting up avrdude... "
 
 # avrdude conf file
@@ -347,12 +347,13 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
     echo -n "Creating RetroPie menu entry... "
 
     RETROPIE_MENU_DIR="${RETROPIE_DATA_DIR}/retropiemenu"
-    RETROPIE_SETUP_DIR="${RETROPIE_DATA_DIR}-Setup"
-    RETROPIE_CONFIG_DIR="/opt/retropie/configs/all/emulationstation/gamelists/retropie"
+    RETROPIE_CONFIG_DIR=\
+"/opt/retropie/configs/all/emulationstation/gamelists/retropie"
     GAMELIST_XML="${RETROPIE_MENU_DIR}/gamelist.xml"
 
     # link the installed file to the menu
-    ln -sf "/usr/local/bin/killswitch-settings.sh" "${RETROPIE_MENU_DIR}/killswitch-settings.sh"
+    ln -sf "/usr/local/bin/killswitch-settings.sh" \
+"${RETROPIE_MENU_DIR}/killswitch-settings.sh"
 
     # copy menu icon
     #cp -v "$md_build/icon.png" "$datadir/retropiemenu/icons/killswitch-settings.png"
@@ -372,10 +373,10 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
         # XXX: I don't know why the -P (preserve original formatting) isn't
         # working, the new xml elements for killswitch are all in only one line.
         # So let's format gamelist.xml.
-        # local tmpxml=$(mktemp)
-        # xmlstarlet fo -t "${GAMELIST_XML}" > "$tmpxml"
-        # cat "$tmpxml" > "${GAMELIST_XML}"
-        # rm -f "$tmpxml"
+        TMP_XML=$(mktemp)
+        xmlstarlet fo -t "${GAMELIST_XML}" > "${TMP_XML}"
+        cat "${TMP_XML}" > "${GAMELIST_XML}"
+        rm -f "${TMP_XML}"
     fi
 
     # needed for proper permissions for gamelist.xml and icons/killswitch.png
