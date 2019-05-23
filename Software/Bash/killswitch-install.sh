@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.4"
+VERSION_NUMBER="0.1.6"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
 
@@ -352,13 +352,13 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
     GAMELIST_XML="${RETROPIE_MENU_DIR}/gamelist.xml"
 
     # link the installed file to the menu
-    ln -s "/usr/local/bin/killswitch-settings.sh" "${RETROPIE_MENU_DIR}/killswitch-settings.sh"
+    ln -sf "/usr/local/bin/killswitch-settings.sh" "${RETROPIE_MENU_DIR}/killswitch-settings.sh"
 
     # copy menu icon
     #cp -v "$md_build/icon.png" "$datadir/retropiemenu/icons/killswitch-settings.png"
 
     cp -nv "${RETROPIE_CONFIG_DIR}/gamelist.xml" "${GAMELIST_XML}"
-    if [ ! grep -q "<path>./killswitch-settings.sh</path>" "${GAMELIST_XML}" ]
+    if ! grep -q "<path>./killswitch-settings.sh</path>" "${GAMELIST_XML}"
     then
         xmlstarlet ed -L -P -s "/gameList" -t elem -n "gameTMP" \
             -s "//gameTMP" -t elem -n path -v "./killswitch-settings.sh" \
