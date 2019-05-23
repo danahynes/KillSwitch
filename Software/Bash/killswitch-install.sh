@@ -348,13 +348,11 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
 
     RETROPIE_MENU_DIR="${RETROPIE_DATA_DIR}/retropiemenu"
     RETROPIE_SETUP_DIR="${RETROPIE_DATA_DIR}-Setup"
-    RETROPIE_CONFIG_DIR="/opt/retropie/configs/all/emulationstation/gamelists/ \
-        retropie"
+    RETROPIE_CONFIG_DIR="/opt/retropie/configs/all/emulationstation/gamelists/retropie"
     GAMELIST_XML="${RETROPIE_MENU_DIR}/gamelist.xml"
 
     # link the installed file to the menu
-    ln -s "/usr/local/bin/killswitch-settings.sh" \
-        "${RETROPIE_MENU_DIR}/killswitch-settings.sh"
+    ln -s "/usr/local/bin/killswitch-settings.sh" "${RETROPIE_MENU_DIR}/killswitch-settings.sh"
 
     # copy menu icon
     #cp -v "$md_build/icon.png" "$datadir/retropiemenu/icons/killswitch-settings.png"
