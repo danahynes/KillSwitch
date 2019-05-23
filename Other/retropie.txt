@@ -43,13 +43,9 @@ x pip3 install requests
 x make image
 
 TODO
-    launching retropie_packages.sh killswitch.sh does not work (should launch into settings)
-    same with retropie_packages.sh killswitch.sh gui
-    config/options from experimental manu is same
     need icon
-    each install adds killswitch to rp menu (should only add if not already there)
     convert settings back to sh (works from cmd line but not in rp)
-
+    joy2key and safe exit(stop joy2key?)
 
 
 
@@ -58,8 +54,8 @@ x curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-
 curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-retropie.sh
 cp install-retropie.sh /home/pi/RetroPie-Setup/scriptmodules/supplementary/killswitch.sh
 cd /home/pi/RetroPie-Setup/
-DOESN'T WORK: sudo ./retropie_packages.sh killswitch.sh
-DOESN'T WORK: sudo ./retropie_packages.sh killswitch.sh gui
+DOESN'T WORK: sudo ./retropie_packages.sh killswitch
+DOESN'T WORK: sudo ./retropie_packages.sh killswitch gui
 WORKS: sudo ./retropie_setup.sh, then install from gui
 
 install-retropie.sh -

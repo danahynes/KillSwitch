@@ -17,7 +17,7 @@ Open a terminal, cd to the KillSwitch-N.N.N/Software/Bash folder, and type:
 
 Here is a one-line command that will do everything for you (requires python3 and python3-requests, both included in the latest Raspbian release):
 ~~~~
-curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-latest.py && chmod +x install-latest.py && ./install-latest.py
+cd && curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-latest.py && chmod +x install-latest.py && ./install-latest.py
 ~~~~
 
 The software requires an OS of Raspbian Jessie or newer, or any other OS that

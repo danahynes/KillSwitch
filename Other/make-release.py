@@ -109,6 +109,15 @@ with open(FILE, "w") as file:
 # change software
 os.chdir("../../Software/Bash")
 
+FILE = "install-retropie.sh"
+REGEX = re.compile("VERSION_NUMBER=\".*\"")
+with open(FILE, "r") as file:
+    FILE_TEXT = file.read()
+FILE_TEXT = re.sub(REGEX, "VERSION_NUMBER=\"" + VERSION_NUMBER + "\"",
+    FILE_TEXT)
+with open(FILE, "w") as file:
+    file.write(FILE_TEXT)
+
 FILE = "killswitch-install.sh"
 REGEX = re.compile("VERSION_NUMBER=\".*\"")
 with open(FILE, "r") as file:

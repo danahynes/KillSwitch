@@ -10,43 +10,39 @@
 # by Sam Hocevar. See the LICENSE file for more details.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER = "0.1.0"
-
-DEBUG = 1
-
-# are we running on a pi?
-onPi = False
-
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
-try :
-    import gpiozero as g0
-    onPi = True
-except ImportError:
-    onPi = False
+import gpiozero as g0
 import locale
 import signal
 import subprocess
 import sys
 
-# set locale
-locale.setlocale(locale.LC_ALL, '')
+#-------------------------------------------------------------------------------
+# Constants
+#-------------------------------------------------------------------------------
+VERSION_NUMBER = "0.1.0"
+PIN_TRIGGER = 3
+TIME_HOLD = 5
+TIME_DEBOUNCE = 0.05
 
 #-------------------------------------------------------------------------------
-# constants
+# Variables
 #-------------------------------------------------------------------------------
-pin_trigger = 3
-time_hold = 5
-time_debounce = 0.05
+# TODO: how/when do we get this from settings???
 
-#-------------------------------------------------------------------------------
-# variables
-#-------------------------------------------------------------------------------
 trg_held = False
 
 #-------------------------------------------------------------------------------
-# Called when the trigger pin is held low.
+# Objects
+#-------------------------------------------------------------------------------
+# set up trigger pin
+trigger = g0.Button(PIN_TRIGGER, hold_time = TIME_HOLD, \
+    bounce_time = TIME_DEBOUNCE)
+
+#-------------------------------------------------------------------------------
+# Functions
 #-------------------------------------------------------------------------------
 def held():
     global trg_held
@@ -57,13 +53,6 @@ def held():
     # reboot on long press
     subprocess.call(['shutdown', '-r', 'now'], shell = False)
 
-    # debug
-    if (DEBUG == 1):
-        print("long press")
-
-#-------------------------------------------------------------------------------
-# Called when trigger pin goes high.
-#-------------------------------------------------------------------------------
 def released():
     global trg_held
 
@@ -73,28 +62,10 @@ def released():
         # shutdown on short press
         subprocess.call(['shutdown', '-h', 'now'], shell = False)
 
-        # debug
-        if (DEBUG == 1):
-            print("short press")
-
     # clear flag
     trg_held = False
 
-#-------------------------------------------------------------------------------
-# objects
-#-------------------------------------------------------------------------------
-
-if (onPi):
-
-    # set up trigger pin
-    trigger = g0.Button(pin_trigger, hold_time = time_hold, \
-        bounce_time = time_debounce)
-
-#-------------------------------------------------------------------------------
-# initialize
-#-------------------------------------------------------------------------------
-
-if (onPi):
+def doMain():
 
     # make sure the pin starts off LOW (in case it was held over)
     trigger.wait_for_release()
@@ -103,13 +74,22 @@ if (onPi):
     trigger.when_held = held
     trigger.when_released = released
 
-#-------------------------------------------------------------------------------
-# main loop
-#-------------------------------------------------------------------------------
+    signal.pause()
 
-signal.pause()
+#-------------------------------------------------------------------------------
+# Init
+#-------------------------------------------------------------------------------
+# set locale
+locale.setlocale(locale.LC_ALL, '')
 
-# cleanup
+#-------------------------------------------------------------------------------
+# Main code
+#-------------------------------------------------------------------------------
+doMain()
+
+#-------------------------------------------------------------------------------
+# Cleanup
+#-------------------------------------------------------------------------------
 sys.exit(0)
 
 # -)

@@ -78,7 +78,7 @@ RETROPIE
 
 
 fix install-latest.py requirement for python3-requests (only in retropie?)
-
+convert install-latest to sh
 
 
 

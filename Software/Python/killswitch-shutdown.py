@@ -10,65 +10,42 @@
 # by Sam Hocevar. See the LICENSE file for more details.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER = "0.1.0"
-
-DEBUG = 1
-
-# are we running on a pi?
-onPi = False
-
 #-------------------------------------------------------------------------------
-# imports
+# Imports
 #-------------------------------------------------------------------------------
-try :
-    import gpiozero as g0
-    onPi = True
-except ImportError:
-    onPi = False
+import gpiozero as g0
 import locale
 import sys
 import time
 
-# set locale
-locale.setlocale(locale.LC_ALL, '')
+#-------------------------------------------------------------------------------
+# Constants
+#-------------------------------------------------------------------------------
+VERSION_NUMBER = "0.1.0"
+PIN_FEEDBACK = 2
 
 #-------------------------------------------------------------------------------
-# constants
+# Objects
 #-------------------------------------------------------------------------------
-pin_feedback = 2
-
-#-------------------------------------------------------------------------------
-# objects
-#-------------------------------------------------------------------------------
-
-if (onPi):
-
-    # feedback (active_high = True, initial_value = False)
-    # when the script starts, this pin will stay LOW
-    # we then pulse the pin based on whether we are shutting down or rebooting
-    feedback = g0.OutputDevice(pin_feedback)
+# feedback (active_high = True, initial_value = False)
+# when the script starts, this pin will stay LOW
+# we then pulse the pin based on whether we are shutting down or rebooting
+feedback = g0.OutputDevice(PIN_FEEDBACK)
 
 #-------------------------------------------------------------------------------
-# main code
+# Functions
 #-------------------------------------------------------------------------------
+def doMain():
 
-#debug
-if (DEBUG == 1):
-    print(sys.argv[1])
-
-# get systemd parameter
-if (sys.argv[1] == "poweroff") or (sys.argv[1] == "halt"):
-
-    if (onPi):
+    # get systemd parameter
+    if (sys.argv[1] == "poweroff") or (sys.argv[1] == "halt"):
 
         # pulse the pin once - high/low
         feedback.on()
         time.sleep(0.02)
         feedback.off()
 
-elif (sys.argv[1] == "reboot"):
-
-    if (onPi):
+    elif (sys.argv[1] == "reboot"):
 
         # pulse the pin twice - high/low/high/low
         feedback.on()
@@ -79,7 +56,20 @@ elif (sys.argv[1] == "reboot"):
         time.sleep(0.02)
         feedback.off()
 
-# cleanup
+#-------------------------------------------------------------------------------
+# Init
+#-------------------------------------------------------------------------------
+# set locale
+locale.setlocale(locale.LC_ALL, '')
+
+#-------------------------------------------------------------------------------
+# Main code
+#-------------------------------------------------------------------------------
+doMain()
+
+#-------------------------------------------------------------------------------
+# Cleanup
+#-------------------------------------------------------------------------------
 sys.exit(0)
 
 # -)

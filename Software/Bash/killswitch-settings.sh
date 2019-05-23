@@ -930,10 +930,10 @@ fi
 
 
 # map joystick to keyboard if running RetroPie
-if [ -d $scriptdir ]; then
-    source "$scriptdir/scriptmodules/helpers.sh"
-	joy2keyStart
-fi
+# if [ -d $scriptdir ]; then
+#     source "$scriptdir/scriptmodules/helpers.sh"
+# 	joy2keyStart
+# fi
 
 # set up serial port
 stty -F $SERIAL_PORT speed $SERIAL_SPEED -cstopb -parenb cs8 > /dev/null 2>&1

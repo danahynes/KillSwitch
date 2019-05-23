@@ -11,14 +11,14 @@
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-# constants
-
+# Constants
+#-------------------------------------------------------------------------------
 VERSION_NUMBER="0.1.0"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
-# helpers
-
+# Functions
+#-------------------------------------------------------------------------------
 check_error() {
     if [ "$?" != "0" ]; then
         echo "${1}"
@@ -28,13 +28,13 @@ check_error() {
 }
 
 #-------------------------------------------------------------------------------
-# start
-
+# Start
+#-------------------------------------------------------------------------------
 echo ""
 
 #-------------------------------------------------------------------------------
-# check for root
-
+# Check for root
+#-------------------------------------------------------------------------------
 if [ $EUID -ne 0 ]; then
     echo "This script must be run as root. Try 'sudo killswitch-uninstall.sh'"
     echo ""
@@ -42,24 +42,25 @@ if [ $EUID -ne 0 ]; then
 fi
 
 #-------------------------------------------------------------------------------
-# set working dir
+# Set working dir
+#-------------------------------------------------------------------------------
 cd ${0%/*}
 
 #-------------------------------------------------------------------------------
-# about
-
+# About
+#-------------------------------------------------------------------------------
 echo "KillSwitch Uninstaller v${VERSION_NUMBER} (c) 2019 Dana Hynes"
 echo ""
 
 #-------------------------------------------------------------------------------
-# let's go!
-
+# Let's go!
+#-------------------------------------------------------------------------------
 echo "Uninstalling KillSwitch..."
 echo ""
 
 #-------------------------------------------------------------------------------
-# remove files
-
+# Remove files
+#-------------------------------------------------------------------------------
 echo "Removing files..."
 echo ""
 
@@ -93,7 +94,13 @@ echo "Done"
 
 # remove settings gui script
 echo -n "Removing kilswitch-settings.py from /usr/local/bin/... "
-rm /usr/local/bin/killswitch-settings.py
+rm /usr/local/bin/killswitch-settings.py 2>&1 /dev/null
+check_error "Failed"
+echo "Done"
+
+# remove settings gui script
+echo -n "Removing kilswitch-settings.sh from /usr/local/bin/... "
+rm /usr/local/bin/killswitch-settings.sh 2>&1 /dev/null
 check_error "Failed"
 echo "Done"
 
@@ -126,7 +133,8 @@ fi
 echo ""
 
 #-------------------------------------------------------------------------------
-# remove RetroPie port
+# Remove RetroPie port
+#-------------------------------------------------------------------------------
 # TODO: RetroPie
 # if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
 # 	echo -n "Removing RetroPie port... "
@@ -137,20 +145,21 @@ echo ""
 # fi
 
 #-------------------------------------------------------------------------------
-# stuff we can't undo
-
+# Stuff we can't undo
+#-------------------------------------------------------------------------------
 echo "***************************************************"
 echo ""
 echo -e "The following dependencies may have been installed with KillSwitch:"
-echo "python3, python3-dialog, python3-gpiozero, python3-requests, \n
-python3-serial, avrdude"
+echo "avrdude, python3, python3-dialog, python3-gpiozero, python3-requests, \n
+python3-serial"
 echo "You can remove them using apt-get."
 echo ""
 echo "If you want to turn the login console back on, you can use the "
 echo "raspi-config script."
 
 #-------------------------------------------------------------------------------
-# ask for reboot
+# Ask for reboot
+#-------------------------------------------------------------------------------
 echo ""
 echo "***************************************************"
 echo ""

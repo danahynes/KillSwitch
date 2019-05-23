@@ -18,7 +18,7 @@ SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
 
 #-------------------------------------------------------------------------------
-# helpers
+# functions
 
 check_error() {
     if [ "$?" != "0" ]; then
@@ -269,11 +269,9 @@ chmod +x /usr/local/bin/killswitch-uninstall.sh
 check_error "Failed"
 echo "Done"
 
-cd ../../Other
-
 # copy reboot test script
 echo -n "Copying reboot-test.sh to /usr/local/bin... "
-cp reboot-test.sh /usr/local/bin
+cp ../../Other/reboot-test.sh /usr/local/bin
 check_error "Failed"
 chmod +x /usr/local/bin/reboot-test.sh
 check_error "Failed"
@@ -281,7 +279,7 @@ echo "Done"
 
 # copy shutdown test script
 echo -n "Copying shutdown-test.sh to /usr/local/bin... "
-cp shutdown-test.sh /usr/local/bin
+cp ../../Other/shutdown-test.sh /usr/local/bin
 check_error "Failed"
 chmod +x /usr/local/bin/shutdown-test.sh
 check_error "Failed"
@@ -332,15 +330,53 @@ echo "Done"
 echo ""
 
 #-------------------------------------------------------------------------------
-# add RetroPie port
-# TODO: RetroPie
+# add RetroPie menu entry
+
 # create shortcut in RetroPie menu
-#if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
-#    echo -n "Creating RetroPie port... "
-#
-	#echo "Done"
-    #echo ""
-#fi
+RETROPIE_DATA_DIR="/home/${SUDO_USER}/RetroPie"
+if [ -d "${RETROPIE_DATA_DIR}" ]; then
+    echo -n "Creating RetroPie menu entry... "
+
+    RETROPIE_MENU_DIR="${RETROPIE_DATA_DIR}/retropiemenu"
+    RETROPIE_SETUP_DIR="${RETROPIE_DATA_DIR}-Setup"
+    RETROPIE_CONFIG_DIR="/opt/retropie/configs/all/emulationstation/gamelists/ \
+        retropie"
+    GAMELIST_XML="${RETROPIE_MENU_DIR}/gamelist.xml"
+
+    # link the installed file to the menu
+    ln -s "/usr/local/bin/killswitch-settings.sh" \
+        "${RETROPIE_MENU_DIR}/killswitch-settings.sh"
+
+    # copy menu icon
+    #cp -v "$md_build/icon.png" "$datadir/retropiemenu/icons/killswitch-settings.png"
+
+    cp -nv "${RETROPIE_CONFIG_DIR}/gamelist.xml" "${GAMELIST_XML}"
+    if [ ! grep -q "<path>./killswitch-settings.sh</path>" "${GAMELIST_XML}" ]
+    then
+        xmlstarlet ed -L -P -s "/gameList" -t elem -n "gameTMP" \
+            -s "//gameTMP" -t elem -n path -v "./killswitch-settings.sh" \
+            -s "//gameTMP" -t elem -n name -v "KillSwitch Settings" \
+            -s "//gameTMP" -t elem -n desc -v "Turn your RetroPie on and off \
+                using an infrared remote" \
+            -s "//gameTMP" -t elem -n image -v "" \
+            -r "//gameTMP" -v "game" \
+            "${GAMELIST_XML}"
+
+        # XXX: I don't know why the -P (preserve original formatting) isn't
+        # working, the new xml elements for killswitch are all in only one line.
+        # So let's format gamelist.xml.
+        # local tmpxml=$(mktemp)
+        # xmlstarlet fo -t "${GAMELIST_XML}" > "$tmpxml"
+        # cat "$tmpxml" > "${GAMELIST_XML}"
+        # rm -f "$tmpxml"
+    fi
+
+    # needed for proper permissions for gamelist.xml and icons/killswitch.png
+    chown -R ${SUDO_USER}:${SUDO_USER} "${RETROPIE_USER_DIR}"
+
+    echo "Done"
+    echo ""
+fi
 
 #-------------------------------------------------------------------------------
 # cleanup
