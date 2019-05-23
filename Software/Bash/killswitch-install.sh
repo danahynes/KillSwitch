@@ -379,7 +379,7 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
     fi
 
     # needed for proper permissions for gamelist.xml and icons/killswitch.png
-    chown -R ${SUDO_USER}:${SUDO_USER} "${RETROPIE_USER_DIR}"
+    chown -R ${SUDO_USER}:${SUDO_USER} "${RETROPIE_MENU_DIR}"
 
     echo "Done"
     echo ""
