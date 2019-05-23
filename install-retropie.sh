@@ -25,6 +25,7 @@ function depends_killswitch() {
 # retropie will download killswitch's sources
 function sources_killswitch() {
     gitPullOrClone "$md_build" "https://github.com/danahynes/KillSwitch.git"
+    cp "$md_build/Software/Bash/killswitch-settings.sh" "$md_build"
 }
 
 function build_killswitch() {
@@ -34,7 +35,7 @@ function build_killswitch() {
 # the fun part
 function install_killswitch() {
 
-    cp "$md_build/Software/Bash/killswitch-settings.sh" "$md_build"
+    #
 
     # get the menu xml and the entry to add
     local gamelistxml="$datadir/retropiemenu/gamelist.xml"
