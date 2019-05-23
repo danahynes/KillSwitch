@@ -93,19 +93,19 @@ check_error "Failed"
 echo "Done"
 
 # remove settings gui script
-echo -n "Removing kilswitch-settings.py from /usr/local/bin/... "
+echo -n "Removing killswitch-settings.py from /usr/local/bin/... "
 rm -f /usr/local/bin/killswitch-settings.py 2>&1 /dev/null
 check_error "Failed"
 echo "Done"
 
 # remove settings gui script
-echo -n "Removing kilswitch-settings.sh from /usr/local/bin/... "
+echo -n "Removing killswitch-settings.sh from /usr/local/bin/... "
 rm -f /usr/local/bin/killswitch-settings.sh 2>&1 /dev/null
 check_error "Failed"
 echo "Done"
 
 # remove uninstaller script
-echo -n "Removing kilswitch-uninstall.sh from /usr/local/bin/... "
+echo -n "Removing killswitch-uninstall.sh from /usr/local/bin/... "
 rm /usr/local/bin/killswitch-uninstall.sh
 check_error "Failed"
 echo "Done"
