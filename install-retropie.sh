@@ -27,6 +27,10 @@ function sources_killswitch() {
     gitPullOrClone "$md_build" "https://github.com/danahynes/KillSwitch.git"
 }
 
+function build_killswitch() {
+    :
+}
+
 # the fun part
 function install_killswitch() {
 
@@ -41,7 +45,7 @@ function install_killswitch() {
     ln -sfv "$md_inst/killswitch-settings.sh" "$rpmenu_js_sh"
 
     # maybe the user is using a partition that doesn't support symbolic links...
-    [[ -L "$rpmenu_js_sh" ]] || cp -v "$md_inst/killswitch-settings.py" "$rpmenu_js_sh"
+    [[ -L "$rpmenu_js_sh" ]] || cp -v "$md_inst/killswitch-settings.sh" "$rpmenu_js_sh"
 
     # copy menu icon
     #cp -v "$md_build/icon.png" "$datadir/retropiemenu/icons/killswitch-settings.png"
@@ -55,10 +59,10 @@ function install_killswitch() {
             -s "//gameTMP" -t elem -n path -v "./killswitch-settings.sh" \
             -s "//gameTMP" -t elem -n name -v "KillSwitch Settings" \
             -s "//gameTMP" -t elem -n desc -v "Turn your RetroPie on and off using an infrared remote" \
+            -s "//gameTMP" -t elem -n image -v "" \
             -r "//gameTMP" -v "game" \
             "$gamelistxml"
 
-            #-s "//gameTMP" -t elem -n image -v "./icons/joystick_selection.png" \
         # XXX: I don't know why the -P (preserve original formatting) isn't working,
         #      The new xml element for joystick_selection tool are all in only one line.
         #      Then let's format gamelist.xml.
