@@ -11,15 +11,15 @@
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-# constants
-
+# Constants
+#-------------------------------------------------------------------------------
 VERSION_NUMBER="0.1.0"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
 
 #-------------------------------------------------------------------------------
-# functions
-
+# Functions
+#-------------------------------------------------------------------------------
 check_error() {
     if [ "$?" != "0" ]; then
         echo "${1}"
@@ -34,13 +34,13 @@ check_error() {
 }
 
 #-------------------------------------------------------------------------------
-# start
-
+# Start
+#-------------------------------------------------------------------------------
 echo ""
 
 #-------------------------------------------------------------------------------
-# check for root
-
+# Check for root
+#-------------------------------------------------------------------------------
 if [ $EUID -ne 0 ]; then
     echo "This script must be run as root. Try 'sudo ./killswitch-install.sh'"
     echo ""
@@ -48,18 +48,19 @@ if [ $EUID -ne 0 ]; then
 fi
 
 #-------------------------------------------------------------------------------
-# set working dir
+# Set working dir
+#-------------------------------------------------------------------------------
 cd ${0%/*}
 
 #-------------------------------------------------------------------------------
-# about
-
+# About
+#-------------------------------------------------------------------------------
 echo "KillSwitch Installer v${VERSION_NUMBER} (c) 2019 Dana Hynes"
 echo ""
 
 #-------------------------------------------------------------------------------
-# do update/upgrade
-
+# Do update/upgrade
+#-------------------------------------------------------------------------------
 echo "Running apt-get update..."
 apt-get update
 
@@ -67,8 +68,8 @@ echo "Running apt-get upgrade..."
 apt-get upgrade
 
 #-------------------------------------------------------------------------------
-# dependencies
-
+# Dependencies
+#-------------------------------------------------------------------------------
 DEPS=(\
     avrdude \
     python3 \
@@ -99,20 +100,20 @@ echo "Done"
 echo ""
 
 #-------------------------------------------------------------------------------
-# let's go!
-
+# Let's go!
+#-------------------------------------------------------------------------------
 echo "Installing KillSwitch..."
 echo ""
 
 #-------------------------------------------------------------------------------
-# set up serial port
-#
+# Set up serial port
+#-------------------------------------------------------------------------------
 echo "Setting up serial port..."
 echo ""
 
 #-------------------------------------------------------------------------------
-# reconfigure cmdline.txt for serial port
-
+# Reconfigure cmdline.txt for serial port
+#-------------------------------------------------------------------------------
 echo -n "Turning off login console... "
 
 # filenames
@@ -129,8 +130,8 @@ check_error "Failed"
 echo "Done"
 
 #-------------------------------------------------------------------------------
-# reconfigure config.txt for serial port
-
+# Reconfigure config.txt for serial port
+#-------------------------------------------------------------------------------
 echo -n "Turning on serial hardware... "
 
 # filenames
@@ -151,17 +152,17 @@ echo "Done"
 echo ""
 
 #-------------------------------------------------------------------------------
-# set permissions
-
+# Set permissions
+#-------------------------------------------------------------------------------
 # this is needed on RetroPie because we don't have permission to
-# shutdown/reboot. otherwise we would need to run killswitch-boot.py as sudo
+# shutdown/reboot. Otherwise we would need to run killswitch-boot.py as sudo
 
 echo "Setting up permissions..."
 echo ""
 
 #-------------------------------------------------------------------------------
-# shutdown
-
+# Shutdown
+#-------------------------------------------------------------------------------
 echo -n "Setting shutdown permission... "
 
 # filenames
@@ -182,8 +183,8 @@ mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
 echo "Done"
 
 #-------------------------------------------------------------------------------
-# reboot
-
+# Reboot
+#-------------------------------------------------------------------------------
 echo -n "Setting reboot permission... "
 
 # filenames
@@ -202,8 +203,8 @@ mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
 echo "Done"
 
 #-------------------------------------------------------------------------------
-# finish permissions
-
+# F#-------------------------------------------------------------------------------inish permissions
+#-------------------------------------------------------------------------------
 echo -n "Finishing permissions... "
 
 # set owner of .bash_aliases
@@ -216,8 +217,8 @@ echo "Done"
 echo ""
 
 #-------------------------------------------------------------------------------
-# copy files
-
+# Copy files
+#-------------------------------------------------------------------------------
 echo "Copying files..."
 echo ""
 
@@ -261,6 +262,14 @@ chmod +x /usr/local/bin/killswitch-settings.py
 check_error "Failed"
 echo "Done"
 
+# copy settings gui script
+echo -n "Copying kilswitch-settings.sh to /usr/local/bin/... "
+cp ../Bash/killswitch-settings.sh /usr/local/bin/
+check_error "Failed"
+chmod +x /usr/local/bin/killswitch-settings.sh
+check_error "Failed"
+echo "Done"
+
 # copy uninstaller script
 echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
 cp killswitch-uninstall.sh /usr/local/bin
@@ -288,8 +297,8 @@ echo "Done"
 echo ""
 
 #-------------------------------------------------------------------------------
-# (re)create settings dir
-
+# Create settings dir
+#-------------------------------------------------------------------------------
 echo -n "Creating settings directory... "
 
 if [ ! -d "${SETTINGS_DIR}" ]; then
@@ -330,8 +339,8 @@ echo "Done"
 echo ""
 
 #-------------------------------------------------------------------------------
-# add RetroPie menu entry
-
+# Add RetroPie menu entry
+#-------------------------------------------------------------------------------
 # create shortcut in RetroPie menu
 RETROPIE_DATA_DIR="/home/${SUDO_USER}/RetroPie"
 if [ -d "${RETROPIE_DATA_DIR}" ]; then
@@ -379,13 +388,13 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
 fi
 
 #-------------------------------------------------------------------------------
-# cleanup
-
+# Cleanup
+#-------------------------------------------------------------------------------
 rm -rf "${DOWNLOAD_DIR}" 2>&1 /dev/null
 
 #-------------------------------------------------------------------------------
-# ask for reboot
-
+# Ask for reboot
+#-------------------------------------------------------------------------------
 echo "***************************************************"
 echo ""
 echo "You need to reboot the pi to complete installation."

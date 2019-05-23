@@ -122,7 +122,7 @@ rm /usr/local/bin/shutdown-test.sh
 check_error "Failed"
 echo "Done"
 
-# remove settings storage dir
+# remove settings dir
 if [ -d "$SETTINGS_DIR" ]; then
     echo -n "Removing ${SETTINGS_DIR}... "
     rm -r "${SETTINGS_DIR}"
