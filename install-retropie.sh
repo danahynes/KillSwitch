@@ -30,6 +30,8 @@ function sources_killswitch() {
 # the fun part
 function install_killswitch() {
 
+    cp "$md_build/Software/Bash/killswitch-settings.sh" "$md_build"
+
     # get the menu xml and the entry to add
     local gamelistxml="$datadir/retropiemenu/gamelist.xml"
     local rpmenu_js_sh="$datadir/retropiemenu/killswitch-settings.sh"
@@ -75,7 +77,7 @@ function install_killswitch() {
     #    'joystick_selection.sh'
     #)
     md_ret_files=(
-        'Software/Bash/killswitch-settings.sh'
+        'killswitch-settings.sh'
     )
 }
 

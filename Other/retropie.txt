@@ -7,7 +7,7 @@ files
 /home/pi/RetroPie/retropiemenu/gamelist.xml
     customized config for main menu
 /home/pi/RetroPie/retropiemenu/killswitch-settings.sh
-    symlinked to /opt/retropie.supplementary/killswitch/killswitch-settings.sh
+    symlinked to /opt/retropie/supplementary/killswitch/killswitch-settings.sh
 
 /home/pi/RetroPie-Setup/scriptmodules/supplementary/killswitch.sh
     install script for killswitch through retropie setup experimental
@@ -28,10 +28,10 @@ files
 
 variables
 
-$configdir -
-$datadir -
-$md_inst -
-$md_build -
+$configdir - /opt/retropie/configs/
+$datadir - /home/pi/RetroPie/
+$md_inst - /opt/retropie/supplementary/killswitch/
+$md_build - /home/pi/RetroPie-Setup/tmp/build/
 
 ===================================================================
 
@@ -42,12 +42,25 @@ x pip3 install requests
 
 x make image
 
+TODO
+    launching retropie_packages.sh killswitch.sh does not work (should launch into settings)
+    same with retropie_packages.sh killswitch.sh gui
+    config/options from experimental manu is same
+    need icon
+    each install adds killswitch to rp menu (should only add if not already there)
+    convert settings back to sh (works from cmd line but not in rp)
+
+
+
+
+
 x curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-latest.py && chmod +x install-latest.py && ./install-latest.py
-curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-retropie.sh && chmod +x install-retropie.sh
+curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-retropie.sh
 cp install-retropie.sh /home/pi/RetroPie-Setup/scriptmodules/supplementary/killswitch.sh
 cd /home/pi/RetroPie-Setup/
-./retropie_packages.sh killswitch.sh
-./retropie_packages.sh killswitch.sh gui
+DOESN'T WORK: sudo ./retropie_packages.sh killswitch.sh
+DOESN'T WORK: sudo ./retropie_packages.sh killswitch.sh gui
+WORKS: sudo ./retropie_setup.sh, then install from gui
 
 install-retropie.sh -
     set rp_module vars (id, desc, help,  section)
