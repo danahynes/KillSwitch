@@ -255,7 +255,7 @@ check_error "Failed"
 echo "Done"
 
 # copy settings gui script
-echo -n "Copying kilswitch-settings.py to /usr/local/bin/... "
+echo -n "Copying killswitch-settings.py to /usr/local/bin/... "
 cp ../Python/killswitch-settings.py /usr/local/bin/
 check_error "Failed"
 chmod +x /usr/local/bin/killswitch-settings.py
@@ -263,7 +263,7 @@ check_error "Failed"
 echo "Done"
 
 # copy settings gui script
-echo -n "Copying kilswitch-settings.sh to /usr/local/bin/... "
+echo -n "Copying killswitch-settings.sh to /usr/local/bin/... "
 cp ../Bash/killswitch-settings.sh /usr/local/bin/
 check_error "Failed"
 chmod +x /usr/local/bin/killswitch-settings.sh
