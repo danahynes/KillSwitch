@@ -11,9 +11,9 @@
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-# imports
+# Imports
 #-------------------------------------------------------------------------------
-import gpiozero as g0
+import gpiozero
 import locale
 import signal
 import subprocess
@@ -30,15 +30,13 @@ TIME_DEBOUNCE = 0.05
 #-------------------------------------------------------------------------------
 # Variables
 #-------------------------------------------------------------------------------
-# TODO: how/when do we get this from settings???
-
 trg_held = False
 
 #-------------------------------------------------------------------------------
 # Objects
 #-------------------------------------------------------------------------------
 # set up trigger pin
-trigger = g0.Button(PIN_TRIGGER, hold_time = TIME_HOLD, \
+trigger = gpiozero.Button(PIN_TRIGGER, hold_time = TIME_HOLD, \
     bounce_time = TIME_DEBOUNCE)
 
 #-------------------------------------------------------------------------------
@@ -74,6 +72,7 @@ def doMain():
     trigger.when_held = held
     trigger.when_released = released
 
+    # wait forever
     signal.pause()
 
 #-------------------------------------------------------------------------------

@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Imports
 #-------------------------------------------------------------------------------
-import gpiozero as g0
+import gpiozero
 import locale
 import sys
 import time
@@ -30,7 +30,7 @@ PIN_FEEDBACK = 2
 # feedback (active_high = True, initial_value = False)
 # when the script starts, this pin will stay LOW
 # we then pulse the pin based on whether we are shutting down or rebooting
-feedback = g0.OutputDevice(PIN_FEEDBACK)
+feedback = gpiozero.OutputDevice(PIN_FEEDBACK)
 
 #-------------------------------------------------------------------------------
 # Functions

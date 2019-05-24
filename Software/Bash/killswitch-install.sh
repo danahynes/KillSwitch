@@ -365,7 +365,7 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
             -s "//gameTMP" -t elem -n path -v "./killswitch-settings.sh" \
             -s "//gameTMP" -t elem -n name -v "KillSwitch Settings" \
             -s "//gameTMP" -t elem -n desc -v "Turn your RetroPie on and off \
-                using an infrared remote" \
+using an infrared remote" \
             -s "//gameTMP" -t elem -n image -v "" \
             -r "//gameTMP" -v "game" \
             "${GAMELIST_XML}"
