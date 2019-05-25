@@ -179,6 +179,7 @@ echo "alias shutdown='sudo shutdown -h now'" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
 mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
+check_error "Failed"
 
 echo "Done"
 
@@ -199,6 +200,7 @@ echo "alias reboot='sudo shutdown -r now'" >> "${CFG_FILE_NEW}"
 
 # move new file to old file
 mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
+check_error "Failed"
 
 echo "Done"
 
@@ -209,6 +211,7 @@ echo -n "Finishing permissions... "
 
 # set owner of .bash_aliases
 chown "${SUDO_USER}:${SUDO_USER}" "/home/${SUDO_USER}/.bash_aliases"
+check_error "Failed"
 
 # pull in new bash aliases
 source "/home/${SUDO_USER}/.bash_aliases"
@@ -354,8 +357,9 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
     # link the installed file to the menu
     ln -sf "/usr/local/bin/killswitch-settings.sh" \
 "${RETROPIE_MENU_DIR}/killswitch-settings.sh"
+    check_error "Failed"
 
-    # copy menu icon
+    # TODO: copy menu icon
     #cp -v "$md_build/icon.png" "$datadir/retropiemenu/icons/killswitch-settings.png"
 
     cp -nv "${RETROPIE_CONFIG_DIR}/gamelist.xml" "${GAMELIST_XML}"
@@ -389,8 +393,7 @@ fi
 #-------------------------------------------------------------------------------
 # Cleanup
 #-------------------------------------------------------------------------------
-#rm -rf "${DOWNLOAD_DIR}" 2>&1 /dev/null
-# TODO: delete install-latest.py if we know where it is
+rm -rf "${DOWNLOAD_DIR}" 2>&1 /dev/null
 
 #-------------------------------------------------------------------------------
 # Ask for reboot

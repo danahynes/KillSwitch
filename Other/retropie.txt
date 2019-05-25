@@ -49,7 +49,6 @@ TODO
 
 
 
-
 x curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-latest.py && chmod +x install-latest.py && ./install-latest.py
 curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-retropie.sh
 cp install-retropie.sh /home/pi/RetroPie-Setup/scriptmodules/supplementary/killswitch.sh

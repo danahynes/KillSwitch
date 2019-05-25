@@ -72,13 +72,13 @@ rm /lib/systemd/system/killswitch-boot.service
 check_error "Failed"
 echo "Done"
 
-# remove monitor script
+# remove boot script
 echo -n "Removing killswitch-boot.py from /usr/local/bin/... "
 rm /usr/local/bin/killswitch-boot.py
 check_error "Failed"
 echo "Done"
 
-# remove shutodwn service script
+# remove shutdown service script
 echo -n "Removing killswitch-shutdown.service from /lib/systemd/system/... "
 systemctl disable killswitch-shutdown.service
 check_error "Failed"
@@ -122,34 +122,53 @@ rm /usr/local/bin/shutdown-test.sh
 check_error "Failed"
 echo "Done"
 
-# remove settings dir
-if [ -d "$SETTINGS_DIR" ]; then
-    echo -n "Removing ${SETTINGS_DIR}... "
+#-------------------------------------------------------------------------------
+# Remove settings dir
+#-------------------------------------------------------------------------------
+echo -n "Removing settings directory... "
+
+if [ -d "${SETTINGS_DIR}" ]; then
     rm -r "${SETTINGS_DIR}"
     check_error "Failed"
-    echo "Done"
 fi
 
+echo "Done"
 echo ""
 
 #-------------------------------------------------------------------------------
-# Remove RetroPie port
+# Remove RetroPie menu entry
 #-------------------------------------------------------------------------------
-# TODO: RetroPie
-# if [ -d "/home/${SUDO_USER}/RetroPie" ]; then
-# 	echo -n "Removing RetroPie port... "
-# 	rm "/home/${SUDO_USER}/RetroPie/roms/ports/KillSwitch"
-#     check_error "Failed"
-# 	echo "Done"
-#     echo ""
-# fi
+# remove shortcut from RetroPie menu
+RETROPIE_DATA_DIR="/home/${SUDO_USER}/RetroPie"
+if [ -d "${RETROPIE_DATA_DIR}" ]; then
+    echo -n "Removing RetroPie menu entry... "
+
+    RETROPIE_MENU_DIR="${RETROPIE_DATA_DIR}/retropiemenu"
+    RETROPIE_CONFIG_DIR=\
+"/opt/retropie/configs/all/emulationstation/gamelists/retropie"
+    GAMELIST_XML="${RETROPIE_MENU_DIR}/gamelist.xml"
+
+    # remove link to menu
+    rm -f "${RETROPIE_MENU_DIR}/killswitch-settings.sh"
+    check_error "Failed"
+
+    # TODO: delete icon
+
+    # delete menu entry
+    xmlstarlet ed -P -L -d \
+"/gameList/game[contains(path,'killswitch-settings.sh')]" "${GAMELIST_XML}"
+    check_error "Failed"
+
+    echo "Done"
+    echo ""
+fi
 
 #-------------------------------------------------------------------------------
 # Stuff we can't undo
 #-------------------------------------------------------------------------------
 echo "***************************************************"
 echo ""
-echo -e "The following dependencies may have been installed with KillSwitch:"
+echo "The following dependencies may have been installed with KillSwitch:"
 echo "avrdude, python3, python3-dialog, python3-gpiozero, python3-requests, \n
 python3-serial"
 echo "You can remove them using apt-get."
