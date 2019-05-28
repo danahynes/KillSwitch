@@ -797,7 +797,7 @@ function doActualUpdate() {
 
             # run new settings and close this one
             killswitch-settings.sh &
-            exit(0)
+            exit 0
         fi
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
@@ -981,6 +981,6 @@ done
 # Cleanup
 #-------------------------------------------------------------------------------
 clear
-exit(0)
+exit 0
 
 # -)
