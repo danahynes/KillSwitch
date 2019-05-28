@@ -93,10 +93,10 @@ check_error "Failed"
 echo "Done"
 
 # remove settings gui script
-echo -n "Removing killswitch-settings.py from /usr/local/bin/... "
-rm -f /usr/local/bin/killswitch-settings.py 2>&1 /dev/null
-check_error "Failed"
-echo "Done"
+# echo -n "Removing killswitch-settings.py from /usr/local/bin/... "
+# rm -f /usr/local/bin/killswitch-settings.py 2>&1 /dev/null
+# check_error "Failed"
+# echo "Done"
 
 # remove settings gui script
 echo -n "Removing killswitch-settings.sh from /usr/local/bin/... "
