@@ -12,34 +12,19 @@
 
 #-------------------------------------------------------------------------------
 # Constants
-
-VERSION_NUMBER="0.1.10"
-
-DEBUG=1
-
-# TODO: hide this
-GITHUB_TOKEN="3868839158c75239f3ed89a4aedfe620e72156b4"
+#-------------------------------------------------------------------------------
+VERSION_NUMBER="0.1.11"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
-
-CHIP_ID=atmega328p
-
+CHIP_ID="atmega328p"
 DIALOG_OK=0
 DIALOG_CANCEL=1
 DIALOG_ESCAPE=255
-
 SETTINGS_DIR="${HOME}/.killswitch"
 SETTINGS_FILE="${SETTINGS_DIR}/killswitch-settings.conf"
-
-if [ $DEBUG -eq 1 ]; then
-
-    # laptop (test) serial port
-    SERIAL_PORT=/dev/pts/4
-else
-
-    # pi serial port
-    SERIAL_PORT=/dev/ttyS0
-    SERIAL_SPEED=9600
-fi
+SERIAL_PORT=/dev/ttyS0
+SERIAL_SPEED=9600
+DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
+AVRDUDE_FILE="${SETTINGS_DIR}/killswitch-avrdude.conf"
 
 LEDN_DEFAULT=255            # 0-255
 LPT_DEFAULT=5               # in seconds
@@ -59,9 +44,9 @@ CANCEL_LABEL="Cancel"
 
 MENU_TITLE="KillSwitch Settings"
 MENU_TEXT="Choose an item:"
-MENU_HEIGHT=14
+MENU_HEIGHT=15
 MENU_WIDTH=40
-MENU_ITEM_HEIGHT=7
+MENU_ITEM_HEIGHT=8
 MENU_TAGS=(\
     "1" \
     "2" \
@@ -70,6 +55,7 @@ MENU_TAGS=(\
     "5" \
     "6" \
     "7" \
+    "8" \
 )
 MENU_ITEMS=(\
     "LED options" \
@@ -77,6 +63,7 @@ MENU_ITEMS=(\
     "Long press time" \
     "Long press action" \
     "Restart after power failure" \
+    "Install RetroPie shortcut" \
     "Update" \
     "Uninstall" \
 )
@@ -86,7 +73,9 @@ MENU_HELP=(\
 	"Set how long to hold the button for a long press action" \
 	"Set the action to take when the button is held" \
     "Automatically boot the Pi after a power failure if it was previously on" \
-    "Check for updates to the software on the Pi and the firmware in the KillSwitch module" \
+    "Install RetroPie shortcut in main menu" \
+    "Check for updates to the software on the Pi and the firmware in the \
+device" \
 	"Uninstall all KillSwitch software from the Pi" \
 )
 
@@ -94,7 +83,7 @@ LED_MENU_TITLE="LED Options"
 LED_MENU_TEXT="Choose an item:"
 LED_MENU_HEIGHT=11
 LED_MENU_WIDTH=40
-LED_MENU_ITEM_HEIGHT=10
+LED_MENU_ITEM_HEIGHT=4
 LED_MENU_TAGS=(\
     "1" \
     "2" \
@@ -108,7 +97,7 @@ LED_MENU_ITEMS=(\
     "LED off brightness" \
 )
 LED_MENU_HELP=(\
-    "Set the LED type to normal, inverted, or off" \
+    "Set the LED type to on or off" \
     "Set the LED style to flash or pulse" \
     "Set the brightness when the LED is on" \
     "Set the brightness when the LED is off" \
@@ -118,12 +107,11 @@ LEDT_TITLE="LED type"
 LEDT_TEXT="Set the LED type:"
 LEDT_HEIGHT=10
 LEDT_WIDTH=40
-LEDT_ITEM_HEIGHT=3
-LEDT_TAGS=("1" "2" "3")
-LEDT_ITEMS=("Normal" "Inverted" "Off")
+LEDT_ITEM_HEIGHT=2
+LEDT_TAGS=("1" "2")
+LEDT_ITEMS=("On" "Off")
 LEDT_HELP=(\
-    "The LED is on when the Pi is on, and off when the Pi is off"\
-    "The LED is off when the Pi is on, and on when the Pi is off"\
+    "LED at 'On' brightness when Pi is on, and 'Off' brightness when Pi is off"\
     "The LED is always off, except when programming"\
 )
 LEDT_SETTING="LTP"
@@ -229,12 +217,12 @@ scriptdir="${HOME}/RetroPie-Setup"
 
 #-------------------------------------------------------------------------------
 # Variables
-
+#-------------------------------------------------------------------------------
 MENU_DONE=0
 MENU_SEL=""
 LED_MENU_DONE=0
 LED_MENU_SEL=""
-LEDT_STATES=($STATE_ON $STATE_OFF $STATE_OFF)
+LEDT_STATES=($STATE_ON $STATE_OFF)
 LEDS_STATES=($STATE_ON $STATE_OFF)
 LPA_STATES=($STATE_ON $STATE_OFF)
 PWR_STATE=$STATE_OFF
@@ -242,19 +230,14 @@ UPDATE_TEXT=""
 UPDATE_URL=""
 
 #-------------------------------------------------------------------------------
-# Helpers
-
+# Functions
+#-------------------------------------------------------------------------------
 function readPropsFile() {
     echo $(grep "${1}=" "${SETTINGS_FILE}" | cut -d "=" -f2)
 }
 
 function writePropsFile() {
     sed -i "s/^${1}=.*/${1}=${2}/g" "${SETTINGS_FILE}"
-}
-
-function readSerial() {
-    read -r -t 30 LINE < $SERIAL_PORT
-    echo "${LINE}"
 }
 
 function writeSerial() {
@@ -264,7 +247,7 @@ function writeSerial() {
 
 #-------------------------------------------------------------------------------
 # Screens
-
+#-------------------------------------------------------------------------------
 function doMain() {
     RESULT=$(dialog \
     --backtitle "$WINDOW_TITLE" \
@@ -284,6 +267,7 @@ function doMain() {
     "${MENU_TAGS[4]}" "${MENU_ITEMS[4]}" "${MENU_HELP[4]}" \
     "${MENU_TAGS[5]}" "${MENU_ITEMS[5]}" "${MENU_HELP[5]}" \
     "${MENU_TAGS[6]}" "${MENU_ITEMS[6]}" "${MENU_HELP[6]}" \
+    "${MENU_TAGS[7]}" "${MENU_ITEMS[7]}" "${MENU_HELP[7]}" \
     3>&1 1>&2 2>&3 3>&-)
 
     BTN=$?
@@ -307,8 +291,10 @@ function doMain() {
     elif [ "$RESULT" = "${MENU_TAGS[4]}" ]; then
         doPower
     elif [ "$RESULT" = "${MENU_TAGS[5]}" ]; then
-        doUpdate
+        doRetroPie
     elif [ "$RESULT" = "${MENU_TAGS[6]}" ]; then
+        doUpdate
+    elif [ "$RESULT" = "${MENU_TAGS[7]}" ]; then
         doUninstall
     fi
 }
@@ -382,7 +368,6 @@ function doLEDType() {
     $LEDT_ITEM_HEIGHT \
     "${LEDT_TAGS[0]}" "${LEDT_ITEMS[0]}" "${LEDT_STATES[0]}" "${LEDT_HELP[0]}" \
     "${LEDT_TAGS[1]}" "${LEDT_ITEMS[1]}" "${LEDT_STATES[1]}" "${LEDT_HELP[1]}" \
-    "${LEDT_TAGS[2]}" "${LEDT_ITEMS[2]}" "${LEDT_STATES[2]}" "${LEDT_HELP[2]}" \
     3>&1 1>&2 2>&3 3>&-)
 
     BTN=$?
@@ -641,6 +626,48 @@ function doPower() {
     fi
 }
 
+# TODO: (re)install retropie shortcut
+function doRetroPie() {
+    RETROPIE_DATA_DIR="/home/${SUDO_USER}/RetroPie"
+    if [ -d "${RETROPIE_DATA_DIR}" ]; then
+        RETROPIE_MENU_DIR="${RETROPIE_DATA_DIR}/retropiemenu"
+        RETROPIE_CONFIG_DIR=\
+"/opt/retropie/configs/all/emulationstation/gamelists/retropie"
+        GAMELIST_XML="${RETROPIE_MENU_DIR}/gamelist.xml"
+
+        # link the installed file to the menu
+        ln -sf "/usr/local/bin/killswitch-settings.sh" \
+"${RETROPIE_MENU_DIR}/killswitch-settings.sh"
+
+        # TODO: copy menu icon
+        #cp -v "$md_build/icon.png" "$datadir/retropiemenu/icons/killswitch-settings.png"
+
+        cp -nv "${RETROPIE_CONFIG_DIR}/gamelist.xml" "${GAMELIST_XML}"
+        if ! grep -q "<path>./killswitch-settings.sh</path>" "${GAMELIST_XML}"
+        then
+            xmlstarlet ed -L -P -s "/gameList" -t elem -n "gameTMP" \
+                -s "//gameTMP" -t elem -n path -v "./killswitch-settings.sh" \
+                -s "//gameTMP" -t elem -n name -v "KillSwitch Settings" \
+                -s "//gameTMP" -t elem -n desc -v "Turn your RetroPie on and \
+off using an infrared remote" \
+                -s "//gameTMP" -t elem -n image -v "" \
+                -r "//gameTMP" -v "game" \
+                "${GAMELIST_XML}"
+
+            # XXX: I don't know why the -P (preserve original formatting) isn't
+            # working, the new xml elements for killswitch are all in only one
+            # line. So let's format gamelist.xml.
+            TMP_XML=$(mktemp)
+            xmlstarlet fo -t "${GAMELIST_XML}" > "${TMP_XML}"
+            cat "${TMP_XML}" > "${GAMELIST_XML}"
+            rm -f "${TMP_XML}"
+        fi
+
+        # needed for proper permissions for gamelist.xml and icons/killswitch.png
+        chown -R ${SUDO_USER}:${SUDO_USER} "${RETROPIE_MENU_DIR}"
+    fi
+}
+
 function doDownloadError() {
     RESULT=$(dialog \
     --backtitle "$WINDOW_TITLE" \
@@ -702,16 +729,20 @@ function doActualUpdate() {
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
 
-        cd "${SETTINGS_DIR}"
+        if [ -d "${DOWNLOAD_DIR}" ]; then
+            rm -rf "${DOWNLOAD_DIR}"
+        mkdir -p "${DOWNLOAD_DIR}"
+        cd "${DOWNLOAD_DIR}"
 
         # get lastest release from github and save to settings dir
-        RES=$(curl \
-                -H "Authorization: token ${GITHUB_TOKEN}" \
-                -H "Accept: application/vnd.github.v3.raw" \
-                -O \
-                -L \
-                -s \
-                "${UPDATE_URL}")
+        # RES=$(curl \
+        #         -H "Authorization: token ${GITHUB_TOKEN}" \
+        #         -H "Accept: application/vnd.github.v3.raw" \
+        #         -O \
+        #         -L \
+        #         -s \
+        #         "${UPDATE_URL}")
+        curl -OLs "${UPDATE_URL}"
 
         RES=$?
         if [ $RES -ne 0 ]; then
@@ -747,7 +778,7 @@ function doActualUpdate() {
                 doHardwareUpdateError
 
                 # TODO: don't return here if we can still try software update
-                return
+                #return
             fi
 
             # run installer for software
@@ -765,8 +796,8 @@ function doActualUpdate() {
             rm -r "KillSwitch-${ZIP_NAME}"
 
             # run new settings and close this one
-            killswitch-settings.sh
-            exit
+            killswitch-settings.sh &
+            exit(0)
         fi
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
@@ -803,20 +834,22 @@ function doUpdate() {
             cut -d "." -f3)
 
     # get lastest firmware version from github
-    JSON=$(curl \
-            -H "Authorization: token ${GITHUB_TOKEN}" \
-            -H "Accept: application/vnd.github.v3.raw" \
-            -s \
-            "${GITHUB_URL}")
+    # JSON=$(curl \
+    #         -H "Authorization: token ${GITHUB_TOKEN}" \
+    #         -H "Accept: application/vnd.github.v3.raw" \
+    #         -s \
+    #         "${GITHUB_URL}")
+    JSON=$(curl -OLs "${GITHUB_URL}")
+    RES=$?
 
-    if [ $? -ne 0 ]; then
+    if [ $RES -ne 0 ]; then
         doDownloadError
         return
     fi
 
-    UPDATE_URL=$(echo "${JSON}" | grep 'zipball_url' | cut -d '"' -f 4)
+    UPDATE_URL=$(echo "${JSON}" | grep 'zipball_url' | cut -d '"' -f4)
     ZIP_NAME=$(basename "${UPDATE_URL}")
-    REMOTE_VERSION_NUMBER=$(echo "${ZIP_NAME}" | cut -d 'v' -f 2)
+    REMOTE_VERSION_NUMBER=$(echo "${ZIP_NAME}" | cut -d 'v' -f2)
 
     # break up remote version number
     REMOTE_VERSION_NUMBER_A=$(echo \
@@ -882,7 +915,7 @@ function doUninstall() {
 
 #-------------------------------------------------------------------------------
 # Init
-
+#-------------------------------------------------------------------------------
 # check if file exists
 if [ ! -f "${SETTINGS_FILE}" ]; then
 
@@ -928,27 +961,26 @@ else
     fi
 fi
 
-
 # map joystick to keyboard if running RetroPie
-# if [ -d $scriptdir ]; then
-#     source "$scriptdir/scriptmodules/helpers.sh"
-# 	joy2keyStart
-# fi
+if [ -d $scriptdir ]; then
+    source "$scriptdir/scriptmodules/helpers.sh"
+	joy2keyStart
+fi
 
 # set up serial port
 stty -F $SERIAL_PORT speed $SERIAL_SPEED -cstopb -parenb cs8 > /dev/null 2>&1
 
 #-------------------------------------------------------------------------------
 # Main loop
-
+#-------------------------------------------------------------------------------
 while [ $MENU_DONE -eq 0 ]; do
     doMain
 done
 
 #-------------------------------------------------------------------------------
 # Cleanup
-
-# TODO: does this work in retropie?
+#-------------------------------------------------------------------------------
 clear
+exit(0)
 
 # -)

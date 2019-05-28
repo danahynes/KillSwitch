@@ -29,7 +29,7 @@ import zipfile
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.1.10"
+VERSION_NUMBER = "0.1.11"
 
 DEBUG = os.uname()[4].startswith("arm")
 
@@ -104,7 +104,7 @@ MENU_HELP = [
 	"Set how long to hold the button for a long press action",
 	"Set the action to take when the button is held",
     "Automatically boot the Pi after a power failure if it was previously on",
-    "Install RetroPie shortcut in Ports",
+    "Install RetroPie shortcut in main menu",
     "Check for updates to the software on the Pi and the firmware in the " \
     "device",
 	"Uninstall all KillSwitch software from the Pi"

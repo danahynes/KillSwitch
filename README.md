@@ -193,6 +193,10 @@ See Firmware/lib/IRremote/README.md for more info.
 
 All other source code for the firmware, hardware, and software is copyright (c) 2019 Dana Hynes, and is licensed under the WTFPL v2. See the LICENSE file or http://www.wtfpl.net/ for more info.
 
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
+TODO:ADD SECTION ABOUT STALLMAN/GNU
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
+
 Happy hacking!
 
 # -)

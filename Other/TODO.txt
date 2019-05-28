@@ -76,16 +76,11 @@ RETROPIE
     deps in install-retropie.sh
     icon in install-retropie.sh
 
+remove deps for killswitch-settings.py (not used anymore)
 
 fix install-latest.py requirement for python3-requests (only in retropie?)
 convert install-latest to sh
 
-
-
-
-fix settings not showing up in ports - only works for bash script???
-https://github.com/RetroPie/RetroPie-Setup/wiki/Ports
-~/RetroPie-Setup/scriptmodules/helpers.sh (addPort)
 
 
 

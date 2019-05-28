@@ -25,7 +25,7 @@ import time
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.1.10"
+VERSION_NUMBER = "0.1.11"
 
 # set locale
 locale.setlocale(locale.LC_ALL, '')
@@ -156,7 +156,7 @@ FILE_TEXT = re.sub(REGEX, "VERSION_NUMBER = \"" + VERSION_NUMBER + "\"",
 with open(FILE, "w") as file:
     file.write(FILE_TEXT)
 
-FILE = "killswitch-shutdown.py"
+FILE = "killswitch-settings.py"
 REGEX = re.compile("VERSION_NUMBER = \".*\"")
 with open(FILE, "r") as file:
     FILE_TEXT = file.read()
@@ -165,7 +165,7 @@ FILE_TEXT = re.sub(REGEX, "VERSION_NUMBER = \"" + VERSION_NUMBER + "\"",
 with open(FILE, "w") as file:
     file.write(FILE_TEXT)
 
-FILE = "killswitch-settings.py"
+FILE = "killswitch-shutdown.py"
 REGEX = re.compile("VERSION_NUMBER = \".*\"")
 with open(FILE, "r") as file:
     FILE_TEXT = file.read()
