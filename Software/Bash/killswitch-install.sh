@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.12"
+VERSION_NUMBER="0.1.13"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
 
@@ -359,8 +359,8 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
 "${RETROPIE_MENU_DIR}/killswitch-settings.sh"
     check_error "Failed"
 
-    # TODO: copy menu icon
-    #cp -v "$md_build/icon.png" "$datadir/retropiemenu/icons/killswitch-settings.png"
+    # copy menu icon
+    cp ../../Pics/killswitch.png "${RETROPIE_MENU_DIR}/icons"
 
     cp -nv "${RETROPIE_CONFIG_DIR}/gamelist.xml" "${GAMELIST_XML}"
     if ! grep -q "<path>./killswitch-settings.sh</path>" "${GAMELIST_XML}"
@@ -370,7 +370,7 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
             -s "//gameTMP" -t elem -n name -v "KillSwitch Settings" \
             -s "//gameTMP" -t elem -n desc -v "Turn your RetroPie on and off \
 using an infrared remote" \
-            -s "//gameTMP" -t elem -n image -v "" \
+            -s "//gameTMP" -t elem -n image -v "./icons/killswitch.png" \
             -r "//gameTMP" -v "game" \
             "${GAMELIST_XML}"
 

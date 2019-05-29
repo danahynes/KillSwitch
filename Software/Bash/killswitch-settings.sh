@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.12"
+VERSION_NUMBER="0.1.13"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 CHIP_ID="atmega328p"
 DIALOG_OK=0
@@ -626,7 +626,7 @@ function doPower() {
     fi
 }
 
-# TODO: (re)install retropie shortcut
+# (re)install retropie shortcut
 function doRetroPie() {
     RETROPIE_DATA_DIR="/home/${SUDO_USER}/RetroPie"
     if [ -d "${RETROPIE_DATA_DIR}" ]; then
@@ -639,8 +639,8 @@ function doRetroPie() {
         ln -sf "/usr/local/bin/killswitch-settings.sh" \
 "${RETROPIE_MENU_DIR}/killswitch-settings.sh"
 
-        # TODO: copy menu icon
-        #cp -v "$md_build/icon.png" "$datadir/retropiemenu/icons/killswitch-settings.png"
+        # copy menu icon
+        cp ../../Pics/kilswitch.png "${RETROPIE_CONFIG_DIR}/icons"
 
         cp -nv "${RETROPIE_CONFIG_DIR}/gamelist.xml" "${GAMELIST_XML}"
         if ! grep -q "<path>./killswitch-settings.sh</path>" "${GAMELIST_XML}"
@@ -650,7 +650,7 @@ function doRetroPie() {
                 -s "//gameTMP" -t elem -n name -v "KillSwitch Settings" \
                 -s "//gameTMP" -t elem -n desc -v "Turn your RetroPie on and \
 off using an infrared remote" \
-                -s "//gameTMP" -t elem -n image -v "" \
+                -s "//gameTMP" -t elem -n image -v "./icons/killswitch.png" \
                 -r "//gameTMP" -v "game" \
                 "${GAMELIST_XML}"
 
@@ -778,7 +778,7 @@ function doActualUpdate() {
             if [ $RES -ne 0 ]; then
                 doHardwareUpdateError
 
-                # TODO: don't return here if we can still try software update
+                # NB: don't return here if we can still try software update
                 #return
             fi
 
