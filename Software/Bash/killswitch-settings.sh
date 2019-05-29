@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.11"
+VERSION_NUMBER="0.1.12"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 CHIP_ID="atmega328p"
 DIALOG_OK=0
@@ -718,19 +718,20 @@ function doSoftwareUpdateError() {
 
 function doActualUpdate() {
     RESULT=$(dialog \
-            --backtitle "${WINDOW_TITLE}" \
-            --title "${UPDATE_TITLE}" \
-            --yesno \
-            "${UPDATE_TEXT}" \
-            $UPDATE_HEIGHT \
-            $UPDATE_WIDTH \
-            3>&1 1>&2 2>&3 3>&-)
+    --backtitle "${WINDOW_TITLE}" \
+    --title "${UPDATE_TITLE}" \
+    --yesno \
+    "${UPDATE_TEXT}" \
+    $UPDATE_HEIGHT \
+    $UPDATE_WIDTH \
+    3>&1 1>&2 2>&3 3>&-)
 
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
 
         if [ -d "${DOWNLOAD_DIR}" ]; then
             rm -rf "${DOWNLOAD_DIR}"
+        fi
         mkdir -p "${DOWNLOAD_DIR}"
         cd "${DOWNLOAD_DIR}"
 
@@ -839,7 +840,7 @@ function doUpdate() {
     #         -H "Accept: application/vnd.github.v3.raw" \
     #         -s \
     #         "${GITHUB_URL}")
-    JSON=$(curl -OLs "${GITHUB_URL}")
+    JSON=$(curl -s "${GITHUB_URL}")
     RES=$?
 
     if [ $RES -ne 0 ]; then
