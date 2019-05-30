@@ -169,8 +169,8 @@ fi
 echo "***************************************************"
 echo ""
 echo "The following dependencies may have been installed with KillSwitch:"
-echo "avrdude, python3, python3-dialog, python3-gpiozero, python3-requests, \n
-python3-serial"
+echo "avrdude, python3, python3-dialog, python3-gpiozero, python3-requests,"
+echo "python3-serial"
 echo "You can remove them using apt-get."
 echo ""
 echo "If you want to turn the login console back on, you can use the "
