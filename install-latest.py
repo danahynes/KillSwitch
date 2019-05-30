@@ -25,7 +25,7 @@ import zipfile
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER = "0.1.13"
+VERSION_NUMBER = "0.1.15"
 GITHUB_URL = "https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 HOME_DIR = os.path.expanduser("~")
 SETTINGS_DIR = HOME_DIR + "/.killswitch"
