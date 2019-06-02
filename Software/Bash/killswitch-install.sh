@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.16"
+VERSION_NUMBER="0.1.17"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
 
@@ -227,7 +227,7 @@ echo ""
 
 # copy boot service script
 echo -n "Copying killswitch-boot.service to /lib/systemd/system/... "
-cp ../Services/killswitch-boot.service /lib/systemd/system/
+sudo cp ../Services/killswitch-boot.service /lib/systemd/system/
 check_error "Failed"
 systemctl enable killswitch-boot.service > /dev/null 2>&1
 check_error "Failed"
@@ -243,7 +243,7 @@ echo "Done"
 
 # copy shutodwn service script
 echo -n "Copying killswitch-shutdown.service to /lib/systemd/system/... "
-cp ../Services/killswitch-shutdown.service /lib/systemd/system/
+sudo cp ../Services/killswitch-shutdown.service /lib/systemd/system/
 check_error "Failed"
 systemctl enable killswitch-shutdown.service
 check_error "Failed"
