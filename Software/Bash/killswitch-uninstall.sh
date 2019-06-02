@@ -152,7 +152,8 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
     rm -f "${RETROPIE_MENU_DIR}/killswitch-settings.sh"
     check_error "Failed"
 
-    # TODO: delete icon
+    # delete icon
+    rm "${RETROPIE_MENU_DIR}/icons/killswitch.png"
 
     # delete menu entry
     xmlstarlet ed -P -L -d \

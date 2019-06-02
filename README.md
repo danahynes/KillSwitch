@@ -5,7 +5,14 @@ Source code and binaries for the KillSwitch project
 
 ## About
 KillSwitch is a small PCB that attaches to your Raspberry Pi 2/3/0 (40 pin GPIO) and allows you to turn the Pi on or off using a push button or an IR remote. It is compatible with almost any infrared remote control, or IR blaster devices like the [Harmony Hub](https://www.logitech.com/en-us/product/harmony-hub) or
- [SparkFun WiFi IR Blaster](https://www.sparkfun.com/products/15031).
+ [SparkFun WiFi IR Blaster](https://www.sparkfun.com/products/15031). It has been tested with Raspbian and RetroPie. There are three parts to KillSwitch:
+
+ 1. The hardware (the actual PCB)
+ 2. The software (code that runs on the Raspberry Pi)
+ 3. The firmware (code that runs on the PCB)
+ 
+ ## Hardware
+ The first thing you need is the actual circuit. The KillSwitch hardware files are include in the download, including a schematic and a PCB layout in KiCad for both the Raspberry Pi 2/3 and the Zero. You can get the PCB made by the vendor of your choice (I used OSH Park) or breadboard it using the schematic.
 
 ## Software installation
 To download and install the KillSwitch software on your Pi, first go to the [latest release](https://github.com/danahynes/KillSwitch/releases/latest). Click the link for the "Source code (zip)" or "Source code (tar.gz)" file. Download and extract the file and follow the instructions below:
@@ -15,16 +22,16 @@ Open a terminal, cd to the KillSwitch-N.N.N/Software/Bash folder, and type:
 ~ $ sudo ./killswitch-install.sh
 ~~~~
 
-Here is a one-line command that will do everything for you (requires python3 and python3-requests, both included in the latest Raspbian release):
+Here is a one-line command that will do everything for you. It requires python3 and python3-requests, both included in the latest Raspbian release (RetroPie users may have to run "sudo apt-get install python3-requests"):
 ~~~~
-cd && curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-latest.py && chmod +x install-latest.py && ./install-latest.py
+cd && curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-latest.py && python3 install-latest.py
 ~~~~
 
 The software requires an OS of Raspbian Jessie or newer, or any other OS that
 uses "systemd". If you're not sure, Google is your friend -)
 
 ## A note on the serial port
-The Raspberry Pi 3 has two UARTs, one based on hardware, and one based on software. The hardware port is faster and more reliable, since the silicon is specifically designed to do one thing, and one thing only, and do it well. On the Raspberry Pi 3 (and newer), this port is, by default, used for Bluetooth for obvious reasons. The software port is used for serial login (the ablility to log into, and control, the Pi over a standard RS-232 serial hardware connection). This port is reconfigured by KillSwitch to allow communication between the device and the Pi.
+The Raspberry Pi 3 has two UARTs, one based on hardware, and one based on software. The hardware port is faster and more reliable, since the silicon is specifically designed to do one thing, and one thing only, and do it well. On the Raspberry Pi 3 (and newer), this port is, by default, used for Bluetooth for obvious reasons. Bluetooth is used to connect devices wirelessly, however thsy choose, and so has no "language" of it's own. In the case of a Raspberry Pi, it is used to create a serial connection over the air. The software port is used for serial login (the ablility to log into, and control, the Pi over a standard RS-232 serial hardware connection). This port is reconfigured by KillSwitch to allow communication between the device and the Pi.
 
 That means that installing the software will turn off your ability to log in to the Pi using a serial console (getty/putty), as the software serial port (physical pins 8 and 10, labeled BCM 14 & BCM 15, and in Linux is known as /dev/ttyS0) is used to communicate to the device when using the settings script. If you don't know what this means, don't worry. You'll probably never use this feature. This does not affect the ability to use SSH or VNC to connect to the Pi, only to log in using getty or putty over a physical serial connection.
 
@@ -32,7 +39,7 @@ That means that installing the software will turn off your ability to log in to 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
 THIS DOES NOT WORK - NEED TO PROGRAM ATTINY BEFORE FIRST USE\
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
-To install the firmware for the first time, you do not need a programmer, use the settings menu on the Pi. Open a terminal and type "killswitch-settings.py". Then use the "Update" menu item. This will install/update the firmware on your device and the software on your Pi, if necessary. For this step you should attach the KillSwitch to your Pi, **but plug the power cord into the Pi, not the KillSwitch.** Since the KillSwitch has no firmware, it cannot control the power to the Pi. So you need to the power the Pi as it would be without the KillSwitch, and treat the KillSwitch as an add-on or shield. Once the firmware is installed, you can use the KillSwitch as it is intended.
+To install the firmware for the first time, you do not need a programmer, use the settings menu on the Pi. Open a terminal and type "killswitch-settings.sh". Then use the "Update" menu item. This will install/update the firmware on your device and the software on your Pi, if necessary. For this step you should attach the KillSwitch to your Pi, **but plug the power cord into the Pi, not the KillSwitch.** Since the KillSwitch has no firmware, it cannot control the power to the Pi. So you need to power the Pi as it would be without the KillSwitch, and treat the KillSwitch as an add-on or shield. Once the firmware is installed, you can use the KillSwitch as it is intended.
 
 ## First use
 To set up your KillSwitch for the first time, follow these steps:
@@ -48,7 +55,7 @@ During programming, the button works in the following ways:
 
 That's it! Your KillSwitch will now turn power on to the Pi when you press the "On" remote button, or press the hardware button once, and will safely shut down and power off when you press the "Off" remote button (or the "On" button again, if the buttons are the same), or press the hardware button again.
 
-To change the remote codes, you can either shut down the Pi and repeat the steps above, or you can use the Settings program by typing in a terminal "killswitch-settings.py" and selecting the "Start recording" option.
+To change the remote codes, you can either shut down the Pi and repeat the steps above, or you can use the Settings program by typing in a terminal "killswitch-settings.sh" and selecting the "Start recording" option.
 
 ## Button operation
 The hardware button on the KillSwitch device serves different purposes, depending on the state of the device and the Pi it is attached to. Here are its functions:
@@ -63,11 +70,11 @@ The hardware button on the KillSwitch device serves different purposes, dependin
 | Programming "On"  | Skip code    | Exit programming |
 | Programming "Off" | Copy code    | Exit programming |
 
-The hold time is configurable using "killswitch-settings.py" and selecting the "Long Press Time" option. By default it is 5 seconds. The action of reboot/force off is also configurable through "killswitch-settings.py", and selecting the "Long Press Action" option. The default is reboot.
+The hold time is configurable using "killswitch-settings.sh" and selecting the "Long Press Time" option. By default it is 5 seconds. The action of reboot/force off is also configurable through "killswitch-settings.sh", and selecting the "Long Press Action" option. The default is reboot.
 
 ## Settings
 ![Menu Image](Pics/menu.png)\
-The KillSwitch device can be configured by opening a terminal and typing "killswitch-settings.py". You can press "ESC" at any time to quit the program (Any current changes will not be saved).\
+The KillSwitch device can be configured by opening a terminal and typing "killswitch-settings.sh" (or selecting the "KillSwitch" item from the RetroPie main menu). You can press "ESC" at any time to quit the program (Any current changes will not be saved).\
 The following settings are available:
 
 #### LED options
@@ -109,34 +116,24 @@ Note that the whole point of KillSwitch is that it is unsafe/unwise to simply re
 This also applies to the sections above about reboot/force quit. The KillSwitch device only handles power, and can not adjust for SD card corruption. Your Mileage May Vary.
 
 #### Install RetroPie shortcut
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
-THIS DOES NOT WORK - STILL NOODLING OUT THE FINAL CODE\
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
-This setting can be used if the software was originally installed on a Raspbian/Other OS system, and you have since installed RetroPie. It places a shortcut named "KillSwitch" in the "Ports" system and allows you to access the Settings program using a plugged in/paired controller. It is equivalent to symlinking "/usr/local/bin/killswitch-settings.py" to
-"~/RetroPie/roms/ports/KillSwitch".
+This setting can be used if the software was originally installed on a Raspbian/Other OS system, and you have since installed RetroPie. It places a shortcut named "KillSwitch" in the "Configuration" menu and allows you to access the Settings program using a plugged in/paired controller.
 
 #### Update
-This setting will attempt to update the software on your Pi, as well as the firmware in the device itself. It requires an internet connection to check for the latest release of the code on GitHub, then compares the GitHub version number to the version number running on the Pi/KillSwitch. If a newer version is available, you will be asked to confirm the update. The software will attempt to reprogram the device using ICSP, and then run the new installer (which requires a sudo password, so please make sure you have a keyboard attached/paired to the Pi).
+This setting will attempt to update the software on your Pi, as well as the firmware in the device itself. It requires an internet connection to check for the latest release of the code on GitHub, then compares the GitHub version number to the version number running on the Pi/KillSwitch. If a newer version is available, you will be asked to confirm the update. The software will attempt to reprogram the device using ICSP, and then run the new installer (which may require a sudo password, so please make sure you have a keyboard attached/paired to the Pi).
 
 If the update is successful, the Pi will ask to be rebooted. Press "Enter" at the end of the installer, wait for the reboot, and you'll be good to go!
 
 #### Uninstall
 This one is pretty self-explanatory. It uninstalls almost all the files/folders from your Pi that were installed using the installer. If you use this option, please be sure to read the caveats at the end of the uninstall script output, as there are some things the uninstaller cannot revert, such as installed dependencies and the serial port options.
 
-This script also requires running as root, so please make sure you have a keyboard attached/paired to the Pi to enter the root password.
+This script may require running as root, so please make sure you have a keyboard attached/paired to the Pi to enter the root password.
 
 ## RetroPie
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
-TODO: RETROPIE - THIS DOES NOT WORK - STILL NOODLING OUT THE FINAL CODE\
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
-The software installed on your Pi is compatible with RetroPie. Where you see "killswitch-settings.py" above, select "KillSwitch" from the "Ports" menu item.
+The software installed on your Pi is compatible with RetroPie. Where you see "killswitch-settings.sh" above, select "KillSwitch" from the main menu.
 
-When you install the software on a system that has RetroPie, a shortcut to "killswitch-settings.py" will be installed in the "Ports" directory (as "KillSwitch"), where you can access it and use it with a paired game controller. Use the D-Pad to navigate between menu options, and the A/B buttons to accept/cancel. (So far it is tested on a Pi 3 B+ with RetroPie v4.4, but it should work on any newer Pi hardware and RetroPie software). Note that the installer/uninstaller will need a root password, for which you will need a keyboard attached/paired to the Pi.
+When you install the software on a system that has RetroPie, a shortcut to "killswitch-settings.sh" will be installed in the main menu directory as "KillSwitch", where you can access it and use it with a paired game controller. Use the D-Pad to navigate between menu options, and the A/B buttons to accept/cancel. (So far it is tested on a Pi 3 B+ with RetroPie v4.4, but it should work on any newer Pi hardware and RetroPie software). Note that the installer/uninstaller may need a root password, for which you will need a keyboard attached/paired to the Pi.
 
-Specific buttons to use depend on your setup, but the defaults are that the A button is Enter (select OK/Back/Exit), and the B button is space bar (select option)\
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
-TODO: RETROPIE - FINISH THIS PART AFTER TESTING\
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\
+Specific buttons to use depend on your setup, but the defaults are that the A button is Enter (select OK/Back/Exit), and the B button is space bar (select option).
 
 ## Connectors
 The connector labeled "J2" has 7 pins. These pins can be used to remotely locate the button/status LED/IR receiver. Starting from the pin closest to the physical push button, they are:
