@@ -10,7 +10,7 @@ KillSwitch is a small PCB that attaches to your Raspberry Pi 2/3/0 (40 pin GPIO)
  1. The hardware (the actual PCB)
  2. The software (code that runs on the Raspberry Pi)
  3. The firmware (code that runs on the PCB)
- 
+
  ## Hardware
  The first thing you need is the actual circuit. The KillSwitch hardware files are include in the download, including a schematic and a PCB layout in KiCad for both the Raspberry Pi 2/3 and the Zero. You can get the PCB made by the vendor of your choice (I used OSH Park) or breadboard it using the schematic.
 
@@ -24,7 +24,7 @@ Open a terminal, cd to the KillSwitch-N.N.N/Software/Bash folder, and type:
 
 Here is a one-line command that will do everything for you. It requires python3 and python3-requests, both included in the latest Raspbian release (RetroPie users may have to run "sudo apt-get install python3-requests"):
 ~~~~
-cd && curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-latest.py && python3 install-latest.py
+cd && curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-latest.sh && bash install-latest.sh
 ~~~~
 
 The software requires an OS of Raspbian Jessie or newer, or any other OS that

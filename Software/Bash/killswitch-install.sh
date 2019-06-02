@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.15"
+VERSION_NUMBER="0.1.16"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
 
@@ -73,10 +73,10 @@ apt-get upgrade
 DEPS=(\
     avrdude \
     python3 \
-    python3-dialog \
-    python3-gpiozero \
-    python3-requests \
-    python3-serial \
+    # python3-dialog \
+    # python3-gpiozero \
+    # python3-requests \
+    # python3-serial \
 )
 
 echo "Installing dependencies..."
