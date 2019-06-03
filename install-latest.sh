@@ -13,8 +13,9 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.18"
+VERSION_NUMBER="0.1.19"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
+CHIP_ID="atmega328p"
 SETTINGS_DIR="${HOME}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
 
@@ -126,7 +127,7 @@ fi
 echo -n "Running software installer... "
 
 # run installer for software
-cd Software/Bash/
+cd ../Software/Bash/
 check_error "Failed"
 sudo bash killswitch-install.sh
 
