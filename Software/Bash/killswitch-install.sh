@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.17"
+VERSION_NUMBER="0.1.18"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
 
@@ -62,10 +62,10 @@ echo ""
 # Do update/upgrade
 #-------------------------------------------------------------------------------
 echo "Running apt-get update..."
-apt-get update
+#apt-get update
 
 echo "Running apt-get upgrade..."
-apt-get upgrade
+#apt-get upgrade
 
 #-------------------------------------------------------------------------------
 # Dependencies
@@ -89,12 +89,12 @@ for i in ${DEPS[@]}; do
 done
 
 # no quotes for no globbing (all deps are seperate params)
-apt-get install $INSTALL_STR
-check_error "Error installing dependencies"
+#apt-get install $INSTALL_STR
+#check_error "Error installing dependencies"
 
 # a little cleanup if needed
 echo "Running apt-get autoremove..."
-apt-get autoremove
+#apt-get autoremove
 
 echo "Done"
 echo ""
@@ -227,9 +227,9 @@ echo ""
 
 # copy boot service script
 echo -n "Copying killswitch-boot.service to /lib/systemd/system/... "
-sudo cp ../Services/killswitch-boot.service /lib/systemd/system/
+cp ../Services/killswitch-boot.service /lib/systemd/system/
 check_error "Failed"
-systemctl enable killswitch-boot.service > /dev/null 2>&1
+#systemctl enable killswitch-boot.service > /dev/null 2>&1
 check_error "Failed"
 echo "Done"
 
@@ -245,7 +245,7 @@ echo "Done"
 echo -n "Copying killswitch-shutdown.service to /lib/systemd/system/... "
 sudo cp ../Services/killswitch-shutdown.service /lib/systemd/system/
 check_error "Failed"
-systemctl enable killswitch-shutdown.service
+#systemctl enable killswitch-shutdown.service
 check_error "Failed"
 echo "Done"
 
@@ -356,7 +356,7 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
 
     # link the installed file to the menu
     ln -sf "/usr/local/bin/killswitch-settings.sh" \
-"${RETROPIE_MENU_DIR}/killswitch-settings.sh"
+"${RETROPIE_MENU_DIR}/killswitch-settings.sh" &> /dev/null
     check_error "Failed"
 
     # copy menu icon

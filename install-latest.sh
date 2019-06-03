@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.17"
+VERSION_NUMBER="0.1.18"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 SETTINGS_DIR="${HOME}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
@@ -101,49 +101,34 @@ cd "${SHORT_NAME}"
 check_error "Failed"
 echo "Done"
 
-echo -n "Running installer... "
+echo -n "Running firmware installer... "
 
 # NB: do hardware first because software may cause reboot
 
 # do avrdude update with hex file
-# cd Firmware/
-# FIRMWARE_FILE=$(find . -name "killswitch-firmware_*.hex")
-# avrdude \
-#         -p "${CHIP_ID}" \
-#         -C +"${SETTINGS_DIR}/killswitch-avrdude.conf" \
-#         -c "killswitch" \
-#         -U flash:w:"${FIRMWARE_FILE}":i \
-#         -U flash:v:"${FIRMWARE_FILE}":i
+cd Firmware/
+FIRMWARE_FILE=$(find . -name "killswitch-firmware_*.hex")
+avrdude \
+        -p "${CHIP_ID}" \
+        -C +"${SETTINGS_DIR}/killswitch-avrdude.conf" \
+        -c "killswitch" \
+        -U flash:w:"${FIRMWARE_FILE}":i \
+        -U flash:v:"${FIRMWARE_FILE}":i
 
-# RES=$?
-# if [ $RES -ne 0 ]; then
-#     doHardwareUpdateError
-#
-#     # NB: don't return here if we can still try software update
-#     #return
-# fi
+RES=$?
+if [ $RES -ne 0 ]; then
+    echo "Failed"
 
-# NB: here we have two choices. fork the installer, which would allow us to do
-# some cleanup (i.e. delete the unzipped folder, but not run the new settings)
-# or wait for the installer, which would not let us clean up as the user will
-# most likely reboot at the end of the installer.
+    # NB: don't return here if we can still try software update
+    #return
+fi
+
+echo -n "Running software installer... "
 
 # run installer for software
 cd Software/Bash/
 check_error "Failed"
-chmod +x killswitch-install.sh
-check_error "Failed"
-sudo ./killswitch-install.sh
-check_error "Failed"
-echo "Done"
-
-echo -n "Cleaning up... "
-
-# remove unzipped folder
-cd ../../..
-check_error "Failed"
-rm -r "KillSwitch-${ZIP_NAME}"
-check_error "Failed"
+sudo bash killswitch-install.sh
 
 # run new settings and close this one
 killswitch-settings.sh &
