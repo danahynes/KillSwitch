@@ -13,9 +13,11 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.19"
+VERSION_NUMBER="0.1.20"
+CHIP_ID="atmega328p"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
+AVRDUDE_FILE="${SETTINGS_DIR}/killswitch-avrdude.conf"
 
 #-------------------------------------------------------------------------------
 # Functions
@@ -322,10 +324,10 @@ echo -n "Setting up avrdude... "
 # avrdude conf file
 # rewrite no matter what in case pins change
 AVRDUDE_CONF="${SETTINGS_DIR}/killswitch-avrdude.conf"
-rm "${AVRDUDE_CONF}" &> /dev/null
-touch "${AVRDUDE_CONF}"
+rm "${AVRDUDE_FILE}" &> /dev/null
+touch "${AVRDUDE_FILE}"
 check_error "Failed"
-chown "${SUDO_USER}" "${AVRDUDE_CONF}"
+chown "${SUDO_USER}" "${AVRDUDE_FILE}"
 check_error "Failed"
 AVRDUDE_TEXT="programmer\n"
 AVRDUDE_TEXT+="  id    = \"killswitch\";\n"
@@ -336,10 +338,32 @@ AVRDUDE_TEXT+="  sck   = 2;\n"
 AVRDUDE_TEXT+="  mosi  = 14;\n"
 AVRDUDE_TEXT+="  miso  = 15;\n"
 AVRDUDE_TEXT+=";\n"
-echo -e "${AVRDUDE_TEXT}" > "${AVRDUDE_CONF}"
+echo -e "${AVRDUDE_TEXT}" > "${AVRDUDE_FILE}"
 
 echo "Done"
 echo ""
+
+echo -n "Running firmware installer... "
+
+# NB: do hardware first because software may cause reboot
+
+# do avrdude update with hex file
+cd Firmware/
+FIRMWARE_FILE=$(find . -name "killswitch-firmware_*.hex")
+avrdude \
+        -p "${CHIP_ID}" \
+        -C +"${AVRDUDE_FILE}" \
+        -c "killswitch" \
+        -U flash:w:"${FIRMWARE_FILE}":i \
+        -U flash:v:"${FIRMWARE_FILE}":i
+
+RES=$?
+if [ $RES -ne 0 ]; then
+    echo "Failed"
+
+    # NB: don't return here if we can still try software update
+    #return
+fi
 
 #-------------------------------------------------------------------------------
 # Add RetroPie menu entry

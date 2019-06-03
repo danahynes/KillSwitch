@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.19"
+VERSION_NUMBER="0.1.20"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 CHIP_ID="atmega328p"
 SETTINGS_DIR="${HOME}/.killswitch"
@@ -102,29 +102,7 @@ cd "${SHORT_NAME}"
 check_error "Failed"
 echo "Done"
 
-echo -n "Running firmware installer... "
-
-# NB: do hardware first because software may cause reboot
-
-# do avrdude update with hex file
-cd Firmware/
-FIRMWARE_FILE=$(find . -name "killswitch-firmware_*.hex")
-avrdude \
-        -p "${CHIP_ID}" \
-        -C +"${SETTINGS_DIR}/killswitch-avrdude.conf" \
-        -c "killswitch" \
-        -U flash:w:"${FIRMWARE_FILE}":i \
-        -U flash:v:"${FIRMWARE_FILE}":i
-
-RES=$?
-if [ $RES -ne 0 ]; then
-    echo "Failed"
-
-    # NB: don't return here if we can still try software update
-    #return
-fi
-
-echo -n "Running software installer... "
+echo -n "Running installer... "
 
 # run installer for software
 cd ../Software/Bash/
