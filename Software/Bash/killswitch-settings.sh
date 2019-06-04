@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.21"
+VERSION_NUMBER="0.1.23"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 CHIP_ID="atmega328p"
 DIALOG_OK=0
@@ -629,45 +629,6 @@ function doPower() {
 # (re)install retropie shortcut
 function doRetroPie() {
     bash install-retropie.sh
-
-#     RETROPIE_DATA_DIR="/home/${SUDO_USER}/RetroPie"
-#     if [ -d "${RETROPIE_DATA_DIR}" ]; then
-#         RETROPIE_MENU_DIR="${RETROPIE_DATA_DIR}/retropiemenu"
-#         RETROPIE_CONFIG_DIR=\
-# "/opt/retropie/configs/all/emulationstation/gamelists/retropie"
-#         GAMELIST_XML="${RETROPIE_MENU_DIR}/gamelist.xml"
-#
-#         # link the installed file to the menu
-#         ln -sf "/usr/local/bin/killswitch-settings.sh" \
-# "${RETROPIE_MENU_DIR}/killswitch-settings.sh"
-#
-#         # copy menu icon
-#         cp ../../Pics/kilswitch.png "${RETROPIE_CONFIG_DIR}/icons"
-#
-#         cp -nv "${RETROPIE_CONFIG_DIR}/gamelist.xml" "${GAMELIST_XML}"
-#         if ! grep -q "<path>./killswitch-settings.sh</path>" "${GAMELIST_XML}"
-#         then
-#             xmlstarlet ed -L -P -s "/gameList" -t elem -n "gameTMP" \
-#                 -s "//gameTMP" -t elem -n path -v "./killswitch-settings.sh" \
-#                 -s "//gameTMP" -t elem -n name -v "KillSwitch Settings" \
-#                 -s "//gameTMP" -t elem -n desc -v "Turn your RetroPie on and \
-# off using an infrared remote" \
-#                 -s "//gameTMP" -t elem -n image -v "./icons/killswitch.png" \
-#                 -r "//gameTMP" -v "game" \
-#                 "${GAMELIST_XML}"
-#
-#             # XXX: I don't know why the -P (preserve original formatting) isn't
-#             # working, the new xml elements for killswitch are all in only one
-#             # line. So let's format gamelist.xml.
-#             TMP_XML=$(mktemp)
-#             xmlstarlet fo -t "${GAMELIST_XML}" > "${TMP_XML}"
-#             cat "${TMP_XML}" > "${GAMELIST_XML}"
-#             rm -f "${TMP_XML}"
-#         fi
-#
-#         # needed for proper permissions for gamelist.xml and icons/killswitch.png
-#         chown -R ${SUDO_USER}:${SUDO_USER} "${RETROPIE_MENU_DIR}"
-#     fi
 }
 
 function doDownloadError() {
@@ -730,30 +691,7 @@ function doActualUpdate() {
 
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
-
-        if [ -d "${DOWNLOAD_DIR}" ]; then
-            rm -rf "${DOWNLOAD_DIR}"
-        fi
-        mkdir -p "${DOWNLOAD_DIR}"
-        cd "${DOWNLOAD_DIR}"
-
-        # get lastest release from github and save to settings dir
-        # RES=$(curl \
-        #         -H "Authorization: token ${GITHUB_TOKEN}" \
-        #         -H "Accept: application/vnd.github.v3.raw" \
-        #         -O \
-        #         -L \
-        #         -s \
-        #         "${UPDATE_URL}")
-        curl -OLs "${UPDATE_URL}"
-
-        RES=$?
-        if [ $RES -ne 0 ]; then
-            doDownloadError
-            return
-        else
-            bash install-latest.sh
-        fi
+        bash install-latest.sh
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
     fi
@@ -918,7 +856,7 @@ if [ -d $scriptdir ]; then
 fi
 
 # set up serial port
-stty -F $SERIAL_PORT speed $SERIAL_SPEED -cstopb -parenb cs8 > /dev/null 2>&1
+stty -F $SERIAL_PORT speed $SERIAL_SPEED -cstopb -parenb cs8
 
 #-------------------------------------------------------------------------------
 # Main loop

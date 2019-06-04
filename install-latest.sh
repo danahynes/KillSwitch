@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.21"
+VERSION_NUMBER="0.1.23"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 SETTINGS_DIR="${HOME}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
@@ -33,11 +33,6 @@ check_error() {
         exit 1
     fi
 }
-
-#-------------------------------------------------------------------------------
-# Set working dir
-#-------------------------------------------------------------------------------
-cd ${0%/*}
 
 #-------------------------------------------------------------------------------
 # Start
@@ -102,7 +97,7 @@ mv "${LONG_NAME}" "${SHORT_NAME}"
 check_error "Failed"
 
 # delete
-rm "${ZIP_FILE_NAME}" > /dev/null
+rm "${ZIP_FILE_NAME}"
 check_error "Failed"
 cd "${SHORT_NAME}"
 check_error "Failed"

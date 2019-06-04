@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.21"
+VERSION_NUMBER="0.1.23"
 CHIP_ID="atmega328p"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
@@ -52,7 +52,7 @@ fi
 #-------------------------------------------------------------------------------
 # Set working dir
 #-------------------------------------------------------------------------------
-cd ${0%/*}
+# cd ${0%/*}
 
 #-------------------------------------------------------------------------------
 # About
@@ -227,7 +227,7 @@ echo ""
 echo -n "Copying killswitch-boot.service to /lib/systemd/system/... "
 cp ../Services/killswitch-boot.service /lib/systemd/system/
 check_error "Failed"
-#systemctl enable killswitch-boot.service > /dev/null 2>&1
+#systemctl enable killswitch-boot.service
 check_error "Failed"
 echo "Done"
 
