@@ -72,14 +72,18 @@ DONE: first step for install-latest, update is create .killswitch
     download everything there
     delete in error
 
-RETROPIE
-    deps in install-retropie.sh
-    icon in install-retropie.sh
+DONE: remove deps for killswitch-settings.py (not used anymore)
 
-remove deps for killswitch-settings.py (not used anymore)
+DONE: convert install-latest to sh
 
-fix install-latest.py requirement for python3-requests (only in retropie?)
-convert install-latest to sh
+DONE: killswitch-settings doActualUpdate runs install-latest
+
+move firmware upodate from install-latest to killswitch-install
+    same as in update, but don't ask for version numbers (always program)
+
+move retropie shortcut from killswitch-settings to install-retropie
+    then call it from settings and installer
+    will also get called when running install-latest
 
 
 

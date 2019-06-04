@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.20"
+VERSION_NUMBER="0.1.21"
 CHIP_ID="atmega328p"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
@@ -64,10 +64,10 @@ echo ""
 # Do update/upgrade
 #-------------------------------------------------------------------------------
 echo "Running apt-get update..."
-#apt-get update
+apt-get update
 
 echo "Running apt-get upgrade..."
-#apt-get upgrade
+apt-get upgrade
 
 #-------------------------------------------------------------------------------
 # Dependencies
@@ -75,10 +75,6 @@ echo "Running apt-get upgrade..."
 DEPS=(\
     avrdude \
     python3 \
-    # python3-dialog \
-    # python3-gpiozero \
-    # python3-requests \
-    # python3-serial \
 )
 
 echo "Installing dependencies..."
@@ -91,12 +87,12 @@ for i in ${DEPS[@]}; do
 done
 
 # no quotes for no globbing (all deps are seperate params)
-#apt-get install $INSTALL_STR
-#check_error "Error installing dependencies"
+apt-get install $INSTALL_STR
+check_error "Error installing dependencies"
 
 # a little cleanup if needed
 echo "Running apt-get autoremove..."
-#apt-get autoremove
+apt-get autoremove
 
 echo "Done"
 echo ""
@@ -260,18 +256,18 @@ check_error "Failed"
 echo "Done"
 
 # copy settings gui script
-# echo -n "Copying killswitch-settings.py to /usr/local/bin/... "
-# cp ../Python/killswitch-settings.py /usr/local/bin/
-# check_error "Failed"
-# chmod +x /usr/local/bin/killswitch-settings.py
-# check_error "Failed"
-# echo "Done"
-
-# copy settings gui script
 echo -n "Copying killswitch-settings.sh to /usr/local/bin/... "
-cp ../Bash/killswitch-settings.sh /usr/local/bin/
+cp killswitch-settings.sh /usr/local/bin/
 check_error "Failed"
 chmod +x /usr/local/bin/killswitch-settings.sh
+check_error "Failed"
+echo "Done"
+
+# copy installer script
+echo -n "Copying killswitch-install.sh to /usr/local/bin/... "
+cp killswitch-install.sh /usr/local/bin/
+check_error "Failed"
+chmod +x /usr/local/bin/killswitch-install.sh
 check_error "Failed"
 echo "Done"
 
@@ -280,6 +276,21 @@ echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
 cp killswitch-uninstall.sh /usr/local/bin
 check_error "Failed"
 chmod +x /usr/local/bin/killswitch-uninstall.sh
+check_error "Failed"
+echo "Done"
+
+# copy retropie script
+echo -n "Copying install-retropie.sh to /usr/local/bin... "
+cp install-retropie.sh /usr/local/bin
+check_error "Failed"
+chmod +x /usr/local/bin/install-retropie.sh
+check_error "Failed"
+
+# copy install-latest script
+echo -n "Copying install-latest.sh to /usr/local/bin/... "
+cp ../../install-latest.sh /usr/local/bin/
+check_error "Failed"
+chmod +x /usr/local/bin/install-latest.sh
 check_error "Failed"
 echo "Done"
 
@@ -323,8 +334,10 @@ echo -n "Setting up avrdude... "
 
 # avrdude conf file
 # rewrite no matter what in case pins change
-AVRDUDE_CONF="${SETTINGS_DIR}/killswitch-avrdude.conf"
-rm "${AVRDUDE_FILE}" &> /dev/null
+if [ -f "${AVRDUDE_FILE}" ]; then
+    rm "${AVRDUDE_FILE}"
+    check_error "Failed"
+fi
 touch "${AVRDUDE_FILE}"
 check_error "Failed"
 chown "${SUDO_USER}" "${AVRDUDE_FILE}"
@@ -348,8 +361,10 @@ echo -n "Running firmware installer... "
 # NB: do hardware first because software may cause reboot
 
 # do avrdude update with hex file
-cd Firmware/
+cd ../../Firmware/
+check_error "Failed"
 FIRMWARE_FILE=$(find . -name "killswitch-firmware_*.hex")
+check_error "Failed"
 avrdude \
         -p "${CHIP_ID}" \
         -C +"${AVRDUDE_FILE}" \
@@ -368,56 +383,14 @@ fi
 #-------------------------------------------------------------------------------
 # Add RetroPie menu entry
 #-------------------------------------------------------------------------------
-# create shortcut in RetroPie menu
-RETROPIE_DATA_DIR="/home/${SUDO_USER}/RetroPie"
-if [ -d "${RETROPIE_DATA_DIR}" ]; then
-    echo -n "Creating RetroPie menu entry... "
-
-    RETROPIE_MENU_DIR="${RETROPIE_DATA_DIR}/retropiemenu"
-    RETROPIE_CONFIG_DIR=\
-"/opt/retropie/configs/all/emulationstation/gamelists/retropie"
-    GAMELIST_XML="${RETROPIE_MENU_DIR}/gamelist.xml"
-
-    # link the installed file to the menu
-    ln -sf "/usr/local/bin/killswitch-settings.sh" \
-"${RETROPIE_MENU_DIR}/killswitch-settings.sh" &> /dev/null
-    check_error "Failed"
-
-    # copy menu icon
-    cp ../../Pics/killswitch.png "${RETROPIE_MENU_DIR}/icons"
-
-    cp -nv "${RETROPIE_CONFIG_DIR}/gamelist.xml" "${GAMELIST_XML}"
-    if ! grep -q "<path>./killswitch-settings.sh</path>" "${GAMELIST_XML}"
-    then
-        xmlstarlet ed -L -P -s "/gameList" -t elem -n "gameTMP" \
-            -s "//gameTMP" -t elem -n path -v "./killswitch-settings.sh" \
-            -s "//gameTMP" -t elem -n name -v "KillSwitch Settings" \
-            -s "//gameTMP" -t elem -n desc -v "Turn your RetroPie on and off \
-using an infrared remote" \
-            -s "//gameTMP" -t elem -n image -v "./icons/killswitch.png" \
-            -r "//gameTMP" -v "game" \
-            "${GAMELIST_XML}"
-
-        # XXX: I don't know why the -P (preserve original formatting) isn't
-        # working, the new xml elements for killswitch are all in only one line.
-        # So let's format gamelist.xml.
-        TMP_XML=$(mktemp)
-        xmlstarlet fo -t "${GAMELIST_XML}" > "${TMP_XML}"
-        cat "${TMP_XML}" > "${GAMELIST_XML}"
-        rm -f "${TMP_XML}"
-    fi
-
-    # needed for proper permissions for gamelist.xml and icons/killswitch.png
-    chown -R ${SUDO_USER}:${SUDO_USER} "${RETROPIE_MENU_DIR}"
-
-    echo "Done"
-    echo ""
-fi
+bash install-retropie.sh
+check_error "Failed"
 
 #-------------------------------------------------------------------------------
 # Cleanup
 #-------------------------------------------------------------------------------
-rm -rf "${DOWNLOAD_DIR}" 2>&1 /dev/null
+# NB: don't delete as we may need install-latest.sh later for update
+#rm -rf "${DOWNLOAD_DIR}"
 
 #-------------------------------------------------------------------------------
 # Ask for reboot

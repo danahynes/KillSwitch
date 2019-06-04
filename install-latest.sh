@@ -13,9 +13,8 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.20"
+VERSION_NUMBER="0.1.21"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
-CHIP_ID="atmega328p"
 SETTINGS_DIR="${HOME}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
 
@@ -36,6 +35,11 @@ check_error() {
 }
 
 #-------------------------------------------------------------------------------
+# Set working dir
+#-------------------------------------------------------------------------------
+cd ${0%/*}
+
+#-------------------------------------------------------------------------------
 # Start
 #-------------------------------------------------------------------------------
 echo -n "Getting URL to latest release... "
@@ -51,17 +55,19 @@ echo "Done"
 
 echo -n "Removing old directories... "
 
-# remove any old downloads
+# remove any old downloads (but not settings)
 if [ -d "${DOWNLOAD_DIR}" ]; then
     rm -rf "${DOWNLOAD_DIR}"
     check_error "Failed"
-fi
 
-# create download dir and change to it
-mkdir -p "${DOWNLOAD_DIR}"
-check_error "Failed"
-cd "${DOWNLOAD_DIR}"
-check_error "Failed"
+    # create download dir and change to it
+    mkdir -p "${DOWNLOAD_DIR}"
+    check_error "Failed"
+    chown "${USER}:${USER}" "${DOWNLOAD_DIR}"
+    check_error "Failed"
+    cd "${DOWNLOAD_DIR}"
+    check_error "Failed"
+fi
 echo "Done"
 
 echo -n "Creating path names... "
@@ -104,11 +110,16 @@ echo "Done"
 
 echo -n "Running installer... "
 
-# run installer for software
-cd ../Software/Bash/
-check_error "Failed"
+# run installer
+cd Software/Bash/
+check_error "Failed 1"
 sudo bash killswitch-install.sh
+check_error "Failed 2"
 
-# run new settings and close this one
+# if installer does not reboot, run new settings in a seperate process
 killswitch-settings.sh &
+
+# close this script
 exit 0
+
+# -)

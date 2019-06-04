@@ -2,27 +2,31 @@
     downloads latest release from GitHub and runs installer
 2. killswitch-install.sh
     installs the rest of the scripts
-    also called from killswitch-settings.py/sh when updating
-    also called from install-latest.py when installing latest
+    also called from killswitch-settings.sh when updating
+    also called from install-latest.sh when installing latest
 3. killswitch-uninstall.sh
     uninstalls all this crap
-    also called from killswitch-settings.py/sh when uninstalling
-4. killswitch-settings.py/sh
-    the pretty settings dialog script, but in python or bash
+    also called from killswitch-settings.sh when uninstalling
+4. killswitch-settings.sh
+    the pretty settings dialog script
+5. install-retropie.sh
+    installs a shortcut in the retropie main config menu
+    also called from killswitch-settings when doing menu install
+    also called from killswitch-install.sh
 
-5. killswitch-boot.service
+6. killswitch-boot.service
     runs killswitch-boot.py at boot
-6. killswitch-boot.py
+7. killswitch-boot.py
     reads trigger inputs from hardware
-7. killswitch-shutdown.service
+8. killswitch-shutdown.service
     runs killswitch-shutdown.py at shutdown/reboot
-8. killswitch-shutdown.py
+9. killswitch-shutdown.py
     writes to feedback - one pulse for shutdown, two pulses for reboot
 
-9. killswitch-settings.conf
+10. killswitch-settings.conf
     storage for settings script
-    created on demand by killswitch-settings.py/sh
-10. killswitch-avrdude.conf
+    created on demand by killswitch-settings.sh
+11. killswitch-avrdude.conf
     config file for programming avr over ICSP
     created by killswitch-install.sh
 
@@ -60,10 +64,7 @@ cd ~/Downloads; rm -rf KillSwitch; git clone https://danahynes:5447Wasmynumber@g
 
 one-liner:
 
-sudo apt-get update && sudo apt-get upgrade &&
-
-curl -H "Authorization: token 3868839158c75239f3ed89a4aedfe620e72156b4" -H "Accept: application/vnd.github.v3.raw" -O https://api.github.com/repos/danahynes/KillSwitch/contents/install-latest.py && chmod +x install-latest.py && python3 install-latest.py
-curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-latest.py && chmod +x install-latest.py && ./install-latest.py
+cd && curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-latest.sh && bash install-latest.sh
 
 loopback serial for testing:
 
