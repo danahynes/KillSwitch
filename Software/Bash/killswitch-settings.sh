@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.24"
+VERSION_NUMBER="0.1.25"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 CHIP_ID="atmega328p"
 DIALOG_OK=0

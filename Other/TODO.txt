@@ -84,7 +84,7 @@ move firmware upodate from install-latest to killswitch-install
 move retropie shortcut from killswitch-settings to install-retropie
     then call it from settings and installer
     will also get called when running install-latest
-
+    needs error checking
 
 
 

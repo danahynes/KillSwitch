@@ -10,8 +10,9 @@
 # by Sam Hocevar. See the LICENSE file for more details.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER="0.1.24"
+VERSION_NUMBER="0.1.25"
 
+cd ${0%/*}
 
 #-------------------------------------------------------------------------------
 # Add RetroPie menu entry
@@ -32,7 +33,7 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
     #check_error "Failed"
 
     echo $PWD
-    
+
     # copy menu icon
     cp ../../Pics/killswitch.png "${RETROPIE_MENU_DIR}/icons"
 
