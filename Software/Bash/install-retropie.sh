@@ -31,6 +31,8 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
 "${RETROPIE_MENU_DIR}/killswitch-settings.sh" &> /dev/null
     #check_error "Failed"
 
+    echo $PWD
+    
     # copy menu icon
     cp ../../Pics/killswitch.png "${RETROPIE_MENU_DIR}/icons"
 
