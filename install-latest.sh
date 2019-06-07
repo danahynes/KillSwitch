@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.23"
+VERSION_NUMBER="0.1.24"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 SETTINGS_DIR="${HOME}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
@@ -55,14 +55,16 @@ if [ -d "${DOWNLOAD_DIR}" ]; then
     rm -rf "${DOWNLOAD_DIR}"
     check_error "Failed"
 
-    # create download dir and change to it
-    mkdir -p "${DOWNLOAD_DIR}"
-    check_error "Failed"
-    chown "${USER}:${USER}" "${DOWNLOAD_DIR}"
-    check_error "Failed"
-    cd "${DOWNLOAD_DIR}"
-    check_error "Failed"
 fi
+
+# create download dir and change to it
+mkdir -p "${DOWNLOAD_DIR}"
+check_error "Failed"
+chown "${USER}:${USER}" "${DOWNLOAD_DIR}"
+check_error "Failed"
+cd "${DOWNLOAD_DIR}"
+check_error "Failed"
+
 echo "Done"
 
 echo -n "Creating path names... "

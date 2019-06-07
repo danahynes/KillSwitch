@@ -10,7 +10,7 @@
 # by Sam Hocevar. See the LICENSE file for more details.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER="0.1.23"
+VERSION_NUMBER="0.1.24"
 
 
 #-------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
     # link the installed file to the menu
     ln -sf "/usr/local/bin/killswitch-settings.sh" \
 "${RETROPIE_MENU_DIR}/killswitch-settings.sh" &> /dev/null
-    check_error "Failed"
+    #check_error "Failed"
 
     # copy menu icon
     cp ../../Pics/killswitch.png "${RETROPIE_MENU_DIR}/icons"
