@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #-------------------------------------------------------------------------------
-# install-retropie.py
+# killswitch-install-retropie.sh
 # KillSwitch
 #
 # Copyright © 2019 Dana Hynes <danahynes@gmail.com>
@@ -10,7 +10,7 @@
 # by Sam Hocevar. See the LICENSE file for more details.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER="0.1.25"
+VERSION_NUMBER="0.1.27"
 
 #cd ${0%/*}
 

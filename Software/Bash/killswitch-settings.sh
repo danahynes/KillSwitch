@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.25"
+VERSION_NUMBER="0.1.27"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 CHIP_ID="atmega328p"
 DIALOG_OK=0
@@ -628,7 +628,7 @@ function doPower() {
 
 # (re)install retropie shortcut
 function doRetroPie() {
-    bash install-retropie.sh
+    bash killswitch-install-retropie.sh
 }
 
 function doDownloadError() {
@@ -691,7 +691,7 @@ function doActualUpdate() {
 
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
-        bash install-latest.sh
+        bash killswitch-install-latest.sh
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
     fi

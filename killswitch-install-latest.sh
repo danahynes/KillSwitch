@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 #-------------------------------------------------------------------------------
-# install-latest.sh
+# killswitch-install-latest.sh
 # KillSwitch
 #
 # Copyright © 2019 Dana Hynes <danahynes@gmail.com>
@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.25"
+VERSION_NUMBER="0.1.27"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 SETTINGS_DIR="${HOME}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"

@@ -78,6 +78,8 @@ DONE: convert install-latest to sh
 
 DONE: killswitch-settings doActualUpdate runs install-latest
 
+!!! WHAT THE FRESH HELL IS BREAKING /DEV/NULL ???
+
 move firmware upodate from install-latest to killswitch-install
     same as in update, but don't ask for version numbers (always program)
 

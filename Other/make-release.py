@@ -25,7 +25,7 @@ import time
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.1.25"
+VERSION_NUMBER = "0.1.27"
 
 # set locale
 locale.setlocale(locale.LC_ALL, '')
@@ -42,7 +42,7 @@ FILE_TEXT = re.sub(REGEX, "VERSION_NUMBER = \"" + VERSION_NUMBER + "\"",
 with open(FILE, "w") as file:
     file.write(FILE_TEXT)
 
-FILE = "install-latest.sh"
+FILE = "killswitch-install-latest.sh"
 REGEX = re.compile("VERSION_NUMBER=\".*\"")
 with open(FILE, "r") as file:
     FILE_TEXT = file.read()
@@ -118,7 +118,7 @@ with open(FILE, "w") as file:
 # change software
 os.chdir("../../Software/Bash")
 
-FILE = "install-retropie.sh"
+FILE = "killswitch-install-retropie.sh"
 REGEX = re.compile("VERSION_NUMBER=\".*\"")
 with open(FILE, "r") as file:
     FILE_TEXT = file.read()

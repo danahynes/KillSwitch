@@ -3,13 +3,13 @@
 2. killswitch-install.sh
     installs the rest of the scripts
     also called from killswitch-settings.sh when updating
-    also called from install-latest.sh when installing latest
+    also called from killswitch-install-latest.sh when installing latest
 3. killswitch-uninstall.sh
     uninstalls all this crap
     also called from killswitch-settings.sh when uninstalling
 4. killswitch-settings.sh
     the pretty settings dialog script
-5. install-retropie.sh
+5. killswitch-install-retropie.sh
     installs a shortcut in the retropie main config menu
     also called from killswitch-settings when doing menu install
     also called from killswitch-install.sh
@@ -64,7 +64,7 @@ cd ~/Downloads; rm -rf KillSwitch; git clone https://danahynes:5447Wasmynumber@g
 
 one-liner:
 
-cd && curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-latest.sh && bash install-latest.sh
+cd && curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/killswitch-install-latest.sh && bash killswitch-install-latest.sh
 
 loopback serial for testing:
 

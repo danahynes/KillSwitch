@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.25"
+VERSION_NUMBER="0.1.27"
 CHIP_ID="atmega328p"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
@@ -280,17 +280,17 @@ check_error "Failed"
 echo "Done"
 
 # copy retropie script
-echo -n "Copying install-retropie.sh to /usr/local/bin... "
-cp install-retropie.sh /usr/local/bin
+echo -n "Copying killswitch-install-retropie.sh to /usr/local/bin... "
+cp killswitch-install-retropie.sh /usr/local/bin
 check_error "Failed"
-chmod +x /usr/local/bin/install-retropie.sh
+chmod +x /usr/local/bin/killswitch-install-retropie.sh
 check_error "Failed"
 
 # copy install-latest script
-echo -n "Copying install-latest.sh to /usr/local/bin/... "
-cp ../../install-latest.sh /usr/local/bin/
+echo -n "Copying killswitch-install-latest.sh to /usr/local/bin/... "
+cp ../../killswitch-install-latest.sh /usr/local/bin/
 check_error "Failed"
-chmod +x /usr/local/bin/install-latest.sh
+chmod +x /usr/local/bin/killswitch-install-latest.sh
 check_error "Failed"
 echo "Done"
 
@@ -384,13 +384,13 @@ fi
 # Add RetroPie menu entry
 #-------------------------------------------------------------------------------
 cd ../Software/Bash
-bash install-retropie.sh
+bash killswitch-install-retropie.sh
 check_error "Failed"
 
 #-------------------------------------------------------------------------------
 # Cleanup
 #-------------------------------------------------------------------------------
-# NB: don't delete as we may need install-latest.sh later for update
+# NB: don't delete as we may need killswitch-install-latest.sh later for update
 #rm -rf "${DOWNLOAD_DIR}"
 
 #-------------------------------------------------------------------------------

@@ -50,14 +50,14 @@ TODO
 
 
 x curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-latest.py && chmod +x install-latest.py && ./install-latest.py
-curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/install-retropie.sh
-cp install-retropie.sh /home/pi/RetroPie-Setup/scriptmodules/supplementary/killswitch.sh
+curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/killswitch-install-retropie.sh
+cp killswitch-install-retropie.sh /home/pi/RetroPie-Setup/scriptmodules/supplementary/killswitch.sh
 cd /home/pi/RetroPie-Setup/
 DOESN'T WORK: sudo ./retropie_packages.sh killswitch
 DOESN'T WORK: sudo ./retropie_packages.sh killswitch gui
 WORKS: sudo ./retropie_setup.sh, then install from gui
 
-install-retropie.sh -
+killswitch-install-retropie.sh -
     set rp_module vars (id, desc, help,  section)
     functions:
         deps
