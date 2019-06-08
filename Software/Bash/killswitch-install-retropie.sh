@@ -10,14 +10,33 @@
 # by Sam Hocevar. See the LICENSE file for more details.
 #-------------------------------------------------------------------------------
 
-VERSION_NUMBER="0.1.27"
+#-------------------------------------------------------------------------------
+# Constants
+#-------------------------------------------------------------------------------
+VERSION_NUMBER="0.1.28"
 
-#cd ${0%/*}
+#-------------------------------------------------------------------------------
+# Functions
+#-------------------------------------------------------------------------------
+check_error() {
+    if [ "$?" != "0" ]; then
+        echo "${1}"
+        echo "Aborting install"
+
+        # clean up (remove) any dirs created at this point (.killswitch)
+        # and any copied files
+        rm -rf "${SETTINGS_DIR}"
+
+        exit 1
+    fi
+}
 
 #-------------------------------------------------------------------------------
 # Add RetroPie menu entry
 #-------------------------------------------------------------------------------
-# create shortcut in RetroPie menu
+
+# NB: this is from joystick-selection
+
 RETROPIE_DATA_DIR="/home/${SUDO_USER}/RetroPie"
 if [ -d "${RETROPIE_DATA_DIR}" ]; then
     echo -n "Creating RetroPie menu entry... "
@@ -30,14 +49,17 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
     # link the installed file to the menu
     ln -sf "/usr/local/bin/killswitch-settings.sh" \
 "${RETROPIE_MENU_DIR}/killswitch-settings.sh" &> /dev/null
-    #check_error "Failed"
-
-    echo $PWD
+    check_error "Failed"
 
     # copy menu icon
     cp ../../Pics/killswitch.png "${RETROPIE_MENU_DIR}/icons"
+    check_error "Failed"
 
+    # copy the default list to edit
     cp -nv "${RETROPIE_CONFIG_DIR}/gamelist.xml" "${GAMELIST_XML}"
+    check_error "Failed"
+
+    # add menu entry
     if ! grep -q "<path>./killswitch-settings.sh</path>" "${GAMELIST_XML}"
     then
         xmlstarlet ed -L -P -s "/gameList" -t elem -n "gameTMP" \
@@ -60,6 +82,7 @@ using an infrared remote" \
 
     # needed for proper permissions for gamelist.xml and icons/killswitch.png
     chown -R ${SUDO_USER}:${SUDO_USER} "${RETROPIE_MENU_DIR}"
+    check_error "Failed"
 
     echo "Done"
     echo ""

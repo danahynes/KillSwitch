@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.27"
+VERSION_NUMBER="0.1.28"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
@@ -40,11 +40,6 @@ if [ $EUID -ne 0 ]; then
     echo ""
     exit 1
 fi
-
-#-------------------------------------------------------------------------------
-# Set working dir
-#-------------------------------------------------------------------------------
-cd ${0%/*}
 
 #-------------------------------------------------------------------------------
 # About
@@ -91,12 +86,6 @@ echo -n "Removing killswitch-shutdown.py from /usr/local/bin... "
 rm /usr/local/bin/killswitch-shutdown.py
 check_error "Failed"
 echo "Done"
-
-# remove settings gui script
-# echo -n "Removing killswitch-settings.py from /usr/local/bin/... "
-# rm -f /usr/local/bin/killswitch-settings.py 2>&1 /dev/null
-# check_error "Failed"
-# echo "Done"
 
 # remove settings gui script
 echo -n "Removing killswitch-settings.sh from /usr/local/bin/... "
@@ -154,6 +143,7 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
 
     # delete icon
     rm "${RETROPIE_MENU_DIR}/icons/killswitch.png"
+    check_error "Failed"
 
     # delete menu entry
     xmlstarlet ed -P -L -d \
@@ -170,8 +160,7 @@ fi
 echo "***************************************************"
 echo ""
 echo "The following dependencies may have been installed with KillSwitch:"
-echo "avrdude, python3, python3-dialog, python3-gpiozero, python3-requests,"
-echo "python3-serial"
+echo "avrdude, python3"
 echo "You can remove them using apt-get."
 echo ""
 echo "If you want to turn the login console back on, you can use the "

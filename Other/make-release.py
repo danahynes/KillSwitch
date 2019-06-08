@@ -25,22 +25,13 @@ import time
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.1.27"
+VERSION_NUMBER = "0.1.28"
 
 # set locale
 locale.setlocale(locale.LC_ALL, '')
 
 # change install-latest
 os.chdir("..")
-
-FILE = "install-latest.py"
-REGEX = re.compile("VERSION_NUMBER = \".*\"")
-with open(FILE, "r") as file:
-    FILE_TEXT = file.read()
-FILE_TEXT = re.sub(REGEX, "VERSION_NUMBER = \"" + VERSION_NUMBER + "\"",
-    FILE_TEXT)
-with open(FILE, "w") as file:
-    file.write(FILE_TEXT)
 
 FILE = "killswitch-install-latest.sh"
 REGEX = re.compile("VERSION_NUMBER=\".*\"")
@@ -157,15 +148,6 @@ with open(FILE, "w") as file:
 os.chdir("../Python")
 
 FILE = "killswitch-boot.py"
-REGEX = re.compile("VERSION_NUMBER = \".*\"")
-with open(FILE, "r") as file:
-    FILE_TEXT = file.read()
-FILE_TEXT = re.sub(REGEX, "VERSION_NUMBER = \"" + VERSION_NUMBER + "\"",
-    FILE_TEXT)
-with open(FILE, "w") as file:
-    file.write(FILE_TEXT)
-
-FILE = "killswitch-settings.py"
 REGEX = re.compile("VERSION_NUMBER = \".*\"")
 with open(FILE, "r") as file:
     FILE_TEXT = file.read()

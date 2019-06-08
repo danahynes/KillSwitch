@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.27"
+VERSION_NUMBER="0.1.28"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 SETTINGS_DIR="${HOME}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
@@ -54,7 +54,6 @@ echo -n "Removing old directories... "
 if [ -d "${DOWNLOAD_DIR}" ]; then
     rm -rf "${DOWNLOAD_DIR}"
     check_error "Failed"
-
 fi
 
 # create download dir and change to it
@@ -109,9 +108,9 @@ echo -n "Running installer... "
 
 # run installer
 cd Software/Bash/
-check_error "Failed 1"
+check_error "Failed"
 sudo bash killswitch-install.sh
-check_error "Failed 2"
+check_error "Failed"
 
 # if installer does not reboot, run new settings in a seperate process
 killswitch-settings.sh &

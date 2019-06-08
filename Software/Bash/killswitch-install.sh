@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.27"
+VERSION_NUMBER="0.1.28"
 CHIP_ID="atmega328p"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
@@ -48,11 +48,6 @@ if [ $EUID -ne 0 ]; then
     echo ""
     exit 1
 fi
-
-#-------------------------------------------------------------------------------
-# Set working dir
-#-------------------------------------------------------------------------------
-# cd ${0%/*}
 
 #-------------------------------------------------------------------------------
 # About
@@ -227,7 +222,7 @@ echo ""
 echo -n "Copying killswitch-boot.service to /lib/systemd/system/... "
 cp ../Services/killswitch-boot.service /lib/systemd/system/
 check_error "Failed"
-#systemctl enable killswitch-boot.service
+systemctl enable killswitch-boot.service
 check_error "Failed"
 echo "Done"
 
@@ -243,7 +238,7 @@ echo "Done"
 echo -n "Copying killswitch-shutdown.service to /lib/systemd/system/... "
 sudo cp ../Services/killswitch-shutdown.service /lib/systemd/system/
 check_error "Failed"
-#systemctl enable killswitch-shutdown.service
+systemctl enable killswitch-shutdown.service
 check_error "Failed"
 echo "Done"
 
@@ -372,12 +367,11 @@ avrdude \
         -U flash:w:"${FIRMWARE_FILE}":i \
         -U flash:v:"${FIRMWARE_FILE}":i
 
+# NB: don't return here if we can still try software update
+# so don't use check_error
 RES=$?
 if [ $RES -ne 0 ]; then
     echo "Failed"
-
-    # NB: don't return here if we can still try software update
-    #return
 fi
 
 #-------------------------------------------------------------------------------

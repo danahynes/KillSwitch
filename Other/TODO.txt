@@ -88,6 +88,7 @@ move retropie shortcut from killswitch-settings to install-retropie
     will also get called when running install-latest
     needs error checking
 
+firmware doesn't need version number in file name
 
 
 check if we are able to do a first-time programming on the atmega
