@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.28"
+VERSION_NUMBER="0.1.29"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 DIALOG_OK=0
 DIALOG_CANCEL=1

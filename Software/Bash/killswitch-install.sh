@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.28"
+VERSION_NUMBER="0.1.29"
 CHIP_ID="atmega328p"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
@@ -280,6 +280,7 @@ cp killswitch-install-retropie.sh /usr/local/bin
 check_error "Failed"
 chmod +x /usr/local/bin/killswitch-install-retropie.sh
 check_error "Failed"
+echo "Done"
 
 # copy install-latest script
 echo -n "Copying killswitch-install-latest.sh to /usr/local/bin/... "
