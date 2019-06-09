@@ -22,10 +22,11 @@ Open a terminal, cd to the KillSwitch-N.N.N/Software/Bash folder, and type:
 ~ $ sudo ./killswitch-install.sh
 ~~~~
 
-Here is a one-line command that will do everything for you. It requires python3 and python3-requests, both included in the latest Raspbian release (RetroPie users may have to run "sudo apt-get install python3-requests"):
+Here is a one-line command that will do everything for you:
 ~~~~
 cd && curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/killswitch-install-latest.sh && bash killswitch-install-latest.sh
 ~~~~
+You can safely delete the "killswitch-install-latest.sh" file after rebooting.
 
 The software requires an OS of Raspbian Jessie or newer, or any other OS that
 uses "systemd". If you're not sure, Google is your friend -)

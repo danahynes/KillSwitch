@@ -17,6 +17,7 @@ when the pi is done shutting down, what is the state of the feedback pin?
 DONE: write a script to do latest download/install and save it in top level to do
     one-liner
 DONE: what to do with one-liner script after install???
+    nothing, the redme tells users they can delete it after reboot
 
 DONE: push external pin header to the right to avoid heatsink on cpu
 DONE: line up with 3rd or 4th row from left
@@ -56,14 +57,12 @@ DONE: documentation on button during programming:
 DONE: error checking:
     DONE: killswitch-install.sh
     DONE: killswitch-uninstall.sh
-    DONE: install-latest.py
+    DONE: killswitch-install-latest.sh
 
 DONE: firmware needs LED at 100% during programming, reset to On level afterwards
-
 DONE: strip IRRemote to remove all decoding stuff - only need raw codes
 
 DONE: fix relative paths? installer, uninstaller, any bash script
-    DONE: change to dir of script so relative paths work
 
 DONE: tell folks about pinout for female header so they can do custom wiring of
     PWR/GND/ICSP/serial/feedback/trigger
@@ -72,24 +71,33 @@ DONE: first step for install-latest, update is create .killswitch
     download everything there
     delete in error
 
-DONE: remove deps for killswitch-settings.py (not used anymore)
-
 DONE: convert install-latest to sh
 
 DONE: killswitch-settings doActualUpdate runs install-latest
 
-!!! WHAT THE FRESH HELL IS BREAKING /DEV/NULL ???
-
-move firmware upodate from install-latest to killswitch-install
+DONE: move firmware update from install-latest to killswitch-install
     same as in update, but don't ask for version numbers (always program)
 
-move retropie shortcut from killswitch-settings to install-retropie
+DONE: move retropie shortcut from killswitch-settings to install-retropie
     then call it from settings and installer
     will also get called when running install-latest
     needs error checking
 
-firmware doesn't need version number in file name
+NO: firmware doesn't need version number in file name
+    yes it does, since we can't put a string inside!
 
+DONE: running install-latest and not reboot causes settings to scroll off screen -
+    maybe don't fork it?
+
+NO: convert install to py (what if user doesn't have py?)
+NO: convert settings to py
+NO: convert uninstall to py
+DONE: convert make-release to py
+
+test on retropie - what is A/B? A is enter.. B is ??? escape?
+    update main readme
+
+!!! WHAT THE FRESH HELL IS BREAKING /DEV/NULL ???
 
 check if we are able to do a first-time programming on the atmega
     just put it in the installer, reprogram every time we run installer
@@ -108,16 +116,6 @@ GPIO 14/15 - /dev/ttyS0 - software serial - enable_uart=1 - console login/getty
 /dev/serial0 -> /dev/ttyS0
 /dev/serial1 -> /dev/ttyAMA0
 https://spellfoundry.com/2016/05/29/configuring-gpio-serial-port-raspbian-jessie-including-pi-3/
-
-
-
-
-
-
-
-
-test on retropie - what is A/B? A is enter.. B is ??? escape?
-    update main readme
 
 use pulses for trigger in killswitch-boot.py? (instead of timing length of button hold)
     first high - set everything up
@@ -141,8 +139,3 @@ run file after reboot -
 make work with toggle (but let ppl know they can't futz with the switch during
     bootup/shutdown)
     https://retropie.org.uk/forum/topic/15727/tutorial-onoff-shim-exposed-neat-powerswitch-from-pimoroni
-
-convert install to py (what if user doesn't have py?)
-DONE: convert settings to py
-convert uninstall to py
-DONE: convert make-release to py

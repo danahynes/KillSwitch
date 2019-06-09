@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.29"
+VERSION_NUMBER="0.1.30"
 CHIP_ID="atmega328p"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
@@ -69,6 +69,7 @@ apt-get upgrade
 #-------------------------------------------------------------------------------
 DEPS=(\
     avrdude \
+    dialog \
     python3 \
 )
 

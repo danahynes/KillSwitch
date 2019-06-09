@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.29"
+VERSION_NUMBER="0.1.30"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
@@ -160,7 +160,7 @@ fi
 echo "***************************************************"
 echo ""
 echo "The following dependencies may have been installed with KillSwitch:"
-echo "avrdude, python3"
+echo "avrdude, dialog, python3"
 echo "You can remove them using apt-get."
 echo ""
 echo "If you want to turn the login console back on, you can use the "
