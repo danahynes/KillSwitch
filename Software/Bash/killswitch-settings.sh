@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.34"
+VERSION_NUMBER="0.1.36"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 DIALOG_OK=0
 DIALOG_CANCEL=1
@@ -184,13 +184,11 @@ PWR_SETTING="PWR"
 PWR_ACTION="PWR"
 
 UPDATE_TITLE="Update"
-UPDATE_HEIGHT=13
+UPDATE_HEIGHT=11
 UPDATE_WIDTH=40
 UPDATE_TEXT_CURRENT="Current version: "
 UPDATE_TEXT_NEW="Latest version:  "
-UPDATE_UPDATE_TEXT="Are you sure you want to update KillSwitch?\n\n(Note that \
-you will need a keyboard attached to enter the root password when the \
-installer starts)"
+UPDATE_UPDATE_TEXT="Are you sure you want to update KillSwitch?
 UPDATE_OK_TEXT="Your firmware and software are up to date."
 
 ERROR_TITLE="Error"
@@ -204,12 +202,9 @@ ERROR_HEIGHT=10
 ERROR_WIDTH=40
 
 UNINSTALL_TITLE="Uninstall"
-UNINSTALL_TEXT="Are you sure you want to uninstall KillSwitch?\n\n(Note that \
-you will need a keyboard attached to enter the root password when the \
-uninstaller starts)"
-UNINSTALL_HEIGHT=10
+UNINSTALL_TEXT="Are you sure you want to uninstall KillSwitch?
+UNINSTALL_HEIGHT=11
 UNINSTALL_WIDTH=40
-UNINSTALL_COMMAND="/usr/local/bin/killswitch-uninstall.sh"
 
 # NB don't change $scriptdir variable name (used by joy2keyStart)
 scriptdir="${HOME}/RetroPie-Setup"
@@ -627,7 +622,7 @@ function doPower() {
 
 # (re)install retropie shortcut
 function doRetroPie() {
-    bash killswitch-install-retropie.sh
+    killswitch-install-retropie.sh
 }
 
 function doDownloadError() {
@@ -690,7 +685,7 @@ function doActualUpdate() {
 
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
-        bash killswitch-install-latest.sh
+        killswitch-install-latest.sh
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
     fi
@@ -767,6 +762,9 @@ function doUpdate() {
     UPDATE_TEXT+="${REMOTE_VERSION_NUMBER}\n"
     UPDATE_TEXT+="\n"
 
+    # TODO: FOR TESTING ONLY!!!
+    IS_NEWER=1
+
     #if newer, do yes/no
     if [ $IS_NEWER -eq 1 ]; then
         UPDATE_TEXT+="$UPDATE_UPDATE_TEXT"
@@ -793,7 +791,7 @@ function doUninstall() {
     if [ $BTN -eq $DIALOG_OK ]; then
 
         # run uninstaller
-        sudo "$UNINSTALL_COMMAND"
+        sudo killswitch-uninstall.sh
         MENU_DONE=1
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1

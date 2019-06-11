@@ -94,9 +94,13 @@ NO: convert settings to py
 NO: convert uninstall to py
 DONE: convert make-release to py
 
-end of update/install-latest -
+DONE: end of update/install-latest -
     if we fork new settings, it scrolls off screen
     if we don't fork, exiting new settings brings us back to old settings
+
+DONE: remove all ref's to keyboard: haven't needed it yet
+
+remove all ext's from scripts (to look/feel more like binaries)
 
 test on retropie - what is A/B? A is enter.. B is ??? escape?
     update main readme

@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.34"
+VERSION_NUMBER="0.1.36"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 SETTINGS_DIR="${HOME}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
@@ -109,8 +109,9 @@ echo -n "Running installer... "
 # run installer
 cd Software/Bash/
 check_error "Failed"
-sudo bash killswitch-install.sh
+sudo killswitch-install.sh
 check_error "Failed"
+
 
 # if installer does not reboot, run new settings
 # NB: don't fork, causes settings to scroll off screen (as if it's a hidden

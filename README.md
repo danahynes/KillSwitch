@@ -15,9 +15,7 @@ KillSwitch is a small PCB that attaches to your Raspberry Pi 2/3/0 (40 pin GPIO)
  The first thing you need is the actual circuit. The KillSwitch hardware files are include in the download, including a schematic and a PCB layout in KiCad for both the Raspberry Pi 2/3 and the Zero. You can get the PCB made by the vendor of your choice (I used OSH Park) or breadboard it using the schematic.
 
 ## Software installation
-To download and install the KillSwitch software on your Pi, first go to the [latest release](https://github.com/danahynes/KillSwitch/releases/latest). Click the link for the "Source code (zip)" or "Source code (tar.gz)" file. Download and extract the file and follow the instructions below:
-
-Open a terminal, cd to the KillSwitch-N.N.N/Software/Bash folder, and type:
+To download and install the KillSwitch software on your Pi, first go to the [latest release](https://github.com/danahynes/KillSwitch/releases/latest). Click the link for the "Source code (zip)" or "Source code (tar.gz)" file. Download and extract the file. Then open a terminal, cd to the KillSwitch-N.N.N/Software/Bash folder, and type:
 ~~~~
 ~ $ sudo ./killswitch-install.sh
 ~~~~
@@ -26,7 +24,7 @@ Here is a one-line command that will do everything for you:
 ~~~~
 cd && curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/killswitch-install-latest.sh && bash killswitch-install-latest.sh
 ~~~~
-You can safely delete the "killswitch-install-latest.sh" file after rebooting.
+You can safely delete the "killswitch-install-latest.sh" file in your home folder after rebooting.
 
 The software requires an OS of Raspbian Jessie or newer, or any other OS that
 uses "systemd". If you're not sure, Google is your friend -)
@@ -120,19 +118,17 @@ This also applies to the sections above about reboot/force quit. The KillSwitch 
 This setting can be used if the software was originally installed on a Raspbian/Other OS system, and you have since installed RetroPie. It places a shortcut named "KillSwitch" in the "Configuration" menu and allows you to access the Settings program using a plugged in/paired controller.
 
 #### Update
-This setting will attempt to update the software on your Pi, as well as the firmware in the device itself. It requires an internet connection to check for the latest release of the code on GitHub, then compares the GitHub version number to the version number running on the Pi/KillSwitch. If a newer version is available, you will be asked to confirm the update. The software will attempt to reprogram the device using ICSP, and then run the new installer (which may require a sudo password, so please make sure you have a keyboard attached/paired to the Pi).
+This setting will attempt to update the software on your Pi, as well as the firmware in the device itself. It requires an internet connection to check for the latest release of the code on GitHub, then compares the GitHub version number to the version number running on the Pi/KillSwitch. If a newer version is available, you will be asked to confirm the update. The software will attempt to reprogram the device using ICSP, and then run the new installer.
 
 If the update is successful, the Pi will ask to be rebooted. Press "Enter" at the end of the installer, wait for the reboot, and you'll be good to go!
 
 #### Uninstall
 This one is pretty self-explanatory. It uninstalls almost all the files/folders from your Pi that were installed using the installer. If you use this option, please be sure to read the caveats at the end of the uninstall script output, as there are some things the uninstaller cannot revert, such as installed dependencies and the serial port options.
 
-This script may require running as root, so please make sure you have a keyboard attached/paired to the Pi to enter the root password.
-
 ## RetroPie
 The software installed on your Pi is compatible with RetroPie. Where you see "killswitch-settings.sh" above, select "KillSwitch" from the main menu.
 
-When you install the software on a system that has RetroPie, a shortcut to "killswitch-settings.sh" will be installed in the main menu directory as "KillSwitch", where you can access it and use it with a paired game controller. Use the D-Pad to navigate between menu options, and the A/B buttons to accept/cancel. (So far it is tested on a Pi 3 B+ with RetroPie v4.4, but it should work on any newer Pi hardware and RetroPie software). Note that the installer/uninstaller may need a root password, for which you will need a keyboard attached/paired to the Pi.
+When you install the software on a system that has RetroPie, a shortcut to "killswitch-settings.sh" will be installed in the main menu directory as "KillSwitch", where you can access it and use it with a paired game controller. Use the D-Pad to navigate between menu options, and the A/B buttons to accept/cancel. (So far it is tested on a Pi 3 B+ with RetroPie v4.4, but it should work on any newer Pi hardware and RetroPie software).
 
 Specific buttons to use depend on your setup, but the defaults are that the A button is Enter (select OK/Back/Exit), and the B button is space bar (select option).
 

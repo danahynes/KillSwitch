@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.34"
+VERSION_NUMBER="0.1.36"
 CHIP_ID="atmega328p"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
@@ -380,14 +380,13 @@ fi
 # Add RetroPie menu entry
 #-------------------------------------------------------------------------------
 cd ../Software/Bash
-bash killswitch-install-retropie.sh
+killswitch-install-retropie.sh
 check_error "Failed"
 
 #-------------------------------------------------------------------------------
 # Cleanup
 #-------------------------------------------------------------------------------
-# NB: don't delete as we may need killswitch-install-latest.sh later for update
-#rm -rf "${DOWNLOAD_DIR}"
+rm -rf "${DOWNLOAD_DIR}"
 
 #-------------------------------------------------------------------------------
 # Ask for reboot
