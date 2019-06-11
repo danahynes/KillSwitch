@@ -851,7 +851,7 @@ fi
 
 # set up serial port
 echo $(stty -F $SERIAL_PORT speed $SERIAL_SPEED -cstopb -parenb cs8) \
-2&>1 /dev/null
+2>&1 /dev/null
 
 #-------------------------------------------------------------------------------
 # Main loop

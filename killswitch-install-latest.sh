@@ -109,7 +109,7 @@ echo -n "Running installer... "
 # run installer
 cd Software/Bash/
 check_error "Failed"
-sudo killswitch-install.sh
+sudo ./killswitch-install.sh
 check_error "Failed"
 
 
