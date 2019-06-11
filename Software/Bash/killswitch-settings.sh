@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.30"
+VERSION_NUMBER="0.1.31"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 DIALOG_OK=0
 DIALOG_CANCEL=1
@@ -855,7 +855,8 @@ if [ -d $scriptdir ]; then
 fi
 
 # set up serial port
-stty -F $SERIAL_PORT speed $SERIAL_SPEED -cstopb -parenb cs8
+echo $(stty -F $SERIAL_PORT speed $SERIAL_SPEED -cstopb -parenb cs8) \
+2&>1 /dev/null
 
 #-------------------------------------------------------------------------------
 # Main loop
