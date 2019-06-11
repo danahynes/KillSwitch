@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.33"
+VERSION_NUMBER="0.1.34"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
@@ -89,13 +89,25 @@ echo "Done"
 
 # remove settings gui script
 echo -n "Removing killswitch-settings.sh from /usr/local/bin/... "
-rm -f /usr/local/bin/killswitch-settings.sh 2>&1 /dev/null
+rm /usr/local/bin/killswitch-settings.sh
 check_error "Failed"
 echo "Done"
 
-# remove uninstaller script
-echo -n "Removing killswitch-uninstall.sh from /usr/local/bin/... "
-rm /usr/local/bin/killswitch-uninstall.sh
+# remove installer script
+echo -n "Removing killswitch-install.sh from /usr/local/bin/... "
+rm /usr/local/bin/killswitch-install.sh
+check_error "Failed"
+echo "Done"
+
+# remove retropie installer script
+echo -n "Removing killswitch-install-retropie.sh from /usr/local/bin/... "
+rm /usr/local/bin/killswitch-install-retropie.sh
+check_error "Failed"
+echo "Done"
+
+# remove install-latest script
+echo -n "Removing killswitch-install-latest.sh from /usr/local/bin/... "
+rm /usr/local/bin/killswitch-install-latest.sh
 check_error "Failed"
 echo "Done"
 

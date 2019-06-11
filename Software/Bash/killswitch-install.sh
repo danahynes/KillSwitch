@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.33"
+VERSION_NUMBER="0.1.34"
 CHIP_ID="atmega328p"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
