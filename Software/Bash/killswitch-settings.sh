@@ -188,7 +188,7 @@ UPDATE_HEIGHT=11
 UPDATE_WIDTH=40
 UPDATE_TEXT_CURRENT="Current version: "
 UPDATE_TEXT_NEW="Latest version:  "
-UPDATE_UPDATE_TEXT="Are you sure you want to update KillSwitch?
+UPDATE_UPDATE_TEXT="Are you sure you want to update KillSwitch?"
 UPDATE_OK_TEXT="Your firmware and software are up to date."
 
 ERROR_TITLE="Error"
@@ -202,7 +202,7 @@ ERROR_HEIGHT=10
 ERROR_WIDTH=40
 
 UNINSTALL_TITLE="Uninstall"
-UNINSTALL_TEXT="Are you sure you want to uninstall KillSwitch?
+UNINSTALL_TEXT="Are you sure you want to uninstall KillSwitch?"
 UNINSTALL_HEIGHT=11
 UNINSTALL_WIDTH=40
 
@@ -761,9 +761,6 @@ function doUpdate() {
     UPDATE_TEXT+="${UPDATE_TEXT_NEW}"
     UPDATE_TEXT+="${REMOTE_VERSION_NUMBER}\n"
     UPDATE_TEXT+="\n"
-
-    # TODO: FOR TESTING ONLY!!!
-    IS_NEWER=1
 
     #if newer, do yes/no
     if [ $IS_NEWER -eq 1 ]; then
