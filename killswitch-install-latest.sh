@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.37"
+VERSION_NUMBER="0.1.38"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 SETTINGS_DIR="${HOME}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
@@ -106,7 +106,7 @@ echo "Done"
 
 echo -n "Running installer... "
 
-# run installer
+# run installer (the new one in download, not the saved one in /usr/local/bin)
 cd Software/Bash/
 check_error "Failed"
 sudo ./killswitch-install.sh
