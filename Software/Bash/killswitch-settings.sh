@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.36"
+VERSION_NUMBER="0.1.37"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 DIALOG_OK=0
 DIALOG_CANCEL=1
@@ -686,6 +686,8 @@ function doActualUpdate() {
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
         killswitch-install-latest.sh
+        killswitch-settings.sh
+        exit 0
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
     fi

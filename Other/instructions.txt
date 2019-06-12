@@ -66,6 +66,12 @@ one-liner:
 
 cd && curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/killswitch-install-latest.sh && bash killswitch-install-latest.sh
 
+reboot-test and shutdown-test use wiringPi gpio, not installed on RetroPie:
+cd
+git clone git://git.drogon.net/wiringPi
+cd wiringPi
+./build
+
 loopback serial for testing:
 
 ./home/dana/Documents/Bash/terminaloop/terminaloop
