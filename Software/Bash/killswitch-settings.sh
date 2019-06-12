@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.40"
+VERSION_NUMBER="0.1.41"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 DIALOG_OK=0
 DIALOG_CANCEL=1
@@ -686,10 +686,10 @@ function doActualUpdate() {
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
         # TODO: download latest killswtch-install-latest, don't use stored one
-        exec killswitch-install-latest.sh
+        killswitch-install-latest.sh
 
         # run new settings
-        #killswitch-settings.sh
+        exec killswitch-settings.sh
 
         # kill this settings
         exit 0
