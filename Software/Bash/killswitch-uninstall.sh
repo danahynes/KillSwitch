@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.41"
+VERSION_NUMBER="0.1.42"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
@@ -92,24 +92,24 @@ echo -n "Removing killswitch-settings.sh from /usr/local/bin/... "
 rm /usr/local/bin/killswitch-settings.sh
 check_error "Failed"
 echo "Done"
-
-# remove install script
-echo -n "Removing killswitch-install.sh from /usr/local/bin/... "
-rm /usr/local/bin/killswitch-install.sh
-check_error "Failed"
-echo "Done"
+#
+# # remove install script
+# echo -n "Removing killswitch-install.sh from /usr/local/bin/... "
+# rm /usr/local/bin/killswitch-install.sh
+# check_error "Failed"
+# echo "Done"
 
 # remove retropie install script
 echo -n "Removing killswitch-install-retropie.sh from /usr/local/bin/... "
 rm /usr/local/bin/killswitch-install-retropie.sh
 check_error "Failed"
 echo "Done"
-
-# remove install-latest script
-echo -n "Removing killswitch-install-latest.sh from /usr/local/bin/... "
-rm /usr/local/bin/killswitch-install-latest.sh
-check_error "Failed"
-echo "Done"
+#
+# # remove install-latest script
+# echo -n "Removing killswitch-install-latest.sh from /usr/local/bin/... "
+# rm /usr/local/bin/killswitch-install-latest.sh
+# check_error "Failed"
+# echo "Done"
 
 # remove uninstall script
 echo -n "Removing killswitch-uninstall.sh from /usr/local/bin/... "
@@ -178,7 +178,7 @@ fi
 echo "***************************************************"
 echo ""
 echo "The following dependencies may have been installed with KillSwitch:"
-echo "avrdude, dialog, python3"
+echo "avrdude, dialog, python3, python3-gpiozero"
 echo "You can remove them using apt-get."
 echo ""
 echo "If you want to turn the login console back on, you can use the "

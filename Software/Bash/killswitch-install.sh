@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.41"
+VERSION_NUMBER="0.1.42"
 CHIP_ID="atmega328p"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 AVRDUDE_FILE="${SETTINGS_DIR}/killswitch-avrdude.conf"
@@ -70,6 +70,7 @@ DEPS=(\
     avrdude \
     dialog \
     python3 \
+    python3-gpiozero \  # only for reboot-test and shutdown-test
 )
 
 echo "Installing dependencies..."
@@ -257,22 +258,14 @@ check_error "Failed"
 chmod +x /usr/local/bin/killswitch-settings.sh
 check_error "Failed"
 echo "Done"
-
-# copy installer script
-echo -n "Copying killswitch-install.sh to /usr/local/bin/... "
-cp killswitch-install.sh /usr/local/bin/
-check_error "Failed"
-chmod +x /usr/local/bin/killswitch-install.sh
-check_error "Failed"
-echo "Done"
-
-# copy uninstaller script
-echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
-cp killswitch-uninstall.sh /usr/local/bin
-check_error "Failed"
-chmod +x /usr/local/bin/killswitch-uninstall.sh
-check_error "Failed"
-echo "Done"
+#
+# # copy installer script
+# echo -n "Copying killswitch-install.sh to /usr/local/bin/... "
+# cp killswitch-install.sh /usr/local/bin/
+# check_error "Failed"
+# chmod +x /usr/local/bin/killswitch-install.sh
+# check_error "Failed"
+# echo "Done"
 
 # copy retropie script
 echo -n "Copying killswitch-install-retropie.sh to /usr/local/bin... "
@@ -281,12 +274,20 @@ check_error "Failed"
 chmod +x /usr/local/bin/killswitch-install-retropie.sh
 check_error "Failed"
 echo "Done"
+#
+# # copy install-latest script
+# echo -n "Copying killswitch-install-latest.sh to /usr/local/bin/... "
+# cp ../../killswitch-install-latest.sh /usr/local/bin/
+# check_error "Failed"
+# chmod +x /usr/local/bin/killswitch-install-latest.sh
+# check_error "Failed"
+# echo "Done"
 
-# copy install-latest script
-echo -n "Copying killswitch-install-latest.sh to /usr/local/bin/... "
-cp ../../killswitch-install-latest.sh /usr/local/bin/
+# copy uninstaller script
+echo -n "Copying killswitch-uninstall.sh to /usr/local/bin... "
+cp killswitch-uninstall.sh /usr/local/bin
 check_error "Failed"
-chmod +x /usr/local/bin/killswitch-install-latest.sh
+chmod +x /usr/local/bin/killswitch-uninstall.sh
 check_error "Failed"
 echo "Done"
 

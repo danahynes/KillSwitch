@@ -100,6 +100,10 @@ DONE: end of update/install-latest -
 
 DONE: remove all ref's to keyboard: haven't needed it yet
 
+DONE: download newest killswitch-install-latest in update
+    don't copy over in install
+    don't remove in uninstall
+
 remove all ext's from scripts (to look/feel more like binaries)
 
 test on retropie - what is A/B? A is enter.. B is ??? escape?
