@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.38"
+VERSION_NUMBER="0.1.39"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 DIALOG_OK=0
 DIALOG_CANCEL=1
@@ -689,7 +689,7 @@ function doActualUpdate() {
         killswitch-install-latest.sh
 
         # run new settings
-        killswitch-settings.sh
+        killswitch-settings.sh &
 
         # kill this settings
         exit 0
