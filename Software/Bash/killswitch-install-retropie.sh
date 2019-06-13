@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.46"
+VERSION_NUMBER="0.1.47"
 THE_USER=$(logname)
 SETTINGS_DIR="/home/${THE_USER}/.killswitch"
 
@@ -26,10 +26,10 @@ check_error() {
         echo "Aborting install retropie"
 
         # clean up (remove) any dirs created at this point (.killswitch)
-        rm -r "${SETTINGS_DIR}"
+        #rm -r "${SETTINGS_DIR}"
 
         # and any copied files
-        find /usr/local/bin -name "killswitch-*" -delete
+        #find /usr/local/bin -name "killswitch-*" -delete
 
         exit 1
     fi

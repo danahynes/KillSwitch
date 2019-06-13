@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.46"
+VERSION_NUMBER="0.1.47"
 CHIP_ID="atmega328p"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 AVRDUDE_FILE="${SETTINGS_DIR}/killswitch-avrdude.conf"
@@ -27,10 +27,10 @@ check_error() {
         echo "Aborting install"
 
         # clean up (remove) any dirs created at this point (.killswitch)
-        rm -r "${SETTINGS_DIR}"
+        #rm -r "${SETTINGS_DIR}"
 
         # and any files copied to /usr/local/bin
-        find /usr/local/bin/ -name "killswitch-*" -delete
+        #find /usr/local/bin/ -name "killswitch-*" -delete
 
         exit 1
     fi

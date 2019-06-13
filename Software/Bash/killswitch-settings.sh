@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.46"
+VERSION_NUMBER="0.1.47"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 LATEST_URL="https://raw.githubusercontent.com/danahynes/KillSwitch/master/\
 killswitch-install-latest.sh"
@@ -694,7 +694,9 @@ function doActualUpdate() {
 
         # download latest killswtch-install-latest
         cd "${SETTINGS_DIR}"
-        rm killswitch-install-latest.sh
+        if [ -f "killswitch-install-latest.sh" ]; then
+            rm "killswitch-install-latest.sh"
+        fi
         curl -O "${LATEST_URL}"
         RES=$?
         if [ $RES -ne 0 ]; then

@@ -112,9 +112,29 @@ DONE: settings needs error checking when running external
 DONE: also for downloading json for version check
 DONE: also not using hardware/software error dialogs
 DONE: finish doactualupdate
-safe exit - stop joy2key
+
+settings safe exit - stop joy2key
 
 should we stop whole install if we can't set retropie shortcut?
+DONE: too much deleting in check_errors
+    only return 1 from install-retropie
+    does install-latest need deleting?
+    or just install?
+
+how to delete if fail during install?
+    can't remove everything, in case we are updating
+    need to keep old files
+    
+how to delete as many files as possible after instsall?
+    .killswitch/latest
+    .killswitch/killswitch-install-latest
+    ~/killswitch-install-latest
+
+    one-liner/update: killswitch-install-latest should delete itself from where it was downloaded
+        also delete latest folder
+        won't run if install reboots
+    download src/clone: killswitch-install should NOT DELETE ANYTHING
+
 
 remove all ext's from scripts (to look/feel more like binaries)
 
