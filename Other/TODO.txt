@@ -104,6 +104,18 @@ DONE: download newest killswitch-install-latest in update
     don't copy over in install
     don't remove in uninstall
 
+DONE: install retropie needs user for settings dir and chown
+    could be run by user (settings) or sudo (installer)
+
+DONE: settings needs error checking when running external
+    (retropie, install, install-latest, uninstall)
+DONE: also for downloading json for version check
+DONE: also not using hardware/software error dialogs
+DONE: finish doactualupdate
+safe exit - stop joy2key
+
+should we stop whole install if we can't set retropie shortcut?
+
 remove all ext's from scripts (to look/feel more like binaries)
 
 test on retropie - what is A/B? A is enter.. B is ??? escape?

@@ -13,7 +13,9 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.42"
+VERSION_NUMBER="0.1.44"
+THE_USER=$(logname)
+SETTINGS_DIR="/home/${THE_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
 # Functions
@@ -21,11 +23,13 @@ VERSION_NUMBER="0.1.42"
 check_error() {
     if [ "$?" != "0" ]; then
         echo "${1}"
-        echo "Aborting install"
+        echo "Aborting install retropie"
 
         # clean up (remove) any dirs created at this point (.killswitch)
+        rm -r "${SETTINGS_DIR}"
+
         # and any copied files
-        rm -rf "${SETTINGS_DIR}"
+        find /usr/local/bin -name "killswitch-*" -delete
 
         exit 1
     fi
@@ -37,7 +41,7 @@ check_error() {
 
 # NB: this is from joystick-selection
 
-RETROPIE_DATA_DIR="/home/${SUDO_USER}/RetroPie"
+RETROPIE_DATA_DIR="/home/${THE_USER}/RetroPie"
 if [ -d "${RETROPIE_DATA_DIR}" ]; then
     echo -n "Creating RetroPie menu entry... "
 
@@ -48,21 +52,22 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
 
     # link the installed file to the menu
     ln -sf "/usr/local/bin/killswitch-settings.sh" \
-"${RETROPIE_MENU_DIR}/killswitch-settings.sh" &> /dev/null
+"${RETROPIE_MENU_DIR}/killswitch-settings.sh"
     check_error "Failed"
 
     # copy menu icon
     cp ../../Pics/killswitch.png "${RETROPIE_MENU_DIR}/icons"
     check_error "Failed"
 
-    # copy the default list to edit
-    cp -nv "${RETROPIE_CONFIG_DIR}/gamelist.xml" "${GAMELIST_XML}"
+    # copy the default list to edit (if it doesn't already exist)
+    cp -n "${RETROPIE_CONFIG_DIR}/gamelist.xml" "${GAMELIST_XML}"
     check_error "Failed"
 
     # add menu entry
-    if ! grep -q "<path>./killswitch-settings.sh</path>" "${GAMELIST_XML}"
-    then
-        xmlstarlet ed -L -P -s "/gameList" -t elem -n "gameTMP" \
+    if [ ! grep -q "<path>./killswitch-settings.sh</path>" \
+"${GAMELIST_XML}" ]; then
+        xmlstarlet ed -L -P \
+            -s "/gameList" -t elem -n "gameTMP" \
             -s "//gameTMP" -t elem -n path -v "./killswitch-settings.sh" \
             -s "//gameTMP" -t elem -n name -v "KillSwitch Settings" \
             -s "//gameTMP" -t elem -n desc -v "Turn your RetroPie on and off \
@@ -81,9 +86,11 @@ using an infrared remote" \
     fi
 
     # needed for proper permissions for gamelist.xml and icons/killswitch.png
-    chown -R ${SUDO_USER}:${SUDO_USER} "${RETROPIE_MENU_DIR}"
+    chown -R ${THE_USER}:${THE_USER} "${RETROPIE_MENU_DIR}"
     check_error "Failed"
 
     echo "Done"
     echo ""
 fi
+
+# -)

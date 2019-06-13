@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.42"
+VERSION_NUMBER="0.1.44"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 
 #-------------------------------------------------------------------------------
@@ -118,14 +118,14 @@ check_error "Failed"
 echo "Done"
 
 # remove reboot test script
-echo -n "Removing reboot-test.sh from /usr/local/bin/... "
-rm /usr/local/bin/reboot-test.sh
+echo -n "Removing killswitch-reboot-test.sh from /usr/local/bin/... "
+rm /usr/local/bin/killswitch-reboot-test.sh
 check_error "Failed"
 echo "Done"
 
 # remove shutdown test script
-echo -n "Removing shutdown-test.sh from /usr/local/bin/... "
-rm /usr/local/bin/shutdown-test.sh
+echo -n "Removing killswitch-shutdown-test.sh from /usr/local/bin/... "
+rm /usr/local/bin/killswitch-shutdown-test.sh
 check_error "Failed"
 echo "Done"
 
@@ -145,18 +145,15 @@ echo ""
 #-------------------------------------------------------------------------------
 # Remove RetroPie menu entry
 #-------------------------------------------------------------------------------
-# remove shortcut from RetroPie menu
 RETROPIE_DATA_DIR="/home/${SUDO_USER}/RetroPie"
 if [ -d "${RETROPIE_DATA_DIR}" ]; then
     echo -n "Removing RetroPie menu entry... "
 
     RETROPIE_MENU_DIR="${RETROPIE_DATA_DIR}/retropiemenu"
-    RETROPIE_CONFIG_DIR=\
-"/opt/retropie/configs/all/emulationstation/gamelists/retropie"
     GAMELIST_XML="${RETROPIE_MENU_DIR}/gamelist.xml"
 
     # remove link to menu
-    rm -f "${RETROPIE_MENU_DIR}/killswitch-settings.sh"
+    rm "${RETROPIE_MENU_DIR}/killswitch-settings.sh"
     check_error "Failed"
 
     # delete icon

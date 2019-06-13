@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.44"
+VERSION_NUMBER="0.1.42"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 SETTINGS_DIR="${HOME}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
@@ -24,13 +24,11 @@ DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
 check_error() {
     if [ "$?" != "0" ]; then
         echo "${1}"
-        echo "Aborting install latest"
+        echo "Aborting install"
 
         # clean up (remove) any dirs created at this point (.killswitch)
-        rm -r "${SETTINGS_DIR}"
-
-        # and any files copied to /usr/local/bin
-        find /usr/local/bin/ -name "killswitch-*" -delete
+        # and any copied files
+        rm -rf "${SETTINGS_DIR}"
 
         exit 1
     fi
@@ -54,7 +52,7 @@ echo -n "Removing old directories... "
 
 # remove any old downloads (but not settings)
 if [ -d "${DOWNLOAD_DIR}" ]; then
-    rm -r "${DOWNLOAD_DIR}"
+    rm -rf "${DOWNLOAD_DIR}"
     check_error "Failed"
 fi
 
@@ -108,11 +106,16 @@ echo "Done"
 
 echo -n "Running installer... "
 
-# run installer
+# run installer (the new one in download, not the saved one in /usr/local/bin)
 cd Software/Bash/
 check_error "Failed"
 sudo ./killswitch-install.sh
 check_error "Failed"
+
+#-------------------------------------------------------------------------------
+# Cleanup
+#-------------------------------------------------------------------------------
+rm -rf "${DOWNLOAD_DIR}"
 
 # close this script
 exit 0

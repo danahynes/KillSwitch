@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.42"
+VERSION_NUMBER="0.1.44"
 CHIP_ID="atmega328p"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 AVRDUDE_FILE="${SETTINGS_DIR}/killswitch-avrdude.conf"
@@ -27,8 +27,10 @@ check_error() {
         echo "Aborting install"
 
         # clean up (remove) any dirs created at this point (.killswitch)
-        # and any copied files
-        rm -rf "${SETTINGS_DIR}"
+        rm -r "${SETTINGS_DIR}"
+
+        # and any files copied to /usr/local/bin
+        find /usr/local/bin/ -name "killswitch-*" -delete
 
         exit 1
     fi
@@ -70,7 +72,7 @@ DEPS=(\
     avrdude \
     dialog \
     python3 \
-    python3-gpiozero \  # only for reboot-test and shutdown-test
+    python3-gpiozero \
 )
 
 echo "Installing dependencies..."
@@ -237,7 +239,7 @@ echo "Done"
 
 # copy shutodwn service script
 echo -n "Copying killswitch-shutdown.service to /lib/systemd/system/... "
-sudo cp ../Services/killswitch-shutdown.service /lib/systemd/system/
+cp ../Services/killswitch-shutdown.service /lib/systemd/system/
 check_error "Failed"
 systemctl enable killswitch-shutdown.service
 check_error "Failed"
@@ -292,18 +294,18 @@ check_error "Failed"
 echo "Done"
 
 # copy reboot test script
-echo -n "Copying reboot-test.sh to /usr/local/bin... "
-cp ../../Other/reboot-test.sh /usr/local/bin
+echo -n "Copying killswitch-reboot-test.sh to /usr/local/bin... "
+cp ../../Other/killswitch-reboot-test.sh /usr/local/bin
 check_error "Failed"
-chmod +x /usr/local/bin/reboot-test.sh
+chmod +x /usr/local/bin/killswitch-reboot-test.sh
 check_error "Failed"
 echo "Done"
 
 # copy shutdown test script
-echo -n "Copying shutdown-test.sh to /usr/local/bin... "
-cp ../../Other/shutdown-test.sh /usr/local/bin
+echo -n "Copying killswitch-shutdown-test.sh to /usr/local/bin... "
+cp ../../Other/killswitch-shutdown-test.sh /usr/local/bin
 check_error "Failed"
-chmod +x /usr/local/bin/shutdown-test.sh
+chmod +x /usr/local/bin/killswitch-shutdown-test.sh
 check_error "Failed"
 echo "Done"
 
@@ -380,7 +382,7 @@ fi
 # Add RetroPie menu entry
 #-------------------------------------------------------------------------------
 cd ../Software/Bash
-killswitch-install-retropie.sh
+./killswitch-install-retropie.sh
 check_error "Failed"
 
 #-------------------------------------------------------------------------------

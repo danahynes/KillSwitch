@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.42"
+VERSION_NUMBER="0.1.44"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 LATEST_URL="https://raw.githubusercontent.com/danahynes/KillSwitch/master/\
 killswitch-install-latest.sh"
@@ -622,9 +622,13 @@ function doPower() {
     fi
 }
 
-# (re)install retropie shortcut
 function doRetroPie() {
-    killswitch-install-retropie.sh
+
+    # (re)install retropie shortcut
+    RES=$(killswitch-install-retropie.sh)
+    if [ $RES -ne 0 ]; then
+        :
+    fi
 }
 
 function doDownloadError() {
@@ -643,21 +647,21 @@ function doDownloadError() {
     fi
 }
 
-function doHardwareUpdateError() {
-    RESULT=$(dialog \
-    --backtitle "$WINDOW_TITLE" \
-    --title "$ERROR_TITLE" \
-    --msgbox \
-    "$ERROR_TEXT_HARDWARE" \
-    $ERROR_HEIGHT \
-    $ERROR_WIDTH \
-    3>&1 1>&2 2>&3 3>&-)
-
-    BTN=$?
-    if [ $BTN -eq $DIALOG_ESCAPE ]; then
-        MENU_DONE=1
-    fi
-}
+# function doHardwareUpdateError() {
+#     RESULT=$(dialog \
+#     --backtitle "$WINDOW_TITLE" \
+#     --title "$ERROR_TITLE" \
+#     --msgbox \
+#     "$ERROR_TEXT_HARDWARE" \
+#     $ERROR_HEIGHT \
+#     $ERROR_WIDTH \
+#     3>&1 1>&2 2>&3 3>&-)
+#
+#     BTN=$?
+#     if [ $BTN -eq $DIALOG_ESCAPE ]; then
+#         MENU_DONE=1
+#     fi
+# }
 
 function doSoftwareUpdateError() {
     RESULT=$(dialog \
@@ -688,12 +692,25 @@ function doActualUpdate() {
     BTN=$?
     if [ $BTN -eq $DIALOG_OK ]; then
 
-        # download latest killswtch-install-latest, don't use stored one
+        # download latest killswtch-install-latest
         cd "${SETTINGS_DIR}"
+        rm killswitch-install-latest.sh
         curl -O "${LATEST_URL}"
-        bash ./killswitch-install-latest.sh
+        RES=$?
+        if [ $RES -ne 0 ]; then
+            doDownloadError
+            return
+        fi
 
-        # run new settings in place of this one
+        # run new killswitch-install-latest
+        bash ./killswitch-install-latest.sh
+        RES=$?
+        if [ $RES -ne 0 ]; then
+            doSoftwareUpdateError
+            return
+        fi
+
+        # run new settings in place of this one (if not rebooted)
         exec killswitch-settings.sh
     elif [ $BTN -eq $DIALOG_ESCAPE ]; then
         MENU_DONE=1
@@ -702,13 +719,13 @@ function doActualUpdate() {
 
 function doIsUpToDate() {
     RESULT=$(dialog \
-            --backtitle "$WINDOW_TITLE" \
-            --title "$UPDATE_TITLE" \
-            --msgbox \
-            "$UPDATE_TEXT" \
-            $UPDATE_HEIGHT \
-            $UPDATE_WIDTH \
-            3>&1 1>&2 2>&3 3>&-)
+    --backtitle "$WINDOW_TITLE" \
+    --title "$UPDATE_TITLE" \
+    --msgbox \
+    "$UPDATE_TEXT" \
+    $UPDATE_HEIGHT \
+    $UPDATE_WIDTH \
+    3>&1 1>&2 2>&3 3>&-)
 
     BTN=$?
     if [ $BTN -eq $DIALOG_ESCAPE ]; then
@@ -732,6 +749,7 @@ function doUpdate() {
     # get lastest firmware version from github
     JSON=$(curl -s "${GITHUB_URL}")
     RES=$?
+
 
     if [ $RES -ne 0 ]; then
         doDownloadError
@@ -859,8 +877,7 @@ if [ -d $scriptdir ]; then
 fi
 
 # set up serial port
-echo $(stty -F $SERIAL_PORT speed $SERIAL_SPEED -cstopb -parenb cs8) \
-2>&1 /dev/null
+stty -F $SERIAL_PORT speed $SERIAL_SPEED -cstopb -parenb cs8
 
 #-------------------------------------------------------------------------------
 # Main loop
