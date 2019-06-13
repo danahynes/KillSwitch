@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.45"
+VERSION_NUMBER="0.1.46"
 GITHUB_URL="https://api.github.com/repos/danahynes/KillSwitch/releases/latest"
 SETTINGS_DIR="${HOME}/.killswitch"
 DOWNLOAD_DIR="${SETTINGS_DIR}/latest"

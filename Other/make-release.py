@@ -25,7 +25,7 @@ import time
 #-------------------------------------------------------------------------------
 # Constants
 
-VERSION_NUMBER = "0.1.45"
+VERSION_NUMBER = "0.1.46"
 
 # set locale
 locale.setlocale(locale.LC_ALL, '')
