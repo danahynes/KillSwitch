@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.44"
+VERSION_NUMBER="0.1.45"
 CHIP_ID="atmega328p"
 SETTINGS_DIR="/home/${SUDO_USER}/.killswitch"
 AVRDUDE_FILE="${SETTINGS_DIR}/killswitch-avrdude.conf"

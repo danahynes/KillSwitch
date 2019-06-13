@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 # Constants
 #-------------------------------------------------------------------------------
-VERSION_NUMBER="0.1.44"
+VERSION_NUMBER="0.1.45"
 THE_USER=$(logname)
 SETTINGS_DIR="/home/${THE_USER}/.killswitch"
 
@@ -64,8 +64,8 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
     check_error "Failed"
 
     # add menu entry
-    if [ ! grep -q "<path>./killswitch-settings.sh</path>" \
-"${GAMELIST_XML}" ]; then
+    if ! grep -q "<path>./killswitch-settings.sh</path>" "${GAMELIST_XML}"
+    then
         xmlstarlet ed -L -P \
             -s "/gameList" -t elem -n "gameTMP" \
             -s "//gameTMP" -t elem -n path -v "./killswitch-settings.sh" \
