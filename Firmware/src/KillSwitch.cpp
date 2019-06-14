@@ -28,7 +28,7 @@
 //-----------------------------------------------------------------------------
 // Constants
 
-const char VERSION_NUMBER[] PROGMEM = "0.1.48";
+const char VERSION_NUMBER[] PROGMEM = "0.1.49";
 
 const int STATE_OFF = 0;
 const int STATE_BOOTING = 1;
