@@ -12,12 +12,12 @@ KillSwitch is a small PCB that attaches to your Raspberry Pi 2/3/0 (40 pin GPIO)
  3. The firmware (code that runs on the PCB)
 
  ## Hardware
- The first thing you need is the actual circuit. The KillSwitch hardware files are include in the download, including a schematic and a PCB layout in KiCad for both the Raspberry Pi 2/3 and the Zero. You can get the PCB made by the vendor of your choice (I used OSH Park) or breadboard it using the schematic.
+ The first thing you need is the actual circuit. The KillSwitch hardware files are include in the download, including a schematic and a PCB layout in KiCad for both the Raspberry Pi 2/3 and the Zero. You can get the PCB made by the vendor of your choice (I used OSH Park, hence the purple PCB in the picture above) or breadboard it using the schematic.
 
 ## Software installation
-To download and install the KillSwitch software on your Pi, first go to the [latest release](https://github.com/danahynes/KillSwitch/releases/latest). Click the link for the "Source code (zip)" or "Source code (tar.gz)" file. Download and extract the file. Then open a terminal, cd to the KillSwitch-N.N.N/Software/Bash folder, and type:
+To download and install the KillSwitch software on your Pi, first go to the [latest release](https://github.com/danahynes/KillSwitch/releases/latest). Click the link for the "Source code (zip)" or "Source code (tar.gz)" file. Download and extract the file. Then open a terminal, ```cd``` to the KillSwitch-N.N.N/Software/Bash folder, and type:
 ~~~~
-~ $ sudo ./killswitch-install.sh
+sudo ./killswitch-install.sh
 ~~~~
 
 Here is a one-line command that will do everything for you:
@@ -26,11 +26,20 @@ cd && curl -O https://raw.githubusercontent.com/danahynes/KillSwitch/master/kill
 ~~~~
 You can safely delete the "killswitch-install-latest.sh" file in your home folder after rebooting.
 
+You can also clone the latest "bleeding edge" code by running this command:
+~~~~
+git clone https://github.com/danahynes/KillSwitch
+~~~~
+then ```cd``` into the KillSwitch/Software/Bash folder and type:
+~~~~
+sudo ./killswitch-install.sh
+~~~~
+
 The software requires an OS of Raspbian Jessie or newer, or any other OS that
 uses "systemd". If you're not sure, Google is your friend -)
 
 ## A note on the serial port
-The Raspberry Pi 3 has two UARTs, one based on hardware, and one based on software. The hardware port is faster and more reliable, since the silicon is specifically designed to do one thing, and one thing only, and do it well. On the Raspberry Pi 3 (and newer), this port is, by default, used for Bluetooth for obvious reasons. Bluetooth is used to connect devices wirelessly, however thsy choose, and so has no "language" of it's own. In the case of a Raspberry Pi, it is used to create a serial connection over the air. The software port is used for serial login (the ablility to log into, and control, the Pi over a standard RS-232 serial hardware connection). This port is reconfigured by KillSwitch to allow communication between the device and the Pi.
+The Raspberry Pi 3 has two UARTs, one based on hardware, and one based on software. The hardware port is faster and more reliable, since the silicon is specifically designed to do one thing, and one thing only, and do it well. On the Raspberry Pi 3 (and newer), this port is, by default, used for Bluetooth for obvious reasons. Bluetooth is used to connect devices wirelessly, however they choose, and so has no "language" of it's own. It is only a pipeline to connect two (or more) hardware devices. Most of the time, it is used to create a serial connection over the air. The software port on the Pi is used for serial login (the ablility to log into, and control, the Pi over a standard RS-232 serial hardware connection). This port is reconfigured by KillSwitch to allow communication between the device and the Pi.
 
 That means that installing the software will turn off your ability to log in to the Pi using a serial console (getty/putty), as the software serial port (physical pins 8 and 10, labeled BCM 14 & BCM 15, and in Linux is known as /dev/ttyS0) is used to communicate to the device when using the settings script. If you don't know what this means, don't worry. You'll probably never use this feature. This does not affect the ability to use SSH or VNC to connect to the Pi, only to log in using getty or putty over a physical serial connection.
 
