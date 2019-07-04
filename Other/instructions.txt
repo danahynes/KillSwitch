@@ -60,7 +60,7 @@ publish release
 
 clone github repo on pi:
 
-cd ~/Downloads; rm -rf KillSwitch; git clone https://danahynes:5447Wasmynumber@github.com/danahynes/KillSwitch.git; cd KillSwitch/Software/Bash; sudo ./killswitch-install.sh
+cd ~/Downloads; rm -rf KillSwitch; git clone https://github.com/danahynes/KillSwitch.git; cd KillSwitch/Software/Bash; sudo ./killswitch-install.sh
 
 one-liner:
 
