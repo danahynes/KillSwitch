@@ -113,18 +113,23 @@ DONE: also for downloading json for version check
 DONE: also not using hardware/software error dialogs
 DONE: finish doactualupdate
 
-settings safe exit - stop joy2key
-
-should we stop whole install if we can't set retropie shortcut?
 DONE: too much deleting in check_errors
     only return 1 from install-retropie
     does install-latest need deleting?
     or just install?
 
+
+
+
+    
+settings safe exit - stop joy2key
+
+should we stop whole install if we can't set retropie shortcut?
+
 how to delete if fail during install?
     can't remove everything, in case we are updating
     need to keep old files
-    
+
 how to delete as many files as possible after instsall?
     .killswitch/latest
     .killswitch/killswitch-install-latest
