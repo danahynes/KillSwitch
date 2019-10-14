@@ -124,6 +124,15 @@ After uninstall
 Will have old console setting from before install, whether console 
 Was on or not
 Same for config.txt
+Same for bash aliases
+
+Install.sh - fix chown in avrdude
+    Fix retropie install - needs folder check and echo "Installing retropie shortcut"
+
+
+
+
+
     
 settings safe exit - stop joy2key
 
