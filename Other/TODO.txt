@@ -119,7 +119,10 @@ DONE: too much deleting in check_errors
     or just install?
 
 
-
+Install.sh - back up old cmdline.txt to settings folder and restore
+After uninstall
+Will have old console setting from before install, whether console 
+Was on or not
 
     
 settings safe exit - stop joy2key
