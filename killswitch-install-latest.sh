@@ -24,7 +24,7 @@ DOWNLOAD_DIR="${SETTINGS_DIR}/latest"
 check_error() {
     if [ "$?" != "0" ]; then
         echo "${1}"
-        echo "Aborting install latest"
+        echo "Aborting killswitch-install-latest"
 
         # clean up (remove) any dirs created at this point (.killswitch)
         #rm -r "${SETTINGS_DIR}"
@@ -39,9 +39,9 @@ check_error() {
 #-------------------------------------------------------------------------------
 # Start
 #-------------------------------------------------------------------------------
-echo -n "Getting URL to latest release... "
 
 # get latest JSON
+echo -n "Getting URL to latest release... "
 JSON=$(curl -s "${GITHUB_URL}")
 check_error "Failed"
 
@@ -50,43 +50,40 @@ UPDATE_URL=$(echo "${JSON}" | grep 'zipball_url' | cut -d '"' -f4)
 check_error "Failed"
 echo "Done"
 
-echo -n "Removing old directories... "
-
 # remove any old downloads (but not settings)
+echo -n "Removing old directories... "
 if [ -d "${DOWNLOAD_DIR}" ]; then
     rm -r "${DOWNLOAD_DIR}"
     check_error "Failed"
 fi
+echo "Done"
 
 # create download dir and change to it
+echo -n "Creating new directories... "
 mkdir -p "${DOWNLOAD_DIR}"
 check_error "Failed"
 chown "${USER}:${USER}" "${DOWNLOAD_DIR}"
 check_error "Failed"
 cd "${DOWNLOAD_DIR}"
 check_error "Failed"
-
 echo "Done"
 
-echo -n "Creating path names... "
-
 # fudge some names
+echo -n "Creating path names... "
 ZIP_NAME=$(basename "${UPDATE_URL}")
 check_error "Failed"
 SHORT_NAME="KillSwitch-${ZIP_NAME}"
 ZIP_FILE_NAME="${SHORT_NAME}.zip"
 echo "Done"
 
-echo -n "Downloading latest release... "
-
 # get lastest release from github and save to settings dir
+echo -n "Downloading latest release... "
 curl -Lso "${ZIP_FILE_NAME}" "${UPDATE_URL}"
 check_error "Failed"
 echo "Done"
 
-echo -n "Unzipping latest release... "
-
 # get long name
+echo -n "Unzipping latest release... "
 LONG_NAME=$(echo $(unzip -qql "${ZIP_FILE_NAME}" | head -n1 | tr -s ' ' \
         | cut -d ' ' -f5-))
 check_error "Failed"
@@ -99,17 +96,14 @@ check_error "Failed"
 mv "${LONG_NAME}" "${SHORT_NAME}"
 check_error "Failed"
 
-# delete
+# delete zip file
 rm "${ZIP_FILE_NAME}"
-check_error "Failed"
-cd "${SHORT_NAME}"
 check_error "Failed"
 echo "Done"
 
-echo -n "Running installer... "
-
 # run installer
-cd Software/Bash/
+echo -n "Running installer... "
+cd "${SHORT_NAME}/Software/Bash/"
 check_error "Failed"
 sudo ./killswitch-install.sh
 check_error "Failed"
