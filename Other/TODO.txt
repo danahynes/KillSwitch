@@ -118,25 +118,28 @@ DONE: too much deleting in check_errors
     does install-latest need deleting?
     or just install?
 
+DONE: Install.sh - fix chown in avrdude
+DONE:    Fix retropie install - needs folder check and echo "Installing retropie shortcut"
+
+DONE: should we stop whole install if we can't set retropie shortcut?
+
+
 
 Install.sh - back up old cmdline.txt to settings folder and restore
 After uninstall
-Will have old console setting from before install, whether console 
+Will have old console setting from before install, whether console
 Was on or not
 Same for config.txt
 Same for bash aliases
+do apt-get cleanup after uninstall to remove unneeded deps
 
-Install.sh - fix chown in avrdude
-    Fix retropie install - needs folder check and echo "Installing retropie shortcut"
-
-
-
+RGBW led
+power led option/fed from uc
 
 
-    
+
+
 settings safe exit - stop joy2key
-
-should we stop whole install if we can't set retropie shortcut?
 
 how to delete if fail during install?
     can't remove everything, in case we are updating

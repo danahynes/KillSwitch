@@ -1,4 +1,4 @@
-1. install-latest.py
+1. killswitch-install-latest.py
     downloads latest release from GitHub and runs installer
 2. killswitch-install.sh
     installs the rest of the scripts
