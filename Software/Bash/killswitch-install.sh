@@ -339,7 +339,7 @@ if [ -f "${AVRDUDE_FILE}" ]; then
 fi
 touch "${AVRDUDE_FILE}"
 check_error "Failed"
-chown "${SUDO_USER}" "${AVRDUDE_FILE}"
+chown "${SUDO_USER}:${SUDO_USER}" "${AVRDUDE_FILE}"
 check_error "Failed"
 AVRDUDE_TEXT="programmer\n"
 AVRDUDE_TEXT+="  id    = \"killswitch\";\n"
@@ -383,7 +383,6 @@ fi
 #-------------------------------------------------------------------------------
 cd ../Software/Bash
 ./killswitch-install-retropie.sh
-check_error "Failed"
 
 #-------------------------------------------------------------------------------
 # Ask for reboot
