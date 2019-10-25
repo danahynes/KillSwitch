@@ -24,6 +24,7 @@
 
 #define DH_DEBUG 1
 #define ERASE_EEPROM 0
+#define ARDUINO_UNO 1
 
 //-----------------------------------------------------------------------------
 // Constants
@@ -40,7 +41,7 @@ const int PROG_STATE_NONE = 0;
 const int PROG_STATE_CODE_ON = 1;
 const int PROG_STATE_CODE_OFF = 2;
 
-#if DH_DEBUG == 1
+#if ARDUINO_UNO == 1
 
 // pins for Arduino
 const int PIN_BUTTON = 2;
@@ -50,20 +51,26 @@ const int PIN_STATUS = 6;
 const int PIN_TRIGGER = 13;
 const int PIN_POWER = 4;
 
-// these pins are used to get around the fact that i broke the f*cking button
+// NB: these pins are used to get around the fact that i broke the button
 // on the shield - connect PIN_FEEDBACK to PIN_DEBUG_FEEDBACK_OUT, and connect
 // PIN_DEBUG_FEEDBACK_IN to ground to simulate a feedback signal
 const int PIN_DEBUG_FEEDBACK_OUT = 8;
 const int PIN_DEBUG_FEEDBACK_IN = 9;
 #else
-// TODO: pins for ATTiny84
+
+// pins for ATTiny841
+const int PIN_BUTTON = 9;
+const int PIN_IR = 0;
+const int PIN_FEEDBACK = 3;
+const int PIN_STATUS = 8;
+const int PIN_TRIGGER = 7;
+const int PIN_POWER = 10;
 #endif
 
 const int DEBOUNCE_DELAY = 50;
 const int HOLD_TIME_DEFAULT = 5000;
 
 const int STATUS_ON_BRIGHTNESS_DEFAULT = 255;
-
 const int STATUS_TYPE_OFF = 1;
 
 const int PROG_TIMEOUT = 15000;
@@ -117,7 +124,7 @@ int progState = PROG_STATE_NONE;
 // hardware button
 DHButton button(PIN_BUTTON, true, DEBOUNCE_DELAY);
 
-#if DH_DEBUG == 1
+#if ARDUINO_UNO == 1
 
 // NB: fix for broken button
 DHButton tmpFeedback(PIN_DEBUG_FEEDBACK_IN, true, DEBOUNCE_DELAY);
@@ -152,7 +159,7 @@ int serialState = SERIAL_STATE_NONE;
 int serialIndex = 0;
 
 //------------------------------------------------------------------------------
-// Helpers
+// Functions
 
 /*------------------------------------------------------------------------------
  * Writes a long value to EEPROM.
@@ -246,19 +253,23 @@ void stopProgramming() {
  ----------------------------------------------------------------------------*/
 void doBootup() {
 
-	if (state != STATE_BOOTING) {
-		state = STATE_BOOTING;
+	// guard block
+	if (state == STATE_BOOTING) {
+		return;
+	}
 
-		// reset brightness
-		ledStatus.setLevel(onBright);
+	// set new state
+	state = STATE_BOOTING;
+
+	// reset brightness
+	ledStatus.setLevel(onBright);
 
 #if DH_DEBUG == 1
-		Serial.println(F("state changed to STATE_BOOTING"));
+	Serial.println(F("state changed to STATE_BOOTING"));
 #endif
 
-		// feedback state to watch for when booting
-		feedbackCounter.setValue(LOW);
-	}
+	// feedback state to watch for when booting
+	feedbackCounter.setValue(LOW);
 }
 
 /*-----------------------------------------------------------------------------
@@ -271,27 +282,34 @@ void doShutdown(bool changeTrigger = true) {
 	// from the GUI, becuase the button/ir are busy doing programming tasks. it
 	// is also an edge case since there is only a 30 second window (15s for on,
 	// 15s for off) that the device can be in programming mode and still receive
-	// a signal on the feedback line. but it seems necessary to ensure that the
-	// pi and the device are in sync. same for the reboot command.
+	// a signal on the feedback line. But it seems necessary to ensure that the
+	// pi and the device are in sync. Same for the reboot command.
 	stopProgramming();
 
-	if (state != STATE_SHUTDOWN) {
-		state = STATE_SHUTDOWN;
+	// guard block
+	if (state == STATE_SHUTDOWN) {
+		return;
+	}
+
+	// set new state
+	state = STATE_SHUTDOWN;
+
+	// reset brightness
+	ledStatus.setLevel(onBright);
 
 #if DH_DEBUG == 1
-		Serial.println(F("state changed to STATE_SHUTDOWN"));
+	Serial.println(F("state changed to STATE_SHUTDOWN"));
 #endif
 
-		// feedback state to watch for when shutting down
-		feedbackCounter.setValue(HIGH);
+	// feedback state to watch for when shutting down
+	feedbackCounter.setValue(HIGH);
 
-		if (changeTrigger) {
+	if (changeTrigger) {
 
-			// set the trigger state and starts its timer
-			digitalWrite(PIN_TRIGGER, HIGH);
-			triggerTimer.setTime(TRIGGER_SHUTDOWN_TIME);
-			triggerTimer.start();
-		}
+		// set the trigger state and starts its timer
+		digitalWrite(PIN_TRIGGER, HIGH);
+		triggerTimer.setTime(TRIGGER_SHUTDOWN_TIME);
+		triggerTimer.start();
 	}
 }
 
@@ -303,23 +321,30 @@ void doReboot(bool changeTrigger = true) {
 	// see above
 	stopProgramming();
 
-	if (state != STATE_REBOOT) {
-		state = STATE_REBOOT;
+	// guard block
+	if (state == STATE_REBOOT) {
+		return;
+	}
+
+	// set new state
+	state = STATE_REBOOT;
+
+	// reset brightness
+	ledStatus.setLevel(onBright);
 
 #if DH_DEBUG == 1
-		Serial.println(F("state changed to STATE_REBOOT"));
+	Serial.println(F("state changed to STATE_REBOOT"));
 #endif
 
-		// feedback state to watch for when rebooting
-		feedbackCounter.setValue(LOW);
+	// feedback state to watch for when rebooting
+	feedbackCounter.setValue(LOW);
 
-		if (changeTrigger) {
+	if (changeTrigger) {
 
-			// set the trigger state and starts its timer
-			digitalWrite(PIN_TRIGGER, HIGH);
-			triggerTimer.setTime(TRIGGER_REBOOT_TIME);
-			triggerTimer.start();
-		}
+		// set the trigger state and starts its timer
+		digitalWrite(PIN_TRIGGER, HIGH);
+		triggerTimer.setTime(TRIGGER_REBOOT_TIME);
+		triggerTimer.start();
 	}
 }
 
@@ -341,12 +366,16 @@ void doShortPress(DHButton* button) {
 
 		if (progState == PROG_STATE_CODE_ON) {
 
+			// NB: if we are waiting for an on code, and the button is pushed,
+			// setting progChanging to true and continuing will cause the LED
+			// to flash once, meaning we didn't record a code ("skip code")
+
 			// count flashes, start watchdog
 			progChanging = true;
 			progTimer.start();
 		} else if (progState == PROG_STATE_CODE_OFF) {
 
-			// make off code same as on code
+			// make off code same as on code ("copy code")
 			long onCode = EEPROMReadLong(EEPROM_ADDR_CODE_ON);
 			long offCode = onCode;
 			EEPROMWriteLong(EEPROM_ADDR_CODE_OFF, offCode);
@@ -365,11 +394,11 @@ void doLongPress(DHButton* button) {
 	// normal
 	if (progState == PROG_STATE_NONE) {
 
-		// get long press action
-		bool forceQuitOnHold = EEPROM.read(EEPROM_ADDR_HOLD_ACTION);
-
 		// pi is on
 		if (state == STATE_ON) {
+
+			// get long press action
+			bool forceQuitOnHold = EEPROM.read(EEPROM_ADDR_HOLD_ACTION);
 			if (!forceQuitOnHold) {
 				doReboot();
 			} else {
@@ -397,7 +426,7 @@ void doLongPress(DHButton* button) {
 	}
 }
 
-#if DH_DEBUG == 1
+#if ARDUINO_UNO == 1
 /*-----------------------------------------------------------------------------
  * Called when the DEBUG feedback pin goes LOW.
  * This is used to prevent bounce on the pin when using a jumper by hand.
@@ -439,7 +468,7 @@ void doLEDDoneFlashing(DHLED* led) {
 	// NB: delay() is bad but we need to differentiate between
 	// the "waiting for code" flashes and the "got a code" flashes
 	// is it worth a whole other timer/callback for this?
-	//
+
 	// this is the "delay after slow flash"
 	delay(FLASH_CYCLE_SLOW / 2);
 
@@ -471,24 +500,27 @@ void doCounterDone(DHPulseCounter* counter) {
 	(early in shutdown/reboot) and a permanent change (after the
 	boot/shutdown/reboot process is complete), on the feedback line.
 	Only a permanent change is seen at bootup.
+
 	This method is only called when the pin changes from the NOT WANTED state to
-	the WANTED state. So if the line is LOW, and you're looking for a LOW, this
-	method will wait until the pin goes HIGH, and then goes LOW. If the pin is
-	HIGH, and you're looking for a LOW, this method will be called as soon as
-	the pin changes. (This actually makes it an edge detector, but that's
-	really just semantics... and this class also includes the counter part,
-	which an edge detector would not)
+	the WANTED state. So if the line is LOW, and you're looking for a LOW, the
+	counter will wait until the pin goes HIGH, and then goes LOW before starting
+	the timer. If the pin is HIGH, and you're looking for a LOW, the counter
+	will begin timing immediately. (This actually makes it an edge detector, but
+	that's really just semantics... and this class also includes the counter
+	part, which an edge detector would not)
+
 	For pulses, the parameter to doShutdown/doReboot determines whether we
 	toggle the trigger pin, by testing for state.
+
 	If the state is ON, then we weren't expecting this event and thus got here
 	by GUI. In that case, the pi already knows about the event, so don't confuse
 	it by toggling the trigger.
+
 	If the state is anything else, we got here by the button/ir since their code
-	does the change at the event. We need to toggle the trigger pin to tell the
-	pi what to do in their code, not here.
-	Ir is shutdown only. Button is shutdown, and reboot if set to reboot and not
-	force shutdown, otherwise it kills the power using the arduino's output and
-	there is no need for scripting (see the killswitch-settings.py script).
+	does the state change at the event, prior to pulses being received. We need
+	to toggle the trigger pin to tell the pi what to do in their code, not here.
+	So other states are ignored.
+
 	If it's a solid change (i.e. no pulses for longer than the default of 1
 	second), the pi has changed state. So we set the new state based on the old
 	state and the new feedback reading. We also invert the line level we are
@@ -517,8 +549,6 @@ void doCounterDone(DHPulseCounter* counter) {
 				doReboot(false);
 			}
 		}
-		// TODO: need to reset counter here in case we accidentally send a
-		// pulse while testing? or reset in general to get next event?
 
 	// no pulses, finish boot/shutdown/reboot
 	} else {
@@ -596,11 +626,10 @@ void setup() {
 	pinMode(PIN_POWER, OUTPUT);
 
 	// pin values
-	digitalWrite(PIN_STATUS, LOW);
 	digitalWrite(PIN_TRIGGER, LOW);
 	digitalWrite(PIN_POWER, LOW);
 
-#if DH_DEBUG == 1
+#if ARDUINO_UNO == 1
 
 	// NB: fix for broken button
 	pinMode(PIN_DEBUG_FEEDBACK_OUT, OUTPUT);
@@ -613,8 +642,10 @@ void setup() {
 	onBright = EEPROM.read(EEPROM_ADDR_ON_BRIGHTNESS);
 	offBright = EEPROM.read(EEPROM_ADDR_OFF_BRIGHTNESS);
 
-	// set defaults
+	// read button settings
 	int holdTime = EEPROMReadLong(EEPROM_ADDR_HOLD_TIME);
+
+	// set defaults
 	int setDefaults = EEPROM.read(EEPROM_ADDR_SET_DEFAULT);
 	if (setDefaults == 0) {
 
@@ -635,7 +666,7 @@ void setup() {
 	button.setOnShortPress(doShortPress);
 	button.setOnLongPress(doLongPress);
 
-#if DH_DEBUG == 1
+#if ARDUINO_UNO == 1
 
 	// NB: fix for broken button
 	tmpFeedback.setOnPress(doFeedbackPress);
@@ -656,15 +687,13 @@ void setup() {
 
 	// set up LED
 	ledStatus.setOnDoneFlashing(doLEDDoneFlashing);
-	offBright = EEPROM.read(EEPROM_ADDR_OFF_BRIGHTNESS);
-
-	 // set LED on, but at "off" brightness
- 	ledStatus.setLevel(offBright);
+	ledStatus.setLevel(offBright);
 	ledStatus.on();
 
 	// set up pulse counter
 	feedbackCounter.setOnDone(doCounterDone);
 	feedbackCounter.setValue(LOW);
+	feedbackCounter.start();
 
 	// check for auto boot after power failure
 	int bootAfterFail = EEPROM.read(EEPROM_ADDR_POWER_AFTER_FAIL);
@@ -686,7 +715,7 @@ void loop() {
 
 	button.update();
 
-#if DH_DEBUG == 1
+#if ARDUINO_UNO == 1
 
 	// NB: fix for broken button
 	tmpFeedback.update();
@@ -744,22 +773,20 @@ void loop() {
 //-----------------------------------------------------------------------------
 // status
 
-	ledStatus.update();
-
-	bool statusOff = (statusType == STATUS_TYPE_OFF);
-
 	// normal
 	if (progState == PROG_STATE_NONE) {
 
-		// states that require flashing
-		if ((state == STATE_BOOTING) ||
-				(state == STATE_SHUTDOWN) ||
-				(state == STATE_REBOOT)) {
+		// if not programming, led always off
+		if (statusType == STATUS_TYPE_OFF) {
+			ledStatus.off();
+		} else {
 
-			// flash/pulse slow
-			if (statusOff) {
-				ledStatus.off();
-			} else {
+			// states that require flashing
+			if ((state == STATE_BOOTING) ||
+					(state == STATE_SHUTDOWN) ||
+					(state == STATE_REBOOT)) {
+
+				// flash/pulse slow
 				if (ledStatus.getState() != ledStatus.FLASHING) {
 					if (statusPulse) {
 						ledStatus.setOnTime(PULSE_CYCLE_SLOW / 2);
@@ -772,30 +799,18 @@ void loop() {
 					}
 					ledStatus.flash(statusPulse);
 				}
-			}
 
-		// no flashing
-		} else if (state == STATE_ON) {
-			if (statusOff) {
-				ledStatus.off();
-			} else {
-				ledStatus.on();
-			}
-
-		// no flashing
-		} else if (state == STATE_OFF) {
-			if (statusOff) {
-				ledStatus.off();
+			// no flashing
 			} else {
 				ledStatus.on();
 			}
 		}
+
+	// programming flash
 	} else {
 
 		// slow flash for confirmation
 		if (progChanging) {
-
-			// TODO: can we use ledStatus.getState == flashing here?
 
 			// put the led in a known state and start a new cycle
 			if (progFlashStart == false) {
@@ -848,6 +863,8 @@ void loop() {
 			}
 		}
 	}
+
+	ledStatus.update();
 
 //-----------------------------------------------------------------------------
 // trigger
@@ -931,17 +948,17 @@ void loop() {
 			} else if (strcmp_P(serialCmd, SERIAL_LPT) == 0) {
 				unsigned long lpt = atol(serialValue);
 
-				// will take effect in next uopdate()
 				EEPROMWriteLong(EEPROM_ADDR_HOLD_TIME, lpt);
+				button.setHoldTime(lpt);
 			} else if (strcmp_P(serialCmd, SERIAL_LPA) == 0) {
 				int lpa = atoi(serialValue);
 
-				// will take effect in next update()
+				// will take effect in next doLongPress()
 				EEPROM.update(EEPROM_ADDR_HOLD_ACTION, lpa);
 			} else if (strcmp_P(serialCmd, SERIAL_PWR) == 0) {
 				int pwr = atoi(serialValue);
 
-				// will take effect in next update()
+				// will take effect in next setup()
 				EEPROM.update(EEPROM_ADDR_POWER_AFTER_FAIL, pwr);
 			}
 
