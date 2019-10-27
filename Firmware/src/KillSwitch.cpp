@@ -58,11 +58,11 @@ const int PIN_DEBUG_FEEDBACK_OUT = 8;
 const int PIN_DEBUG_FEEDBACK_IN = 9;
 #else
 
-// pins for ATTiny841
-const int PIN_BUTTON = 9;
+// pins for ATTiny1634
+const int PIN_BUTTON = 8;
 const int PIN_IR = 0;
 const int PIN_FEEDBACK = 3;
-const int PIN_STATUS = 8;
+const int PIN_STATUS = 9;
 const int PIN_TRIGGER = 7;
 const int PIN_POWER = 10;
 #endif
