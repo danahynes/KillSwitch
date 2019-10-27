@@ -124,6 +124,7 @@ DONE:    Fix retropie install - needs folder check and echo "Installing retropie
 DONE: should we stop whole install if we can't set retropie shortcut?
 
 
+fix irremote/boarddefs.h to use timer 1 on 1634
 
 Install.sh - back up old cmdline.txt to settings folder and restore
 After uninstall
@@ -135,6 +136,11 @@ do apt-get cleanup after uninstall to remove unneeded deps
 
 RGBW led
 power led option/fed from uc
+disable on board led if using remote
+add pins for rgbw led on j2
+make j2 5x2
+
+move avrdude.conf to seperate file
 
 
 
