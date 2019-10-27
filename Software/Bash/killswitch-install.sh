@@ -102,6 +102,21 @@ echo "Installing KillSwitch..."
 echo ""
 
 #-------------------------------------------------------------------------------
+# Create settings dir
+#-------------------------------------------------------------------------------
+echo -n "Creating settings directory... "
+
+if [ ! -d "${SETTINGS_DIR}" ]; then
+    mkdir -p "${SETTINGS_DIR}"
+    check_error "Failed"
+    chown "${SUDO_USER}:${SUDO_USER}" "${SETTINGS_DIR}"
+    check_error "Failed"
+fi
+
+echo "Done"
+echo ""
+
+#-------------------------------------------------------------------------------
 # Set up serial port
 #-------------------------------------------------------------------------------
 echo "Setting up serial port..."
@@ -113,8 +128,12 @@ echo ""
 echo -n "Turning off login console... "
 
 # filenames
+CMD_FILE_BKP="${SETTINGS_DIR}/cmdline.txt.bkp"
 CMD_FILE_OLD="/boot/cmdline.txt"
-CMD_FILE_NEW="/boot/cmdline_tmp.txt"
+CMD_FILE_NEW="/boot/cmdline.txt.tmp"
+
+# make a backup for uninstall
+cp "${CMD_FILE_OLD}" "${CMD_FILE_BKP}"
 
 # move everything except login console to new file
 cat < "${CMD_FILE_OLD}" | sed 's/ console=.*,[0-9]*//' > "${CMD_FILE_NEW}"
@@ -131,8 +150,12 @@ echo "Done"
 echo -n "Turning on serial hardware... "
 
 # filenames
+CFG_FILE_BKP="${SETTINGS_DIR}/config.txt.bkp"
 CFG_FILE_OLD="/boot/config.txt"
-CFG_FILE_NEW="/boot/config_tmp.txt"
+CFG_FILE_NEW="/boot/config.txt.tmp"
+
+# make a backup for uninstall
+cp "${CONFIG_FILE_OLD}" "${CONFIG_FILE_BKP}"
 
 # move everything except old enable_uart (if present) to new file
 grep -v "enable_uart=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
@@ -162,19 +185,21 @@ echo ""
 echo -n "Setting shutdown permission... "
 
 # filenames
-CFG_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
-CFG_FILE_NEW="/home/${SUDO_USER}/.bash_aliases_tmp"
+ALIAS_FILE_BKP="${SETTINGS_DIR}/.bash_aliases.bkp"
+ALIAS_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
+ALIAS_FILE_NEW="/home/${SUDO_USER}/.bash_aliases.tmp"
 
 # move everything except old shutdown (if present) to new file
-if [[ -f "${CFG_FILE_OLD}" ]]; then
-    grep -v "alias shutdown=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
+if [[ -f "${ALIAS_FILE_OLD}" ]]; then
+    cp "${ALIAS_FILE_OLD}" "${ALIAS_FILE_BKP}"
+    grep -v "alias shutdown=" "${ALIAS_FILE_OLD}" > "${ALIAS_FILE_NEW}"
 fi
 
 # add new shutdown line
-echo "alias shutdown='sudo shutdown -h now'" >> "${CFG_FILE_NEW}"
+echo "alias shutdown='sudo shutdown -h now'" >> "${ALIAS_FILE_NEW}"
 
 # move new file to old file
-mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
+mv "${ALIAS_FILE_NEW}" "${ALIAS_FILE_OLD}"
 check_error "Failed"
 
 echo "Done"
@@ -184,18 +209,14 @@ echo "Done"
 #-------------------------------------------------------------------------------
 echo -n "Setting reboot permission... "
 
-# filenames
-CFG_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
-CFG_FILE_NEW="/home/${SUDO_USER}/.bash_aliases_tmp"
-
 # move everything except old reboot (if present) to new file
-grep -v "alias reboot=" "${CFG_FILE_OLD}" > "${CFG_FILE_NEW}"
+grep -v "alias reboot=" "${ALIAS_FILE_OLD}" > "${ALIAS_FILE_NEW}"
 
 # add new reboot line
-echo "alias reboot='sudo shutdown -r now'" >> "${CFG_FILE_NEW}"
+echo "alias reboot='sudo shutdown -r now'" >> "${ALIAS_FILE_NEW}"
 
 # move new file to old file
-mv "${CFG_FILE_NEW}" "${CFG_FILE_OLD}"
+mv "${ALIAS_FILE_NEW}" "${ALIAS_FILE_OLD}"
 check_error "Failed"
 
 echo "Done"
@@ -206,11 +227,11 @@ echo "Done"
 echo -n "Finishing permissions... "
 
 # set owner of .bash_aliases
-chown "${SUDO_USER}:${SUDO_USER}" "/home/${SUDO_USER}/.bash_aliases"
+chown "${SUDO_USER}:${SUDO_USER}" "${ALIAS_FILE_OLD}"
 check_error "Failed"
 
 # pull in new bash aliases
-source "/home/${SUDO_USER}/.bash_aliases"
+source "${ALIAS_FILE_OLD}"
 
 echo "Done"
 echo ""
@@ -309,55 +330,45 @@ chmod +x /usr/local/bin/killswitch-shutdown-test.sh
 check_error "Failed"
 echo "Done"
 
-echo ""
-
-#-------------------------------------------------------------------------------
-# Create settings dir
-#-------------------------------------------------------------------------------
-echo -n "Creating settings directory... "
-
-if [ ! -d "${SETTINGS_DIR}" ]; then
-    mkdir -p "${SETTINGS_DIR}"
-    check_error "Failed"
-    chown "${SUDO_USER}:${SUDO_USER}" "${SETTINGS_DIR}"
-    check_error "Failed"
-fi
-
-echo "Done"
-echo ""
-
-#-------------------------------------------------------------------------------
-# Configure avrdude
-#-------------------------------------------------------------------------------
-echo -n "Setting up avrdude... "
-
-# avrdude conf file
-# rewrite no matter what in case pins change
-if [ -f "${AVRDUDE_FILE}" ]; then
-    rm "${AVRDUDE_FILE}"
-    check_error "Failed"
-fi
-touch "${AVRDUDE_FILE}"
+# copy avrdude.conf
+echo -n "Copying killswitch-avrdude.conf to ${SETTINGS_DIR}... "
+cp ../avrdude/killswitch-avrdude.conf ${SETTINGS_DIR}
 check_error "Failed"
 chown "${SUDO_USER}:${SUDO_USER}" "${AVRDUDE_FILE}"
 check_error "Failed"
-AVRDUDE_TEXT="programmer\n"
-AVRDUDE_TEXT+="  id    = \"killswitch\";\n"
-AVRDUDE_TEXT+="  desc  = \"Update KillSwitch firmware using GPIO\";\n"
-AVRDUDE_TEXT+="  type  = \"linuxgpio\";\n"
-AVRDUDE_TEXT+="  reset = 4;\n"
-AVRDUDE_TEXT+="  sck   = 2;\n"
-AVRDUDE_TEXT+="  mosi  = 14;\n"
-AVRDUDE_TEXT+="  miso  = 15;\n"
-AVRDUDE_TEXT+=";\n"
-echo -e "${AVRDUDE_TEXT}" > "${AVRDUDE_FILE}"
-
 echo "Done"
 echo ""
 
+
+
+
+# avrdude conf file
+# rewrite no matter what in case pins change
+# if [ -f "${AVRDUDE_FILE}" ]; then
+#     rm "${AVRDUDE_FILE}"
+#     check_error "Failed"
+# fi
+# touch "${AVRDUDE_FILE}"
+# check_error "Failed"
+# chown "${SUDO_USER}:${SUDO_USER}" "${AVRDUDE_FILE}"
+# check_error "Failed"
+# AVRDUDE_TEXT="programmer\n"
+# AVRDUDE_TEXT+="  id    = \"killswitch\";\n"
+# AVRDUDE_TEXT+="  desc  = \"Update KillSwitch firmware using GPIO\";\n"
+# AVRDUDE_TEXT+="  type  = \"linuxgpio\";\n"
+# AVRDUDE_TEXT+="  reset = 4;\n"
+# AVRDUDE_TEXT+="  sck   = 2;\n"
+# AVRDUDE_TEXT+="  mosi  = 14;\n"
+# AVRDUDE_TEXT+="  miso  = 15;\n"
+# AVRDUDE_TEXT+=";\n"
+# echo -e "${AVRDUDE_TEXT}" > "${AVRDUDE_FILE}"
+#
+# echo "Done"
+# echo ""
+
 echo -n "Running firmware installer... "
 
-# NB: do hardware first because software may cause reboot
+# NB: do firmware first because software may cause reboot
 
 # do avrdude update with hex file
 cd ../../Firmware/

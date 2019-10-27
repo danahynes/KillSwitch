@@ -54,6 +54,24 @@ echo "Uninstalling KillSwitch..."
 echo ""
 
 #-------------------------------------------------------------------------------
+# Restore backups
+#-------------------------------------------------------------------------------
+CMD_FILE_BKP="${SETTINGS_DIR}/cmdline.txt.bkp"
+CMD_FILE_OLD="/boot/cmdline.txt"
+
+mv "${CMD_FILE_BKP}" "${CMD_FILE_OLD}"
+
+CFG_FILE_BKP="${SETTINGS_DIR}/config.txt.bkp"
+CFG_FILE_OLD="/boot/config.txt"
+
+mv "${CFG_FILE_BKP}" "${CFG_FILE_OLD}"
+
+ALIAS_FILE_BKP="${SETTINGS_DIR}/.bash_aliases.bkp"
+ALIAS_FILE_OLD="/home/${SUDO_USER}/.bash_aliases"
+
+mv "${ALIAS_FILE_BKP}" "${ALIAS_FILE_OLD}"
+
+#-------------------------------------------------------------------------------
 # Remove files
 #-------------------------------------------------------------------------------
 echo "Removing files..."
@@ -129,6 +147,8 @@ rm /usr/local/bin/killswitch-shutdown-test.sh
 check_error "Failed"
 echo "Done"
 
+# NB: killswitch-avrdude.conf will be removed with settings dir
+
 #-------------------------------------------------------------------------------
 # Remove settings dir
 #-------------------------------------------------------------------------------
@@ -168,6 +188,11 @@ if [ -d "${RETROPIE_DATA_DIR}" ]; then
     echo "Done"
     echo ""
 fi
+
+#-------------------------------------------------------------------------------
+# Remove any unneeded dependancies
+#-------------------------------------------------------------------------------
+sudo apt-get autoremove
 
 #-------------------------------------------------------------------------------
 # Stuff we can't undo
