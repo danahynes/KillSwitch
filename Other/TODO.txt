@@ -45,7 +45,6 @@ NO: update: show installer output in tailbox? (still need sudo password in termi
 
 DONE: documentation on how the button/programming/led works
 DONE: documentation on how to use settings
-man pages for all pi software scripts
 DONE: section headers (##) in main readme
 DONE: documentation in main readme for device, description and usage
 DONE: documentation in main readme for OSH license
@@ -123,16 +122,23 @@ DONE:    Fix retropie install - needs folder check and echo "Installing retropie
 
 DONE: should we stop whole install if we can't set retropie shortcut?
 
+DONE: move avrdude.conf to seperate file
 
-fix irremote/boarddefs.h to use timer 1 on 1634
+DONE: Install.sh - back up old cmdline.txt to settings folder and restore
+DONE:After uninstall
+DONE:Will have old console setting from before install, whether console
+DONE:Was on or not
+DONE:Same for config.txt
+DONE:Same for bash aliases
+DONE: do apt-get cleanup after uninstall to remove unneeded deps
 
-Install.sh - back up old cmdline.txt to settings folder and restore
-After uninstall
-Will have old console setting from before install, whether console
-Was on or not
-Same for config.txt
-Same for bash aliases
-do apt-get cleanup after uninstall to remove unneeded deps
+DONE: fix irremote/boarddefs.h to use timer 1 on 1634
+
+
+
+
+man pages for all pi software scripts
+kicad - template with block logos/osh park defaults
 
 RGBW led
 power led option/fed from uc
@@ -140,7 +146,6 @@ disable on board led if using remote
 add pins for rgbw led on j2
 make j2 5x2
 
-move avrdude.conf to seperate file
 
 
 
